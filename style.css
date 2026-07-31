@@ -11,7 +11,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem 5%;
-    background-color: #422613;
+    background-color: #3b2314;
     color: white;
     position: sticky;
     top: 0;           
@@ -20,9 +20,23 @@
 }
 
 .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    line-height: 0.85;
+    text-decoration: none;
+    cursor: pointer;
+    user-select: none;
 }
+
+.logo-principal {
+    font-family: 'Abril Fatface', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    letter-spacing: -1px;
+    color: #3b2314; /* Tono marrón chocolate del logo */
+    text-transform: lowercase; /* Mantiene la minúscula elegante */
+}
+
 
 .logo span {
     color: white;
@@ -41,15 +55,51 @@
 
 /* Banner Principal */
 .banner {
-    background-color: #fffedf;
+    display: flex;
+    flex-direction: column;
+    align-items: center;         
     text-align: center;
-    padding: 3rem 1rem;
-    margin-bottom: 2rem;
+    padding: 3rem 1rem; 
+    background-color: #fffedf;         
+}
+
+
+.banner-logo {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-end;       /* Empuja "store" al borde derecho de "justina" */
+    margin-bottom: 0.8rem;
 }
 
 .banner h1 {
-    font-size: 2.2rem;
-    color: #222;
+    font-family: 'Abril Fatface', serif;
+    font-size: 5rem;             /* Podés agrandarlo un poco para que destaque más */
+    font-weight: 400;
+    color: #3b2314;
+    text-transform: lowercase;
+    letter-spacing: -2px;
+    line-height: 0.8;            /* Saca el espacio invisible arriba y abajo de las letras */
+    margin: 0;
+}
+
+.banner h2 {
+    font-family: 'Abril Fatface', serif;
+    font-size: 1.1rem;
+    color: #3b2314;
+    text-transform: lowercase;
+    letter-spacing: 3px;
+    margin: 0;
+    margin-top: 4px;             /* Define qué tan pegado queda de "justina" */
+}
+
+.banner p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #5a3d28;
+    letter-spacing: 1px;
+    margin: 0;
 }
 
 /* Grilla de productos */

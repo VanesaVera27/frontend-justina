@@ -1,7 +1,6 @@
 // ====================================================================
-// --- 1. GUARDIÁN DE SEGURIDAD DEL PANEL (DEBE IR ARRIBA DE TODO) ---
+// --- 1. GUARDIÁN DE SEGURIDAD DEL PANEL 
 // ====================================================================
-// EN TU ARCHIVO admin.js (ARRIBA DE TODO):
 (function verificarPermisoAdmin() {
     // Leemos la sesión general de la tienda
     const sesion = localStorage.getItem('usuario_tienda');
@@ -63,11 +62,10 @@ btnAgregarVariante.addEventListener('click', () => {
     contVariantes.appendChild(nuevaFila);
 });
 
-// 2. Guardar nuevo producto (con sus variantes en formato JSON string)
+// 2. Guardar nuevo producto 
 formAdmin.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Armamos un array con todo lo que completaron en las filas de variantes
     const filas = document.querySelectorAll('.fila-variante');
     const arrayVariantes = [];
     filas.forEach(fila => {
@@ -112,7 +110,6 @@ async function cargarInventarioAdmin() {
         tablaInventario.innerHTML = '';
 
         productos.forEach(prod => {
-            // Formateamos un resumen de sus variantes (Ej: "S Negro (4), M Marrón (10)")
             const resumenStock = prod.variantes
                 ? prod.variantes.map(v => `${v.talle} ${v.color} (<b>${v.stock}</b>)`).join('<br>')
                 : 'Sin stock';
@@ -146,7 +143,7 @@ async function borrarProducto(id) {
     }
 }
 
-// 5. Editar producto rápido (usando un prompt simple para el precio/nombre)
+// 5. Editar producto (muy basico)
 async function editarProducto(id) {
     const nuevoNombre = prompt("Nuevo nombre para la prenda:");
     const nuevoPrecio = prompt("Nuevo precio ($):");
@@ -158,12 +155,73 @@ async function editarProducto(id) {
             body: JSON.stringify({
                 nombre: nuevoNombre,
                 precio: Number(nuevoPrecio),
-                categoria: "Calzas" // Podés extenderlo al form general
+                categoria: "Calzas" 
             })
         });
         cargarInventarioAdmin();
     }
 }
 
-// Iniciamos la tabla apenas carga admin.html
+// Seleccionamos los elementos del DOM de categorías
+const selectCategoria = document.getElementById('prod-categoria');
+const btnNuevaCategoria = document.getElementById('btn-nueva-categoria');
+
+// 1. FUNCIÓN PARA CARGAR LAS CATEGORÍAS DESDE POSTGRESQL AL MENU DESPLEGABLE
+async function cargarCategorias(categoriaSeleccionada = null) {
+    if (!selectCategoria) return;
+
+    try {
+        const respuesta = await fetch('http://localhost:3000/api/categorias');
+        const categorias = await respuesta.json();
+
+        selectCategoria.innerHTML = ''; // Limpiamos el select
+
+        categorias.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat.nombre;
+            option.textContent = cat.nombre;
+            selectCategoria.appendChild(option);
+        });
+
+        // Si creamos una categoría nueva, la dejamos seleccionada automáticamente
+        if (categoriaSeleccionada) {
+            selectCategoria.value = categoriaSeleccionada;
+        }
+    } catch (error) {
+        console.error("Error al cargar categorías:", error);
+    }
+}
+
+// 2. CREAR UNA CATEGORÍA NUEVA EN VIVO
+if (btnNuevaCategoria) {
+    btnNuevaCategoria.addEventListener('click', async () => {
+        const nuevoNombre = prompt("Escribí el nombre de la nueva categoría (Ej: Accesorios, Bikinis, Shorts):");
+
+        if (!nuevoNombre || !nuevoNombre.trim()) return;
+
+        try {
+            const respuesta = await fetch('http://localhost:3000/api/categorias', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombre: nuevoNombre.trim() })
+            });
+
+            const datos = await respuesta.json();
+
+            if (respuesta.ok) {
+                alert(`¡Categoría "${datos.categoria.nombre}" creada y agregada a la lista!`);
+                // Recargamos las categorías y dejamos la nueva seleccionada en el <select>
+                await cargarCategorias(datos.categoria.nombre);
+            } else {
+                alert(`Error: ${datos.error}`);
+            }
+        } catch (error) {
+            alert("No se pudo conectar con el servidor para crear la categoría.");
+        }
+    });
+}
+
+
+cargarCategorias();
+
 cargarInventarioAdmin();

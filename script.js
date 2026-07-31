@@ -15,7 +15,7 @@ const botonCerrarModal = document.getElementById('btn-cerrar-modal');
 
 
 
-// 1. CARGAR BASE DE DATOS DESDE EL SERVIDOR BACKEND (NODE.JS + SQLITE)
+// 1. CARGAR BASE DE DATOS DESDE EL SERVIDOR BACKEND 
 async function cargarBaseDeDatos() {
     try {
         // Consultamos al servidor en el puerto 3000
@@ -34,14 +34,14 @@ async function cargarBaseDeDatos() {
         console.error("Error al conectar con el backend:", error);
         if (grilla) {
             grilla.innerHTML = `
-                <p style="text-align:center; width:100%; color:red;">
-                    No se pudieron cargar los productos. Asegurate de que tu terminal con <b>node server.js</b> esté corriendo.
-                </p>`;
+ <p style="text-align:center; width:100%; color:red;">
+No se pudieron cargar los productos. Asegurate de que tu terminal con <b>node server.js</b> esté corriendo.
+ </p>`;
         }
     }
 }
 
-// Mostrar las tarjetas de productos
+// Mostrar las tarjetas de productos 
 function mostrarProductosEnPantalla(listaProductos) {
     if (!grilla) return;
     grilla.innerHTML = '';
@@ -50,53 +50,123 @@ function mostrarProductosEnPantalla(listaProductos) {
         const card = document.createElement('div');
         card.classList.add('card-producto');
 
-        let listaTalles = [S, M, L]; // Talles por defecto si no vienen definidos
+        let opcionesTalles = '';
+        let opcionesColores = '';
+        let sinStock = false;
 
-        if (Array.isArray(prod.talles)) {
-            listaTalles = prod.talles; // Si es un array real (ej. de un JSON), lo usamos
-        } else if (typeof prod.talles === 'string') {
-            // Si viene de SQL como un texto "S, M, L", lo separamos por las comas
-            listaTalles = prod.talles.split(',').map(t => t.trim());
+        // 1. SI EL PRODUCTO TIENE VARIANTES DE POSTGRESQL (Talle + Color + Stock)
+        if (Array.isArray(prod.variantes) && prod.variantes.length > 0) {
+            const variantesConStock = prod.variantes.filter(v => Number(v.stock) > 0);
+
+            if (variantesConStock.length > 0) {
+                // Obtenemos los Talles únicos que tienen al menos 1 unidad de stock
+                const tallesUnicos = [...new Set(variantesConStock.map(v => v.talle))];
+                tallesUnicos.forEach(talle => {
+                    opcionesTalles += `<option value="${talle}">${talle}</option>`;
+                });
+
+                // Para el color inicial, mostramos los colores disponibles para el PRIMER talle de la lista
+                const primerTalle = tallesUnicos[0];
+                const coloresDelPrimerTalle = [...new Set(
+                    variantesConStock
+                        .filter(v => v.talle === primerTalle)
+                        .map(v => v.color)
+                )];
+
+                coloresDelPrimerTalle.forEach(color => {
+                    opcionesColores += `<option value="${color}">${color}</option>`;
+                });
+            } else {
+                sinStock = true;
+                opcionesTalles = `<option disabled selected>Sin stock</option>`;
+                opcionesColores = `<option disabled selected>Sin stock</option>`;
+            }
+        }
+        // 2. RESPALDO: Si es una prenda simple sin tabla de variantes
+        else {
+            let listaTalles = Array.isArray(prod.talles) ? prod.talles : (prod.talles || 'U').split(',').map(t => t.trim());
+            listaTalles.forEach(t => opcionesTalles += `<option value="${t}">${t}</option>`);
+            opcionesColores = `<option value="Único">Único</option>`;
         }
 
-        // Ahora sí, generamos las opciones sin peligro de que .forEach() dé error
-        let opcionesTalles = '';
-        listaTalles.forEach(talle => {
-            opcionesTalles += `<option value="${talle}">${talle}</option>`;
-        });
-        // =========================================================================
-
+        // Estructura HTML de la tarjeta con DOS selectores
         card.innerHTML = `
-            <img src="${prod.imagen}" alt="${prod.nombre}">
-            <h3>${prod.nombre}</h3>
-            <p class="precio">$${prod.precio.toLocaleString()}</p>
-            
-            <select class="select-talle" id="talle-${prod.id}">
-                ${opcionesTalles}
-            </select>
+            <img src="${prod.imagen}" alt="${prod.nombre}">
+            <h3>${prod.nombre}</h3>
+            <p class="precio">$${Number(prod.precio).toLocaleString()}</p>
+            
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; width: 100%;">
+                <div style="flex: 1;">
+                    <label style="font-size: 0.75rem; color: #666; display: block;">Talle:</label>
+                    <select class="select-talle" id="talle-${prod.id}" 
+                            onchange="actualizarColoresDisponibles(${prod.id})" 
+                            style="width: 100%; padding: 0.4rem;" ${sinStock ? 'disabled' : ''}>
+                        ${opcionesTalles}
+                    </select>
+                </div>
+                <div style="flex: 1;">
+                    <label style="font-size: 0.75rem; color: #666; display: block;">Color:</label>
+                    <select class="select-color" id="color-${prod.id}" 
+                            style="width: 100%; padding: 0.4rem;" ${sinStock ? 'disabled' : ''}>
+                        ${opcionesColores}
+                    </select>
+                </div>
+            </div>
 
-            <button onclick="agregarAlCarrito(${prod.id})">Agregar al carrito</button>
-        `;
+            <button onclick="agregarAlCarrito(${prod.id})" ${sinStock ? 'disabled style="background:#ccc; cursor:not-allowed;"' : ''}>
+                ${sinStock ? 'Agotado' : 'Agregar al carrito'}
+            </button>
+        `;
 
         grilla.appendChild(card);
     });
 }
 
+// Actualiza los colores en el <select> según el talle elegido
+function actualizarColoresDisponibles(idProducto) {
+    const producto = productos.find(p => p.id === idProducto);
+    if (!producto || !Array.isArray(producto.variantes)) return;
+
+    const selectTalle = document.getElementById(`talle-${idProducto}`);
+    const selectColor = document.getElementById(`color-${idProducto}`);
+    if (!selectTalle || !selectColor) return;
+
+    const talleElegido = selectTalle.value;
+
+    // Buscamos qué colores tienen stock > 0 PARA ESE TALLE en particular
+    const coloresDisponibles = [...new Set(
+        producto.variantes
+            .filter(v => v.talle === talleElegido && Number(v.stock) > 0)
+            .map(v => v.color)
+    )];
+
+    // Dibujamos de nuevo las opciones del select de Color
+    selectColor.innerHTML = '';
+    coloresDisponibles.forEach(color => {
+        const option = document.createElement('option');
+        option.value = color;
+        option.textContent = color;
+        selectColor.appendChild(option);
+    });
+}
+
+
 // 3. AGREGAR AL CARRITO 
 function agregarAlCarrito(idProducto) {
-    // A. Buscamos el producto original en la base de datos
     const productoOriginal = productos.find(p => p.id === idProducto);
 
     if (productoOriginal) {
-        // B. Buscamos el elemento <select> de ese producto específico y leemos su valor
         const selectTalle = document.getElementById(`talle-${idProducto}`);
-        const talleSeleccionado = selectTalle ? selectTalle.value : 'Único';
+        const selectColor = document.getElementById(`color-${idProducto}`);
 
-        // C. Creamos una COPIA del producto para agregarle el talle elegido
-        // (Esto es clave por si el cliente compra la misma remera en talle S y luego en L)
+        const talleSeleccionado = selectTalle ? selectTalle.value : 'Único';
+        const colorSeleccionado = selectColor ? selectColor.value : 'Único';
+
+        // Creamos la copia de la prenda agregando talleElegido y colorElegido
         const productoParaCarrito = {
             ...productoOriginal,
-            talleElegido: talleSeleccionado
+            talleElegido: talleSeleccionado,
+            colorElegido: colorSeleccionado
         };
 
         carrito.push(productoParaCarrito);
@@ -110,7 +180,7 @@ function eliminarDelCarrito(index) {
     actualizarCarrito();
 }
 
-// 5. ACTUALIZAR VISTA DEL CARRITO (Muestra el talle al lado del nombre)
+// 5.VISTA DEL CARRITO 
 function actualizarCarrito() {
     if (elemContador) elemContador.textContent = carrito.length;
     if (!listaCarrito || !elemTotal) return;
@@ -127,18 +197,21 @@ function actualizarCarrito() {
         const item = document.createElement('div');
         item.classList.add('item-carrito');
 
-        // Ahora mostramos el nombre junto con (Talle: X)
+        // Muestra: "Remera Boxy (Talle: L | Color: Negro)"
         item.innerHTML = `
-            <div class="item-info">
-                <h4>${prod.nombre} <span style="color:#666; font-size:0.85rem;">(Talle: ${prod.talleElegido})</span></h4>
-                <p>$${prod.precio.toLocaleString()}</p>
-            </div>
-            <button class="btn-eliminar" onclick="eliminarDelCarrito(${index})">X</button>
-        `;
+            <div class="item-info">
+                <h4>${prod.nombre}</h4>
+                <small style="color:#666; font-size:0.85rem;">
+                    Talle: <b>${prod.talleElegido}</b> | Color: <b>${prod.colorElegido}</b>
+                </small>
+                <p style="margin: 0.2rem 0 0; font-weight: bold;">$${Number(prod.precio).toLocaleString()}</p>
+            </div>
+            <button class="btn-eliminar" onclick="eliminarDelCarrito(${index})">X</button>
+        `;
         listaCarrito.appendChild(item);
     });
 
-    const sumaTotal = carrito.reduce((acum, prod) => acum + prod.precio, 0);
+    const sumaTotal = carrito.reduce((acum, prod) => acum + Number(prod.precio), 0);
     elemTotal.textContent = `$${sumaTotal.toLocaleString()}`;
 }
 
@@ -336,5 +409,5 @@ if (formRegistro) {
     });
 }
 
-// ¡INICIO DE LA APP! Ahora llamamos a la carga del JSON:
+// ¡INICIO DE LA APP!
 cargarBaseDeDatos();
