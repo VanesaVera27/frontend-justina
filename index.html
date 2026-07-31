@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Justina Store</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <!-- Header y Navegación -->
@@ -16,8 +18,21 @@
             <a href="#">Colección</a>
             <a href="#">Ofertas</a>
         </nav>
-        <div class="carrito">
-            🛒 <span id="contador-carrito">0</span>
+        <!-- ZONA DE ACCIONES DEL HEADER -->
+        <div class="acciones-header">
+            <!-- 1. Botón de Control de Stock: Oculto por defecto con CSS (display: none) -->
+            <a href="admin.html" id="btn-config-admin" class="btn-user"
+                style="display: none; background: #e67e22; border-color: #e67e22; text-decoration: none;">
+                ⚙️ Control de Stock
+            </a>
+
+            <!-- 2. Botón de Iniciar Sesión / Nombre de Usuario -->
+            <button id="btn-login-header" class="btn-user">👤 Iniciar Sesión</button>
+
+            <!-- 3. Botón del Carrito -->
+            <div class="carrito" id="boton-carrito">
+                🛒 <span id="contador-carrito">0</span>
+            </div>
         </div>
     </header>
 
@@ -43,7 +58,7 @@
                 <h2>Tu Carrito</h2>
                 <button class="btn-cerrar" id="btn-cerrar-modal">&times;</button>
             </div>
-            
+
             <!-- Acá se insertan los productos que agreguemos con JS -->
             <div class="modal-cuerpo" id="lista-carrito">
                 <p class="carrito-vacio">El carrito está vacío.</p>
@@ -60,8 +75,51 @@
         </div>
     </div>
 
+    <!-- VENTANA MODAL DOBLE: INICIO DE SESIÓN / REGISTRO -->
+    <div class="modal-overlay" id="modal-login">
+        <div class="modal-contenido modal-login-box">
+            <div class="modal-header">
+                <!-- Pestañas para alternar qué formulario ver -->
+                <div class="pestanas-login" style="display: flex; gap: 1rem; font-size: 1.2rem; font-weight: bold;">
+                    <span id="tab-login"
+                        style="cursor: pointer; color: #1a1a1a; border-bottom: 2px solid #1a1a1a;">Ingresar</span>
+                    <span id="tab-registro" style="cursor: pointer; color: #888;">Crear Cuenta</span>
+                </div>
+                <button class="btn-cerrar" id="btn-cerrar-modal-login">&times;</button>
+            </div>
+
+            <!-- 1. FORMULARIO DE INICIO DE SESIÓN -->
+            <form id="form-login" class="modal-cuerpo form-login">
+                <label>Correo Electrónico</label>
+                <input type="email" id="email-user" required placeholder="tuemail@ejemplo.com">
+
+                <label>Contraseña</label>
+                <input type="password" id="password-user" required placeholder="••••••••">
+
+                <button type="submit" class="btn-comprar" style="margin-top: 1rem;">
+                    Iniciar Sesión
+                </button>
+            </form>
+
+            <!-- 2. FORMULARIO DE REGISTRO DE CLIENTE NUEVO (Oculto por defecto) -->
+            <form id="form-registro" class="modal-cuerpo form-login" style="display: none;">
+                <label>Nombre y Apellido *</label>
+                <input type="text" id="reg-nombre" required placeholder="Ej. Camila Pérez">
+
+                <label>Correo Electrónico *</label>
+                <input type="email" id="reg-email" required placeholder="camila@ejemplo.com">
+
+                <label>Contraseña *</label>
+                <input type="password" id="reg-pass" required placeholder="Mínimo 6 caracteres" minlength="6">
+
+                <button type="submit" class="btn-comprar" style="margin-top: 1rem; background: #27ae60;">
+                    Registrarme y Entrar
+                </button>
+            </form>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
-</html>
-</body>
+
 </html>
