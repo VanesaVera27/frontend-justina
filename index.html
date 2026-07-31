@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Justina Store</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header y Navegación -->
+    <header class="header">
+        <div class="logo">J<span>S</span></div>
+        <nav>
+            <a href="#">Inicio</a>
+            <a href="#">Colección</a>
+            <a href="#">Ofertas</a>
+        </nav>
+        <div class="carrito">
+            🛒 <span id="contador-carrito">0</span>
+        </div>
+    </header>
+
+    <!-- Banner Principal -->
+    <section class="banner">
+        <h1>JUSTINA STORE</h1>
+        <p>More than basics</p>
+    </section>
+
+    <!-- Catálogo de Productos -->
+    <main class="contenedor">
+        <h2>Nuestros Productos</h2>
+        <div class="grilla-productos" id="grilla-productos">
+            <!-- Los productos se generarán acá desde script.js -->
+        </div>
+    </main>
+
+
+    <!-- NUEVO: Ventana Modal del Carrito -->
+    <div class="modal-overlay" id="modal-carrito">
+        <div class="modal-contenido">
+            <div class="modal-header">
+                <h2>Tu Carrito</h2>
+                <button class="btn-cerrar" id="btn-cerrar-modal">&times;</button>
+            </div>
+            
+            <!-- Acá se insertan los productos que agreguemos con JS -->
+            <div class="modal-cuerpo" id="lista-carrito">
+                <p class="carrito-vacio">El carrito está vacío.</p>
+            </div>
+
+            <!-- Pie del carrito con el total -->
+            <div class="modal-footer">
+                <div class="total-contenedor">
+                    <span>Total:</span>
+                    <span id="total-precio">$0</span>
+                </div>
+                <button class="btn-comprar" id="btn-finalizar-compra">Finalizar compra</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+</body>
+</html>
