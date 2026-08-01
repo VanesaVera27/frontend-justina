@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - JUSTINA STORE</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .perfil-container { max-width: 900px; margin: 2rem auto; background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .pestanas-perfil { display: flex; border-bottom: 2px solid #ddd; margin-bottom: 2rem; gap: 1rem; }
+        .tab-btn { background: none; border: none; font-size: 1.1rem; padding: 0.8rem 1.5rem; cursor: pointer; font-weight: bold; color: #777; }
+        .tab-btn.activo { color: #3b2314; border-bottom: 3px solid #3b2314; margin-bottom: -2px; }
+        .vista-perfil { display: none; }
+        .vista-perfil.activo { display: block; }
+        .card-dir { border: 1px solid #eee; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; background: #fdfcf9; }
+        .tabla-mis-pedidos { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        .tabla-mis-pedidos th, .tabla-mis-pedidos td { padding: 0.8rem; border-bottom: 1px solid #ddd; text-align: left; }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="logo">justina<span>store</span></div>
+        <nav><a href="index.html">← Volver a la Tienda</a></nav>
+    </header>
+
+    <main class="perfil-container">
+        <h1 style="font-family: 'Abril Fatface', serif; color: #3b2314;">Mi Cuenta</h1>
+        
+        <!-- PESTAÑAS DEL PERFIL -->
+        <div class="pestanas-perfil">
+            <button class="tab-btn activo" onclick="cambiarTab('datos')">👤 Mis Datos</button>
+            <button class="tab-btn" onclick="cambiarTab('direcciones')">📍 Mis Direcciones</button>
+            <button class="tab-btn" onclick="cambiarTab('pedidos')">📦 Mis Pedidos</button>
+        </div>
+
+        <!-- SOLAPA 1: MIS DATOS -->
+        <div id="tab-datos" class="vista-perfil activo">
+            <form id="form-perfil" class="form-login" style="max-width: 500px;">
+                <label>Nombre y Apellido</label>
+                <input type="text" id="perfil-nombre" required>
+
+                <label>Correo Electrónico (No modificable)</label>
+                <input type="email" id="perfil-email" disabled style="background: #f0f0f0;">
+
+                <label>Nueva Contraseña (Dejar vacío si no querés cambiarla)</label>
+                <input type="password" id="perfil-pass" placeholder="••••••••">
+
+                <button type="submit" class="btn-comprar" style="margin-top: 1rem;">💾 Guardar Cambios</button>
+            </form>
+
+            <hr style="margin: 3rem 0; border: 0; border-top: 1px solid #eee;">
+            
+            <div style="background: #fff5f5; border: 1px solid #fed7d7; padding: 1.5rem; border-radius: 6px; max-width: 500px;">
+                <h3 style="color: #c53030; margin-top: 0;">Zona de Riesgo</h3>
+                <p style="font-size: 0.9rem; color: #666;">Si eliminás tu cuenta, se borrará tu historial en la tienda permanentemente.</p>
+                <button type="button" id="btn-eliminar-cuenta" style="background: #e53e3e; color: white; border: none; padding: 0.6rem 1rem; border-radius: 4px; cursor: pointer;">
+                    🗑️ Eliminar mi cuenta
+                </button>
+            </div>
+        </div>
+
+        <!-- SOLAPA 2: MIS DIRECCIONES -->
+        <div id="tab-direcciones" class="vista-perfil">
+            <h3>Direcciones Guardadas</h3>
+            <div id="lista-direcciones"></div>
+
+            <h4 style="margin-top: 2rem;">➕ Agregar una nueva dirección</h4>
+            <form id="form-nueva-direccion" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; max-width: 700px;">
+                <div style="grid-column: span 2;">
+                    <label>Calle y Número *</label>
+                    <input type="text" id="dir-calle" required placeholder="Ej: Av. Santa Fe 1234, Piso 2A">
+                </div>
+                <div>
+                    <label>Código Postal *</label>
+                    <input type="text" id="dir-cp" required placeholder="Ej: 1615">
+                </div>
+                <div>
+                    <label>Localidad *</label>
+                    <input type="text" id="dir-localidad" required placeholder="Ej: Grand Bourg">
+                </div>
+                <div>
+                    <label>Provincia *</label>
+                    <input type="text" id="dir-provincia" required placeholder="Ej: Buenos Aires">
+                </div>
+                <div>
+                    <label>País *</label>
+                    <input type="text" id="dir-pais" value="Argentina" required>
+                </div>
+                <div style="grid-column: span 2;">
+                    <button type="submit" class="btn-comprar" style="width: auto;">Guardar Dirección</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- SOLAPA 3: MIS PEDIDOS -->
+        <div id="tab-pedidos" class="vista-perfil">
+            <h3>Historial de tus Compras</h3>
+            <table class="tabla-mis-pedidos">
+                <thead>
+                    <tr>
+                        <th># Pedido</th>
+                        <th>Fecha</th>
+                        <th>Prendas</th>
+                        <th>Total</th>
+                        <th>Estado Pedido</th>
+                        <th>Estado Pago</th>
+                    </tr>
+                </thead>
+                <tbody id="lista-mis-pedidos">
+                    <tr><td colspan="6">Cargando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="perfil.js"></script>
+</body>
+</html>

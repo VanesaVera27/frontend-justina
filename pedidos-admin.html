@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Pedidos y Despachos - MODAWEB</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-box { max-width: 1000px; margin: 2rem auto; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .tabla-pedidos { width: 100%; border-collapse: collapse; margin-top: 1.5rem; text-align: left; }
+        .tabla-pedidos th { background: #3b2314; color: white; padding: 0.8rem; }
+        .tabla-pedidos td { padding: 0.8rem; border-bottom: 1px solid #ddd; vertical-align: top; }
+        .badge { padding: 0.3rem 0.6rem; border-radius: 4px; font-weight: bold; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="logo">Justina<span>Pedidos</span></div>
+        <div style="display: flex; gap: 1rem;">
+            <a href="admin.html" style="color: white; text-decoration: none;">← Volver al Stock</a>
+            <a href="index.html" style="color: white; text-decoration: none;">Ver Tienda</a>
+        </div>
+    </header>
+
+    <main class="admin-box">
+        <h1>📦 Control de Pedidos para Despacho</h1>
+        <p style="color: #666;">Gestioná los pagos y el estado del envío de tus compras recibidas.</p>
+
+        <table class="tabla-pedidos">
+            <thead>
+                <tr>
+                    <th>#ID / Fecha</th>
+                    <th>Comprador y Envío</th>
+                    <th>Prendas Compradas</th>
+                    <th>Total</th>
+                    <th>Estado Pago</th>
+                    <th>Estado Pedido</th>
+                </tr>
+            </thead>
+            <tbody id="lista-pedidos-admin">
+                <tr><td colspan="6">Cargando pedidos desde la base de datos...</td></tr>
+            </tbody>
+        </table>
+    </main>
+
+    <script src="pedidos-admin.js"></script>
+</body>
+</html>

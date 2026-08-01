@@ -5,35 +5,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Justina Store</title>
-    
+
     <!-- TRAEMOS ABRIL FATFACE + PLAYFAIR DISPLAY CURSIVA (ITALIC) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Playfair+Display:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Playfair+Display:ital,wght@1,400;1,500&display=swap"
+        rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
     <!-- Header y Navegación -->
-<header class="header">
+    <header class="header">
 
         <div class="logo">
             <span class="logo-principal">justina</span>
         </div>
 
         <nav>
-            <a href="#">Inicio</a>
-            <a href="#">Colección</a>
-            <a href="#">Ofertas</a>
+            <a href="#" id="nav-inicio">Inicio</a>
+
+            <!-- MENÚ DESPLEGABLE DE COLECCIÓN -->
+            <div class="dropdown-coleccion">
+                <a href="#" id="nav-coleccion" class="dropdown-btn">Colección ▾</a>
+                <div class="dropdown-contenido" id="menu-categorias">
+                    <a href="#" onclick="filtrarPorCategoria('Todos')">Ver Todo</a>
+                    <!-- Las categorías se cargarán acá dinámicamente con JS -->
+                </div>
+            </div>
+
+            <a href="#" id="nav-ofertas">Ofertas</a>
         </nav>
         <!-- ZONA DE ACCIONES DEL HEADER -->
         <div class="acciones-header">
-            <!-- 1. Botón de Control de Stock: Oculto por defecto con CSS (display: none) -->
             <a href="admin.html" id="btn-config-admin" class="btn-user"
                 style="display: none; background: #e67e22; border-color: #e67e22; text-decoration: none;">
                 ⚙️ Control de Stock
+            </a>
+            <a href="pedidos-admin.html" id="btn-pedidos-admin" class="btn-user"
+                style="display: none; background: #e67e22; border-color: #e67e22; text-decoration: none;">
+                ⚙️ Control de Pedidos
+            </a>
+
+            <a href="perfil.html" id="btn-perfil" class="btn-user"
+                style="display: none; background: #e67e22; border-color: #e67e22; text-decoration: none;">
+                ⚙️ Mi perfil
             </a>
 
             <!-- 2. Botón de Iniciar Sesión / Nombre de Usuario -->
@@ -53,7 +72,7 @@
             <h1>justina</h1>
             <h2>store</h2>
         </div>
-        
+
         <p>More than basics</p>
     </section>
 
@@ -80,12 +99,26 @@
             </div>
 
             <!-- Pie del carrito con el total -->
-            <div class="modal-footer">
-                <div class="total-contenedor">
+            <div class="modal-footer" style="flex-direction: column; gap: 0.8rem;">
+                <div style="width: 100%; text-align: left;">
+                    <label style="font-size: 0.85rem; font-weight: bold; color: #333; display: block;">
+                        📍 Elegí la dirección de envío:
+                    </label>
+                    <select id="select-direccion-envio"
+                        style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px; margin-top: 4px;">
+                        <option value="">Cargando direcciones...</option>
+                    </select>
+                    <small style="display:block; margin-top:0.3rem;">
+                        ¿Otra dirección? <a href="perfil.html" style="color:#3b2314; font-weight:bold;">Agregala en Mi
+                            Perfil</a>
+                    </small>
+                </div>
+
+                <div class="total-contenedor" style="width: 100%; display: flex; justify-content: space-between;">
                     <span>Total:</span>
                     <span id="total-precio">$0</span>
                 </div>
-                <button class="btn-comprar" id="btn-finalizar-compra">Finalizar compra</button>
+                <button class="btn-comprar" id="btn-finalizar-compra" style="width: 100%;">Finalizar compra</button>
             </div>
         </div>
     </div>
@@ -111,7 +144,7 @@
                 <label>Contraseña</label>
                 <input type="password" id="password-user" required placeholder="••••••••">
 
-                <button type="submit" class="btn-comprar" style="margin-top: 1rem;">
+                <button type="submit" class="btn-comprar" style="margin-top: 1rem; ">
                     Iniciar Sesión
                 </button>
             </form>
@@ -127,9 +160,10 @@
                 <label>Contraseña *</label>
                 <input type="password" id="reg-pass" required placeholder="Mínimo 6 caracteres" minlength="6">
 
-                <button type="submit" class="btn-comprar" style="margin-top: 1rem; background: #27ae60;">
+                <button type="submit" class="btn-comprar" style="margin-top: 1rem; ">
                     Registrarme y Entrar
                 </button>
+
             </form>
         </div>
     </div>

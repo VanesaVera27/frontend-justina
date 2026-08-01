@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,77 +8,102 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="styleadmin.css">
 </head>
+
 <body>
 
     <header class="header">
-        <div class="logo">JS</span></div>
-        <a href="index.html" style="color: white; text-decoration: none;">← Volver a la Tienda</a>
+        <div class="logo">
+            <span class="logo-principal">justina store</span>
+        </div>
+        <nav>
+            <a href="#" style="font-family: 'Abril Fatface', serif;
+    font-size: 1.5rem;            
+    font-weight: 400;
+    color: #fffedf;
+    text-transform: lowercase;
+    letter-spacing: -2px;
+    line-height: 0.8;            
+    margin: 0;">Control de stock</a>
+
+        </nav>
+        <a href="index.html" style="font-family: 'Abril Fatface', serif;
+    font-size: 1.3rem;            
+    font-weight: 400;
+    color: #fffedf;
+    text-transform: lowercase;
+    letter-spacing: -2px;
+    line-height: 0.8;            
+    margin: 0;">← Volver a la Tienda</a>
     </header>
 
     <main class="admin-contenedor">
         <h1>Cargar Nueva Prenda</h1>
-        
-<form id="form-nuevo-producto" class="form-admin">
-    <label>Nombre de la prenda *</label>
-    <input type="text" id="prod-nombre" required placeholder="Ej. Calza Oxford">
 
-    <label>Precio ($) *</label>
-    <input type="number" id="prod-precio" required placeholder="22000">
+        <form id="form-nuevo-producto" class="form-admin">
+            <label>Nombre de la prenda *</label>
+            <input type="text" id="prod-nombre" required placeholder="Ej. Calza Oxford">
 
-    <label for="prod-categoria">Categoría</label>
+            <label>Precio ($) *</label>
+            <input type="number" id="prod-precio" required placeholder="22000">
+
+            <label for="prod-categoria">Categoría</label>
             <div style="display: flex; gap: 0.5rem;">
                 <select id="prod-categoria" style="flex: 1;" required>
                 </select>
-                <button type="button" id="btn-nueva-categoria" style="background: #34495e; color: white; border: none; padding: 0 1rem; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                <button type="button" id="btn-nueva-categoria"
+                    style="background: #34495e; color: white; border: none; padding: 0 1rem; border-radius: 5px; cursor: pointer; font-weight: bold;">
                     + Nueva Categoría
                 </button>
             </div>
 
-    <!-- ZONA DINÁMICA DE TALLES, COLORES Y STOCK -->
-    <div style="background: #f8f9fa; padding: 1rem; border-radius: 6px; border: 1px solid #ddd;">
-        <label style="margin-bottom: 0.5rem; display: block;">Combinaciones de Talle, Color y Stock *</label>
-        
-        <div id="contenedor-variantes">
-            <!-- Fila inicial por defecto -->
-            <div class="fila-variante" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
-                <input type="text" placeholder="Talle (S, M...)" class="var-talle" required style="width: 30%;">
-                <input type="text" placeholder="Color (Negro...)" class="var-color" required style="width: 45%;">
-                <input type="number" placeholder="Stock" class="var-stock" required min="0" style="width: 25%;">
+            <!-- ZONA DINÁMICA DE TALLES, COLORES Y STOCK -->
+            <div style="background: #f8f9fa; padding: 1rem; border-radius: 6px; border: 1px solid #ddd;">
+                <label style="margin-bottom: 0.5rem; display: block;">Combinaciones de Talle, Color y Stock *</label>
+
+                <div id="contenedor-variantes">
+                    <!-- Fila inicial por defecto -->
+                    <div class="fila-variante" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <input type="text" placeholder="Talle (S, M...)" class="var-talle" required style="width: 30%;">
+                        <input type="text" placeholder="Color (Negro...)" class="var-color" required
+                            style="width: 45%;">
+                        <input type="number" placeholder="Stock" class="var-stock" required min="0" style="width: 25%;">
+                    </div>
+                </div>
+
+                <button type="button" id="btn-agregar-variante"
+                    style="margin-top: 0.5rem; background: #6c757d; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer;">
+                    + Agregar otra combinación
+                </button>
             </div>
-        </div>
-        
-        <button type="button" id="btn-agregar-variante" style="margin-top: 0.5rem; background: #6c757d; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer;">
-            + Agregar otra combinación
-        </button>
-    </div>
 
-    <label>Foto de la prenda</label>
-    <input type="file" id="prod-imagen" accept="image/*">
+            <label>Fotos de la prenda (Podés seleccionar hasta 5 fotos a la vez) *</label>
+            <input type="file" id="prod-imagenes" accept="image/*" multiple required>
 
-    <button type="submit" class="btn-guardar">💾 Guardar Prenda y Stock</button>
-</form>
+            <button type="submit" class="btn-guardar">💾 Guardar Prenda y Stock</button>
+        </form>
 
-<hr style="margin: 3rem 0;">
+        <hr style="margin: 3rem 0;">
 
-<!-- TABLA DE GESTIÓN (EDITAR / BORRAR) -->
-<h2>Inventario Cargado</h2>
-<table style="width: 100%; border-collapse: collapse; margin-top: 1rem; text-align: left;">
-    <thead>
-        <tr style="border-bottom: 2px solid #333;">
-            <th style="padding: 0.5rem;">Prenda</th>
-            <th>Precio</th>
-            <th>Variantes (Stock)</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody id="tabla-inventario">
-        <!-- Se genera con JS -->
-    </tbody>
-</table>
+        <!-- TABLA DE GESTIÓN (EDITAR / BORRAR) -->
+        <h2>Inventario Cargado</h2>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 1rem; text-align: left;">
+            <thead>
+                <tr style="border-bottom: 2px solid #333;">
+                    <th style="padding: 0.5rem;">Prenda</th>
+                    <th>Precio</th>
+                    <th>Variantes (Stock)</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-inventario">
+                <!-- Se genera con JS -->
+            </tbody>
+        </table>
 
-        <a href="index.html" class="nav-volver">← Ver tienda en vivo</a>
+        <a href="index.html" class="nav-volver">← Volver a tienda</a>
     </main>
 
     <script src="admin.js"></script>
 </body>
+
 </html>

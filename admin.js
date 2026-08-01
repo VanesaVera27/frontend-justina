@@ -4,7 +4,7 @@
 (function verificarPermisoAdmin() {
     // Leemos la sesión general de la tienda
     const sesion = localStorage.getItem('usuario_tienda');
-    
+
     if (!sesion) {
         alert("⛔ Acceso denegado. Debés iniciar sesión como Administradora para ver el stock.");
         window.location.href = 'index.html';
@@ -80,11 +80,13 @@ formAdmin.addEventListener('submit', async (e) => {
     formData.append('nombre', document.getElementById('prod-nombre').value.trim());
     formData.append('precio', document.getElementById('prod-precio').value);
     formData.append('categoria', document.getElementById('prod-categoria').value);
-    // Pasamos el array de combinaciones como string para enviarlo por FormData
     formData.append('variantes', JSON.stringify(arrayVariantes));
 
-    const foto = document.getElementById('prod-imagen').files[0];
-    if (foto) formData.append('foto', foto);
+
+    const archivosFotos = document.getElementById('prod-imagenes').files;
+    for (let i = 0; i < archivosFotos.length; i++) {
+        formData.append('fotos', archivosFotos[i]);
+    }
 
     try {
         const resp = await fetch('http://localhost:3000/api/productos', {
@@ -147,7 +149,7 @@ async function borrarProducto(id) {
 async function editarProducto(id) {
     const nuevoNombre = prompt("Nuevo nombre para la prenda:");
     const nuevoPrecio = prompt("Nuevo precio ($):");
-    
+
     if (nuevoNombre && nuevoPrecio) {
         await fetch(`http://localhost:3000/api/productos/${id}`, {
             method: 'PUT',
@@ -155,7 +157,7 @@ async function editarProducto(id) {
             body: JSON.stringify({
                 nombre: nuevoNombre,
                 precio: Number(nuevoPrecio),
-                categoria: "Calzas" 
+                categoria: "Calzas"
             })
         });
         cargarInventarioAdmin();

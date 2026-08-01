@@ -41,6 +41,36 @@ No se pudieron cargar los productos. Asegurate de que tu terminal con <b>node se
     }
 }
 
+
+
+// Objeto en memoria para saber qué índice de foto está mirando el cliente en cada tarjeta
+const indiceImagenActual = {};
+
+function cambiarImagenCard(idProducto, direccion) {
+    const producto = productos.find(p => p.id === idProducto);
+    if (!producto || !producto.imagenes || producto.imagenes.length <= 1) return;
+
+    // Si aún no se tocó, empieza en el índice 0
+    if (indiceImagenActual[idProducto] === undefined) {
+        indiceImagenActual[idProducto] = 0;
+    }
+
+    const totalFotos = producto.imagenes.length;
+    // Sumamos o restamos (con lógica circular para que al pasar la última vuelva a la primera)
+    indiceImagenActual[idProducto] = (indiceImagenActual[idProducto] + direccion + totalFotos) % totalFotos;
+
+    const imgElemento = document.getElementById(`img-card-${idProducto}`);
+    if (imgElemento) {
+        // Efecto suave al cambiar
+        imgElemento.style.opacity = '0.3';
+        setTimeout(() => {
+            imgElemento.src = producto.imagenes[indiceImagenActual[idProducto]];
+            imgElemento.style.opacity = '1';
+        }, 150);
+    }
+}
+
+
 // Mostrar las tarjetas de productos 
 function mostrarProductosEnPantalla(listaProductos) {
     if (!grilla) return;
@@ -50,48 +80,46 @@ function mostrarProductosEnPantalla(listaProductos) {
         const card = document.createElement('div');
         card.classList.add('card-producto');
 
+        // Nos aseguramos de tener al menos una imagen en el array
+        const fotos = (prod.imagenes && prod.imagenes.length > 0) ? prod.imagenes : [prod.imagen];
+        const tieneMasDeUnaFoto = fotos.length > 1;
+
+        // (... acá va tu lógica de selectores de Talles, Colores y sinStock que ya armamos ...)
         let opcionesTalles = '';
         let opcionesColores = '';
         let sinStock = false;
 
-        // 1. SI EL PRODUCTO TIENE VARIANTES DE POSTGRESQL (Talle + Color + Stock)
         if (Array.isArray(prod.variantes) && prod.variantes.length > 0) {
             const variantesConStock = prod.variantes.filter(v => Number(v.stock) > 0);
-
             if (variantesConStock.length > 0) {
-                // Obtenemos los Talles únicos que tienen al menos 1 unidad de stock
                 const tallesUnicos = [...new Set(variantesConStock.map(v => v.talle))];
-                tallesUnicos.forEach(talle => {
-                    opcionesTalles += `<option value="${talle}">${talle}</option>`;
-                });
+                tallesUnicos.forEach(t => opcionesTalles += `<option value="${t}">${t}</option>`);
 
-                // Para el color inicial, mostramos los colores disponibles para el PRIMER talle de la lista
                 const primerTalle = tallesUnicos[0];
                 const coloresDelPrimerTalle = [...new Set(
-                    variantesConStock
-                        .filter(v => v.talle === primerTalle)
-                        .map(v => v.color)
+                    variantesConStock.filter(v => v.talle === primerTalle).map(v => v.color)
                 )];
-
-                coloresDelPrimerTalle.forEach(color => {
-                    opcionesColores += `<option value="${color}">${color}</option>`;
-                });
+                coloresDelPrimerTalle.forEach(c => opcionesColores += `<option value="${c}">${c}</option>`);
             } else {
                 sinStock = true;
                 opcionesTalles = `<option disabled selected>Sin stock</option>`;
                 opcionesColores = `<option disabled selected>Sin stock</option>`;
             }
-        }
-        // 2. RESPALDO: Si es una prenda simple sin tabla de variantes
-        else {
+        } else {
             let listaTalles = Array.isArray(prod.talles) ? prod.talles : (prod.talles || 'U').split(',').map(t => t.trim());
             listaTalles.forEach(t => opcionesTalles += `<option value="${t}">${t}</option>`);
             opcionesColores = `<option value="Único">Único</option>`;
         }
+        // =================================================================
 
-        // Estructura HTML de la tarjeta con DOS selectores
+        // Armamos el HTML con el carrusel de imágenes
         card.innerHTML = `
-            <img src="${prod.imagen}" alt="${prod.nombre}">
+            <div class="carrusel-card ${tieneMasDeUnaFoto ? '' : 'sin-flechas'}">
+                <img src="${fotos[0]}" alt="${prod.nombre}" id="img-card-${prod.id}">
+                <button class="btn-flecha prev" onclick="cambiarImagenCard(${prod.id}, -1)" title="Anterior">◄</button>
+                <button class="btn-flecha next" onclick="cambiarImagenCard(${prod.id}, 1)" title="Siguiente">►</button>
+            </div>
+
             <h3>${prod.nombre}</h3>
             <p class="precio">$${Number(prod.precio).toLocaleString()}</p>
             
@@ -215,10 +243,45 @@ function actualizarCarrito() {
     elemTotal.textContent = `$${sumaTotal.toLocaleString()}`;
 }
 
+// Cargar direcciones del usuario en el <select> del carrito
+async function cargarDireccionesEnCarrito() {
+    const selectDir = document.getElementById('select-direccion-envio');
+    if (!selectDir) return;
+
+    const sesion = localStorage.getItem('usuario_tienda');
+    if (!sesion) {
+        selectDir.innerHTML = '<option value="">Iniciá sesión para ver tus direcciones</option>';
+        return;
+    }
+
+    const usuario = JSON.parse(sesion);
+    try {
+        const res = await fetch(`http://localhost:3000/api/direcciones/${usuario.id}`);
+        const direcciones = await res.json();
+        selectDir.innerHTML = '';
+
+        if (direcciones.length === 0) {
+            selectDir.innerHTML = '<option value="">Sin direcciones. Cargá una en Mi Perfil</option>';
+        } else {
+            direcciones.forEach(d => {
+                const opt = document.createElement('option');
+                // Guardamos el string formateado como valor para enviarlo en el pedido
+                opt.value = `${d.calle_numero}, ${d.localidad}, ${d.provincia} (CP: ${d.codigo_postal})`;
+                opt.textContent = `${d.calle_numero} - ${d.localidad}`;
+                selectDir.appendChild(opt);
+            });
+        }
+    } catch (err) {
+        selectDir.innerHTML = '<option value="">Error al cargar direcciones</option>';
+    }
+}
+
+
 // 6. EVENTOS DEL MODAL
 if (botonAbrirCarrito && modalCarrito) {
     botonAbrirCarrito.addEventListener('click', () => {
         modalCarrito.classList.add('activo');
+        cargarDireccionesEnCarrito();
     });
 }
 
@@ -234,6 +297,81 @@ window.addEventListener('click', (e) => {
     }
 });
 
+// =========================================================
+// --- LÓGICA DE FINALIZAR COMPRA CON DOMICILIO Y STOCK ---
+// =========================================================
+const btnFinalizarCompra = document.getElementById('btn-finalizar-compra');
+
+if (btnFinalizarCompra) {
+    btnFinalizarCompra.addEventListener('click', async () => {
+        if (carrito.length === 0) {
+            alert("Tu carrito está vacío. ¡Agregá prendas antes de finalizar!");
+            return;
+        }
+
+        const sesionGuardada = localStorage.getItem('usuario_tienda');
+        if (!sesionGuardada) {
+            if (modalCarrito) modalCarrito.classList.remove('activo');
+            alert("¡Ya casi es tuyo! Para finalizar la compra necesitás iniciar sesión o crear una cuenta.");
+            if (modalLogin) {
+                modalLogin.classList.add('activo');
+                document.getElementById('tab-login')?.click();
+            }
+            return;
+        }
+
+        // 1. Validamos que hayan ingresado su domicilio
+        const selectDir = document.getElementById('select-direccion-envio');
+        const domicilio = selectDir ? selectDir.value : '';
+
+        if (!domicilio) {
+            alert("Por favor elegí una dirección o cargá una nueva en 'Mi Perfil' para el envío.");
+            return;
+        }
+
+        const usuario = JSON.parse(sesionGuardada);
+        const totalCompra = carrito.reduce((acum, p) => acum + Number(p.precio), 0);
+
+        // 2. Armamos el paquete del pedido
+        const nuevoPedido = {
+            usuario_id: usuario.id || null,
+            nombre: usuario.nombre,
+            email: usuario.email,
+            domicilio: domicilio,
+            total: totalCompra,
+            items: carrito
+        };
+
+        try {
+            // 3. Enviamos el pedido a PostgreSQL para descontar stock
+            const respuesta = await fetch('http://localhost:3000/api/pedidos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(nuevoPedido)
+            });
+
+            const datos = await respuesta.json();
+
+            if (respuesta.ok) {
+                alert(`¡Gracias por tu compra, ${usuario.nombre}! 📦\nTu pedido #${datos.pedido_id} fue registrado y está en proceso de despacho.`);
+
+                // Limpiamos todo
+                carrito = [];
+                actualizarCarrito();
+                if (inputDomicilio) inputDomicilio.value = '';
+                if (modalCarrito) modalCarrito.classList.remove('activo');
+
+                // VOLVEMOS A CARGAR LA TIENDA PARA QUE REFRESQUE EL STOCK REAL EN PANTALLA
+                await cargarBaseDeDatos();
+            } else {
+                alert(`No se pudo completar el pedido: ${datos.error}`);
+            }
+        } catch (error) {
+            alert("Error conectando con el servidor para procesar la compra.");
+        }
+    });
+}
+
 
 // =========================================================
 // --- CONTROL INTELIGENTE DEL HEADER SEGÚN EL ROL ---
@@ -241,6 +379,8 @@ window.addEventListener('click', (e) => {
 
 const btnLoginHeader = document.getElementById('btn-login-header');
 const btnConfigAdmin = document.getElementById('btn-config-admin');
+const btnPedidosAdmin = document.getElementById('btn-pedidos-admin');
+const btnPerfil = document.getElementById('btn-perfil');
 const modalLogin = document.getElementById('modal-login');
 const formLogin = document.getElementById('form-login');
 
@@ -255,16 +395,27 @@ function actualizarInterfazHeader() {
         const primerNombre = usuario.nombre.split(' ')[0];
         btnLoginHeader.innerHTML = `👤 Hola, <b>${primerNombre}</b> (Salir)`;
 
+        // A2. Si es cliente tiene el boton para ver su perfil
+       if (usuario.rol === 'cliente' && btnPerfil) {
+            btnPerfil.style.display = 'inline-block';
+        } else if (btnPerfil) {
+            btnPerfil.style.display = 'none';
+
+        }
         // B. MAGIA ADMIN: Si el rol es 'admin', hacemos visible el botón "Control de Stock"
-        if (usuario.rol === 'admin' && btnConfigAdmin) {
+        if (usuario.rol === 'admin' && btnConfigAdmin && btnPedidosAdmin) {
             btnConfigAdmin.style.display = 'inline-block';
-        } else if (btnConfigAdmin) {
+            btnPedidosAdmin.style.display = 'inline-block'
+        } else if (btnConfigAdmin && btnPedidosAdmin) {
             btnConfigAdmin.style.display = 'none';
+            btnPedidosAdmin.style.display = 'none';
         }
     } else {
         // Si no hay nadie logueado, dejamos todo como al principio
         btnLoginHeader.innerHTML = `👤 Iniciar Sesión`;
         if (btnConfigAdmin) btnConfigAdmin.style.display = 'none';
+        if (btnPedidosAdmin) btnPedidosAdmin.style.display = 'none';
+        if (btnPerfil) btnPerfil.style.display = 'none';
     }
 }
 
@@ -324,8 +475,7 @@ if (formLogin) {
     });
 }
 
-// ¡Apenas carga index.html, revisamos quién está conectado para dibujar el header correcto!
-actualizarInterfazHeader();
+
 
 
 // =========================================================
@@ -408,6 +558,89 @@ if (formRegistro) {
         }
     });
 }
+// =========================================================
+// --- NAVEGACIÓN: INICIO, COLECCIÓN Y FILTROS ---
+// =========================================================
 
+const menuCategorias = document.getElementById('menu-categorias');
+const navInicio = document.getElementById('nav-inicio');
+
+// 1. CARGAR CATEGORÍAS DESDE POSTGRESQL AL MENÚ DESPLEGABLE
+async function cargarCategoriasEnHeader() {
+    if (!menuCategorias) return;
+
+    try {
+        const respuesta = await fetch('http://localhost:3000/api/categorias');
+        const categorias = await respuesta.json();
+
+        // Mantenemos la primera opción "Ver Todo" y agregamos las de la base de datos
+        menuCategorias.innerHTML = `<a href="#" onclick="filtrarPorCategoria('Todos')">Ver Todo</a>`;
+
+        categorias.forEach(cat => {
+            const link = document.createElement('a');
+            link.href = "#";
+            link.textContent = cat.nombre;
+            // Al hacer clic, ejecuta el filtro pasando el nombre de la categoría
+            link.onclick = (e) => {
+                e.preventDefault();
+                filtrarPorCategoria(cat.nombre);
+            };
+            menuCategorias.appendChild(link);
+        });
+    } catch (error) {
+        console.error("Error cargando categorías en el menú:", error);
+    }
+}
+
+// 2. FUNCIÓN PARA FILTRAR PRODUCTOS POR CATEGORÍA
+function filtrarPorCategoria(categoriaSeleccionada) {
+    if (!grilla) return;
+
+    if (categoriaSeleccionada === 'Todos') {
+        // Si elige "Ver Todo", mostramos el array completo original
+        mostrarProductosEnPantalla(productos);
+    } else {
+        // Filtramos el array global "productos" buscando coincidencia en .categoria
+        const productosFiltrados = productos.filter(
+            prod => prod.categoria && prod.categoria.toLowerCase() === categoriaSeleccionada.toLowerCase()
+        );
+
+        if (productosFiltrados.length > 0) {
+            mostrarProductosEnPantalla(productosFiltrados);
+        } else {
+            grilla.innerHTML = `
+                <p style="text-align: center; width: 100%; color: #666; font-size: 1.1rem; margin: 3rem 0;">
+                    Por el momento no hay prendas cargadas en la categoría <b>${categoriaSeleccionada}</b>.
+                </p>`;
+        }
+    }
+
+    // Scroll suave hacia la sección de productos
+    const seccionContenedor = document.querySelector('.contenedor');
+    if (seccionContenedor) {
+        seccionContenedor.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+// 3. COMPORTAMIENTO DEL BOTÓN "INICIO" (REFRESH / RESET)
+if (navInicio) {
+    navInicio.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        // 1. Restauramos la lista para mostrar TODOS los productos
+        mostrarProductosEnPantalla(productos);
+
+        // 2. Volvemos a consultar la base de datos por si se subió algo nuevo (refresh en segundo plano)
+        cargarBaseDeDatos();
+
+        // 3. Hacemos un scroll suave hacia el banner superior
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
 // ¡INICIO DE LA APP!
 cargarBaseDeDatos();
+// ¡Llamamos a cargar las categorías del menú apenas inicia la tienda!
+cargarCategoriasEnHeader();
+
+// ¡Apenas carga index.html, revisamos quién está conectado para dibujar el header correcto!
+actualizarInterfazHeader();
