@@ -377,63 +377,79 @@ if (btnFinalizarCompra) {
 // --- CONTROL INTELIGENTE DEL HEADER SEGÚN EL ROL ---
 // =========================================================
 
+
+const formLogin = document.getElementById('form-login');
+
 const btnLoginHeader = document.getElementById('btn-login-header');
 const btnConfigAdmin = document.getElementById('btn-config-admin');
 const btnPedidosAdmin = document.getElementById('btn-pedidos-admin');
 const btnPerfil = document.getElementById('btn-perfil');
+const btnLogoutHeader = document.getElementById('btn-logout-header');
+const contenedorDropdown = document.getElementById('contenedor-dropdown-user');
 const modalLogin = document.getElementById('modal-login');
-const formLogin = document.getElementById('form-login');
+const btnCarrito = document.getElementById('boton-carrito');
 
-// 1. Función para actualizar los botones del Header en base a quién entró
+// 1. Función para actualizar el header según quién entró
 function actualizarInterfazHeader() {
     const sesionGuardada = localStorage.getItem('usuario_tienda');
 
     if (sesionGuardada) {
         const usuario = JSON.parse(sesionGuardada);
-
-        // A. Mostramos su nombre al lado del ícono de usuario y un botón de salir
         const primerNombre = usuario.nombre.split(' ')[0];
-        btnLoginHeader.innerHTML = `👤 Hola, <b>${primerNombre}</b> (Salir)`;
 
-        // A2. Si es cliente tiene el boton para ver su perfil
-       if (usuario.rol === 'cliente' && btnPerfil) {
-            btnPerfil.style.display = 'inline-block';
-        } else if (btnPerfil) {
-            btnPerfil.style.display = 'none';
+        // Cambiamos el texto del botón y activamos el desplegable
+        btnLoginHeader.innerHTML = `Hola, ${primerNombre.toLowerCase()} ▾`;
+        if (contenedorDropdown) contenedorDropdown.classList.add('sesion-activa');
 
-        }
-        // B. MAGIA ADMIN: Si el rol es 'admin', hacemos visible el botón "Control de Stock"
-        if (usuario.rol === 'admin' && btnConfigAdmin && btnPedidosAdmin) {
-            btnConfigAdmin.style.display = 'inline-block';
-            btnPedidosAdmin.style.display = 'inline-block'
-        } else if (btnConfigAdmin && btnPedidosAdmin) {
-            btnConfigAdmin.style.display = 'none';
-            btnPedidosAdmin.style.display = 'none';
+        // A. Opciones comunes para cualquier logueado (Cliente o Admin)
+        if (btnPerfil) btnPerfil.style.display = 'block';
+        if (btnLogoutHeader) btnLogoutHeader.style.display = 'block';
+
+        // B. Opciones exclusivas si el rol es 'admin'
+        if (usuario.rol === 'admin') {
+            if (btnConfigAdmin) btnConfigAdmin.style.display = 'block';
+            if (btnPedidosAdmin) btnPedidosAdmin.style.display = 'block';
+            btnCarrito.style.display = 'none';
+        } else {
+            if (btnConfigAdmin) btnConfigAdmin.style.display = 'none';
+            if (btnPedidosAdmin) btnPedidosAdmin.style.display = 'none';
         }
     } else {
-        // Si no hay nadie logueado, dejamos todo como al principio
+        // NO HAY SESIÓN: dejamos el botón normal y ocultamos todo el menú
         btnLoginHeader.innerHTML = `👤 Iniciar Sesión`;
+        if (contenedorDropdown) contenedorDropdown.classList.remove('sesion-activa');
+
         if (btnConfigAdmin) btnConfigAdmin.style.display = 'none';
         if (btnPedidosAdmin) btnPedidosAdmin.style.display = 'none';
         if (btnPerfil) btnPerfil.style.display = 'none';
+        if (btnLogoutHeader) btnLogoutHeader.style.display = 'none';
     }
 }
 
-// 2. Comportamiento del botón Iniciar Sesión / Salir del Header
+// 2. Comportamiento al hacer clic en "👤 Iniciar Sesión" o el nombre
 if (btnLoginHeader) {
     btnLoginHeader.addEventListener('click', () => {
         const sesionGuardada = localStorage.getItem('usuario_tienda');
 
+        // Si NO inició sesión, abrimos el modal de login
+        if (!sesionGuardada) {
+            if (modalLogin) modalLogin.classList.add('activo');
+        }
+        // Si YA inició sesión, no hace falta hacer nada porque al pasar el mouse ya se abre el menú
+    });
+}
+
+// 3. Comportamiento de "Cerrar Sesión" desde el menú desplegable
+if (btnLogoutHeader) {
+    btnLogoutHeader.addEventListener('click', (e) => {
+        e.preventDefault();
+        const sesionGuardada = localStorage.getItem('usuario_tienda');
         if (sesionGuardada) {
-            // Si ya inició sesión, le preguntamos si quiere cerrar su cuenta
             const usuario = JSON.parse(sesionGuardada);
             if (confirm(`¿Querés cerrar la sesión de ${usuario.nombre}?`)) {
                 localStorage.removeItem('usuario_tienda');
-                actualizarInterfazHeader(); // Se ocultará automáticamente el botón admin
+                actualizarInterfazHeader();
             }
-        } else {
-            // Si no está logueado, abrimos el modal general de Login
-            if (modalLogin) modalLogin.classList.add('activo');
         }
     });
 }
@@ -444,8 +460,7 @@ if (formLogin) {
         e.preventDefault();
 
         const email = document.getElementById('email-user').value.trim();
-        // Nota: Agregá un id="password-user" a tu campo de clave en el HTML del login si aún no lo tiene
-        const password = document.getElementById('password-user')?.value.trim() || 'admin1234';
+        const password = document.getElementById('password-user')?.value.trim();
 
         try {
             const respuesta = await fetch('http://localhost:3000/api/login', {
@@ -457,7 +472,6 @@ if (formLogin) {
             const datos = await respuesta.json();
 
             if (respuesta.ok) {
-                // Guardamos los datos del usuario (incluyendo su campo 'rol') en localStorage
                 localStorage.setItem('usuario_tienda', JSON.stringify(datos.usuario));
 
                 // Actualizamos el header en vivo sin recargar la página
@@ -622,21 +636,38 @@ function filtrarPorCategoria(categoriaSeleccionada) {
     }
 }
 
-// 3. COMPORTAMIENTO DEL BOTÓN "INICIO" (REFRESH / RESET)
-if (navInicio) {
-    navInicio.addEventListener('click', (e) => {
+// 3. COMPORTAMIENTO DEL BOTÓN "INICIO" O LOGO JUSTINA
+
+const logoLink = document.getElementById('logo-link');
+
+// Armamos una función reutilizable para ir al home
+function irAlInicio(e) {
+    const paginaActual = window.location.pathname;
+    const estamosEnIndex = paginaActual.endsWith('index.html') || paginaActual === '/' || paginaActual.endsWith('/');
+
+    if (estamosEnIndex) {
+        // SI YA ESTAMOS EN EL HOME: Refresh suave sin recargar
         e.preventDefault();
 
-        // 1. Restauramos la lista para mostrar TODOS los productos
-        mostrarProductosEnPantalla(productos);
+        if (typeof mostrarProductosEnPantalla === 'function' && typeof productos !== 'undefined') {
+            mostrarProductosEnPantalla(productos);
+        }
+        if (typeof cargarBaseDeDatos === 'function') {
+            cargarBaseDeDatos();
+        }
 
-        // 2. Volvemos a consultar la base de datos por si se subió algo nuevo (refresh en segundo plano)
-        cargarBaseDeDatos();
-
-        // 3. Hacemos un scroll suave hacia el banner superior
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    }
+    // SI ESTAMOS EN CONTACTO O PERFIL:
+    // Dejamos que el href="index.html" funcione normal y te lleve a casa
 }
+
+if (navInicio) navInicio.addEventListener('click', irAlInicio);
+if (logoLink) logoLink.addEventListener('click', irAlInicio);
+
+
+
+
 // ¡INICIO DE LA APP!
 cargarBaseDeDatos();
 // ¡Llamamos a cargar las categorías del menú apenas inicia la tienda!

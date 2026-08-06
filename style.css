@@ -5,7 +5,57 @@
     font-family: Arial, sans-serif;
 }
 
-/* Encabezado fijado siempre*/
+/* ----------------------------------------------------------------------------------cinta de anuncios */
+
+.cinta-promos {
+    width: 100%;
+    background-color: #f5f0e8; /* Tono crema elegante como en tu imagen */
+    color: #3b2314;            /* Marrón oscuro editorial */
+    overflow: hidden;          /* Oculta el texto que se va por los costados */
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e8e1d5;
+    user-select: none;
+    cursor: default;
+    position: relative;
+    z-index: 999;
+}
+
+/* El track envuelve los dos bloques y los mueve infinitamente hacia la izquierda */
+.cinta-track {
+    display: flex;
+    width: max-content;
+    animation: moverCinta 25s linear infinite; /* 25s es la velocidad (menos seg = más rápido) */
+}
+
+/* AL PASAR EL MOUSE POR LA CINTA, LA ANIMACIÓN SE PAUSA SUTILMENTE */
+.cinta-promos:hover .cinta-track {
+    animation-play-state: paused;
+}
+
+.cinta-texto {
+    display: flex;
+    gap: 3rem;                 /* Espacio entre cada frase */
+    padding-right: 3rem;       /* Espacio al final del primer bloque antes de que enganche el segundo */
+}
+
+.cinta-texto span {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    white-space: nowrap;       /* Evita que el texto se rompa en varias líneas */
+}
+
+/* ANIMACIÓN KEYFRAMES: Mueve exactamente el 50% de su ancho y vuelve al inicio sin salto visual */
+@keyframes moverCinta {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/*----------------------------------------------------------------------- header*/
 .header {
     display: flex;
     justify-content: space-between;
@@ -14,9 +64,9 @@
     background-color: #3b2314;
     color: white;
     position: sticky;
-    top: 0;           
-    z-index: 100;     
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); 
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .logo {
@@ -33,13 +83,21 @@
     font-size: 1.3rem;
     font-weight: 400;
     letter-spacing: -1px;
-    color: #3b2314; 
-    text-transform: lowercase; 
+    color: #3b2314;
+    text-transform: lowercase;
 }
 
+.logo a {
+    color: #ffffff;
+    text-decoration: none !important; /* Quita el subrayado del link */
+    font-family: 'Abril Fatface', serif;
+    font-size: 1.8rem;               /* O el tamaño editorial que ya le tengas puesto */
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
 
-.logo span {
-    color: white;
+.logo:hover {
+    opacity: 0.85;                   /* Leve efecto visual al pasar el mouse */
 }
 
 .header nav a {
@@ -53,32 +111,161 @@
     cursor: pointer;
 }
 
-/* Banner Principal */
+
+/* BOTON USUARIO/LOGIN */
+
+#btn-login-header {
+    background: transparent !important;
+    border: none !important;
+    color: #ffffff !important;         /* Blanco limpio igual que los otros links */
+    font-family: inherit;              /* Usa la misma tipografía limpia de la navegación */
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: opacity 0.2s ease, color 0.2s ease;
+    box-shadow: none !important;       /* Borra cualquier sombreado 3D residual */
+    outline: none;
+}
+
+/* Efecto suave al pasar el mouse, igual que en "Colección" */
+#btn-login-header:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+
+/* =========================================================
+   MENÚ DESPLEGABLE "COLECCIÓN"
+========================================================= */
+
+.dropdown-coleccion {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-contenido {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #f8f8ec;
+    min-width: 170px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
+    border-radius: 6px;
+    z-index: 1000;
+    overflow: hidden;
+    padding: 0.4rem 0;
+}
+
+.dropdown-coleccion .dropdown-contenido a {
+    color: #3b2314 !important;
+    padding: 10px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 0.95rem;
+    transition: background 0.2s;
+}
+
+.dropdown-contenido a:hover {
+    background-color: #f7f5f0;
+}
+
+/* Aparece suavemente al pasar el mouse sobre el botón "Colección" */
+.dropdown-coleccion:hover .dropdown-contenido {
+    display: block;
+}
+
+
+/* =========================================================
+   MENÚ DESPLEGABLE DE USUARIO
+========================================================= */
+
+.dropdown-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-opciones {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    min-width: 200px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
+    border-radius: 6px;
+    z-index: 1000;
+    overflow: hidden;
+    padding: 0.4rem 0;
+    border: 1px solid #eee;
+}
+
+.item-dropdown {
+    color: #3b2314 !important;
+    padding: 10px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.2s;
+    text-align: left;
+}
+
+.item-dropdown:hover {
+    background-color: #f7f5f0;
+}
+
+.item-dropdown.logout {
+    border-top: 1px solid #eee;
+    color: #c53030 !important;
+}
+
+.item-dropdown.logout:hover {
+    background-color: #fff5f5;
+}
+
+/* Solo mostramos el dropdown en hover si hay una sesión activa (.sesion-activa) */
+.dropdown-menu.sesion-activa:hover .dropdown-opciones {
+    display: block;
+}
+
+
+/* -------------------------------------------------------------------------------------------------Banner Principal */
 .banner {
     display: flex;
     flex-direction: column;
-    align-items: center;         
+    align-items: center;
     text-align: center;
-    padding: 3rem 1rem; 
-    background-color: #fffedf;         
+    padding: 3rem 1rem;
+    background: linear-gradient(#fffedf, white);
+ 
 }
 
 
 .banner-logo {
     display: inline-flex;
     flex-direction: column;
-    align-items: flex-end;       /* Empuja "store" al borde derecho de "justina" */
+    align-items: flex-end;
+    /* Empuja "store" al borde derecho de "justina" */
     margin-bottom: 0.8rem;
 }
 
 .banner h1 {
     font-family: 'Abril Fatface', serif;
-    font-size: 5rem;             /* Podés agrandarlo un poco para que destaque más */
+    font-size: 5rem;
+    /* Podés agrandarlo un poco para que destaque más */
     font-weight: 400;
     color: #3b2314;
     text-transform: lowercase;
     letter-spacing: -2px;
-    line-height: 0.8;            /* Saca el espacio invisible arriba y abajo de las letras */
+    line-height: 0.8;
+    /* Saca el espacio invisible arriba y abajo de las letras */
     margin: 0;
 }
 
@@ -89,7 +276,8 @@
     text-transform: lowercase;
     letter-spacing: 3px;
     margin: 0;
-    margin-top: 4px;             /* Define qué tan pegado queda de "justina" */
+    margin-top: 4px;
+    /* Define qué tan pegado queda de "justina" */
 }
 
 .banner p {
@@ -102,7 +290,7 @@
     margin: 0;
 }
 
-/* Grilla de productos */
+/* ----------------------------------------------------------------------------------------------------Contenedor /Grilla de productos */
 .contenedor {
     max-width: 1100px;
     margin: 0 auto;
@@ -112,6 +300,7 @@
 .contenedor h2 {
     text-align: center;
     margin-bottom: 1.5rem;
+    background-color: #fffedf;
 }
 
 .grilla-productos {
@@ -122,7 +311,7 @@
     margin-bottom: 3rem;
 }
 
-/* Tarjeta del producto */
+/* -------------------------------------------------------------------------------------------Tarjeta del producto */
 .card-producto {
     border: 1px solid #e0e0e0;
     border-radius: 8px;
@@ -134,13 +323,13 @@
 
 .card-producto:hover {
     transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .card-producto img {
     width: 100%;
     height: 260px;
-    object-fit:contain;
+    object-fit: contain;
     background-color: #f8f8f8;
 }
 
@@ -157,7 +346,8 @@
 }
 
 .card-producto button {
-    background-color: #5a3d28;;
+    background-color: #5a3d28;
+    ;
     color: white;
     border: none;
     width: 100%;
@@ -183,9 +373,7 @@
     cursor: pointer;
 }
 
-/* =========================================================
-   CARRUSEL DE IMÁGENES EN TARJETA DE PRODUCTO
-========================================================= */
+/* Carrete de imagenes del producto */
 
 .carrusel-card {
     position: relative;
@@ -212,30 +400,47 @@
     border: none;
     width: 30px;
     height: 30px;
-    border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 0.9rem;
     font-weight: bold;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
     transition: background 0.2s, transform 0.2s;
     user-select: none;
 }
 
 .btn-flecha:hover {
-    background-color: rgba(255, 255, 255, 1);
+    background-color: rgb(255, 88, 88);
     transform: translateY(-50%) scale(1.08);
 }
 
-.btn-flecha.prev { 
-    justify-content: flex-start;
-    background-color: transparent;
+.btn-flecha.prev {
+    left: 8px;
+    /* Pega la flecha al borde izquierdo */
+    background-color: rgba(156, 115, 91, 0.75);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
 }
-.btn-flecha.next { 
-    background-color: transparent;
-    justify-content: flex-end;
+
+.btn-flecha.next {
+    right: 8px;
+    /* Pega la flecha al borde derecho */
+    background-color: rgba(156, 115, 91, 0.75);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+}
+
+/* Opcional: Si querés que sean transparentes hasta que pases el mouse */
+.carrusel-card .btn-flecha {
+    opacity: 0;
+}
+
+.carrusel-card:hover .btn-flecha {
+    opacity: 1;
 }
 
 /* Ocultamos las flechas si la prenda tiene solo 1 foto */
@@ -244,7 +449,7 @@
 }
 
 
-/* -------------------------------------VENTANA MODAL DEL CARRITO */
+/* -------------------------------------------------------------------------------ventana modal de carrito */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -262,7 +467,6 @@
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-/* Clase que aplicaremos con JavaScript para abrir el modal */
 .modal-overlay.activo {
     visibility: visible;
     opacity: 1;
@@ -369,11 +573,11 @@
 
 
 
-/*modal login*/
+/*-----------------------------------------------------------------------------ventana modal login/cuenta*/
 
 
-.modal-cuerpo{
-    background-color: #fffedf ;
+.modal-cuerpo {
+    background-color: #fffedf;
     justify-content: center;
     width: 100%;
     max-width: 500px;
@@ -384,46 +588,318 @@
 
 
 
+/*----------------------------------------------------------------------------- footer*/
+
+.footer-tienda {
+    background-color: #3b2314;
+    /* Tono marrón editorial */
+    color: #f7f5f0;
+    /* Color crema para buen contraste */
+    padding: 3rem 2rem 1rem;
+    margin-top: 4rem;
+}
+
+.footer-columnas {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    max-width: 1100px;
+    margin: 0 auto;
+    gap: 2rem;
+}
+
+.col-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    min-width: 220px;
+}
+
+.col-footer h4 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    padding-bottom: 0.4rem;
+}
+
+.col-footer a {
+    color: #d8cec4;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+.col-footer a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+/* MARCA CENTRAL */
+.col-marca {
+    align-items: center;
+    text-align: center;
+}
+
+.logo-footer {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 0.8;
+}
+
+.logo-footer .logo-principal  {
+    font-family: 'Abril Fatface', serif;
+    font-size: 2.8rem;
+    color: #ffffff;
+    letter-spacing: -1px;
+}
+
+.logo-footer .logo-sub {
+    font-family: 'Abril Fatface', serif;
+    font-size: 0.8rem;
+    color: #d8cec4;
+    letter-spacing: 2px;
+    margin-top: 3px;
+}
+
+.slogan-footer {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: #d8cec4;
+    margin-top: 0.6rem;
+    letter-spacing: 1px;
+}
+
+/* BARRA DE COPYRIGHT INFERIOR */
+.footer-bottom {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.8rem;
+    color: #a09386;
+}
+
 /* =========================================================
-   ESTILOS DEL MENÚ DESPLEGABLE "COLECCIÓN"
+   ÍCONOS Y ENLACES DE APPS EN EL FOOTER
 ========================================================= */
 
-.dropdown-coleccion {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdown-contenido {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: #f8f8ec;
-    min-width: 170px;
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
-    border-radius: 6px;
-    z-index: 1000;
-    overflow: hidden;
-    padding: 0.4rem 0;
-}
-
-.dropdown-coleccion
-
-.dropdown-contenido a {
-    color: #3b2314 !important; 
-    padding: 10px 16px;
+.link-app-footer {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: #d8cec4;            /* Tono crema suave que contrasta hermoso con el marrón */
     text-decoration: none;
-    display: block;
+    font-size: 0.9rem;
+    font-weight: 400;
+    transition: color 0.2s ease, transform 0.2s ease;
+    padding: 0.15rem 0;
+}
+
+/* Efecto al pasar el cursor por cada red social o contacto */
+.link-app-footer:hover {
+    color: #ffffff;            /* Se ilumina en blanco puro */
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transform: translateX(3px); /* Se desliza suavemente 3px hacia la derecha */
+}
+
+.icono-footer {
+    width: 18px;
+    height: 18px;
+    color: inherit;            /* Hereda el color crema y cambia a blanco en el hover */
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+.link-app-footer:hover .icono-footer {
+    transform: scale(1.15);    /* El ícono de la app hace un pequeño zoom */
+}
+
+/* =========================================================
+   ESTILOS DEL BOTÓN FLOTANTE DE WHATSAPP
+========================================================= */
+
+.btn-whatsapp-flotante {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 58px;
+    height: 58px;
+    background-color: #25d366;
+    /* Verde oficial de WhatsApp */
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.25);
+    z-index: 1500;
+    /* Se asegura de estar siempre arriba de todo */
+    text-decoration: none;
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-whatsapp-flotante:hover {
+    background-color: #20ba5a;
+    transform: scale(1.08);
+    /* Crece suavemente al acercar el cursor */
+    box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+.icono-wa {
+    width: 32px;
+    height: 32px;
+    fill: currentColor;
+    /* Hereda el blanco del texto del botón */
+}
+
+
+/* =========================================================
+   PÁGINA DE CONTACTO EDITORIAL
+========================================================= */
+
+.banner-contacto {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 3rem 1rem;
+    background: linear-gradient(#fffedf, white);
+ 
+}
+
+
+.contenedor-contacto {
+    max-width: 600px;
+    margin: 1.5rem auto;
+    padding: 0 1.5rem;
+    color: #3b2314;
+    
+}
+
+.encabezado-contacto {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.encabezado-contacto h1 {
+    font-family: 'Abril Fatface', serif;
+    font-size: 2.8rem;
+    font-weight: 400;
+    margin-bottom: 1.5rem;
+    color: #3b2314;
+}
+
+.info-contacto-directo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
     font-size: 0.95rem;
-    transition: background 0.2s;
+    font-weight: 500;
+    color: #5a3d28;
+    margin-top: 2rem;
 }
 
-.dropdown-contenido a:hover {
-    background-color: #f7f5f0;
+.formulario-editorial {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
 }
 
-/* Aparece suavemente al pasar el mouse sobre el botón "Colección" */
-.dropdown-coleccion:hover .dropdown-contenido {
-    display: block;
+.campo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    text-align: left;
+}
+
+.campo-form label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #5a3d28;
+}
+
+.campo-form input,
+.campo-form textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #d8cec4;
+    background-color: #fffdfa;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: #3b2314;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.campo-form input:focus,
+.campo-form textarea:focus {
+    border-color: #3b2314;
+    background-color: #ffffff;
+}
+
+.btn-enviar-contacto {
+    margin-top: 1rem;
+    width: 100%;
+    padding: 0.9rem;
+    font-size: 1rem;
+    background-color: #5a4a3e; /* Tono marrón que mostrás en el botón */
+    border-radius: 2px;
+}
+
+.btn-enviar-contacto:hover {
+    background-color: #3b2314;
+}
+
+/* =========================================================
+   ENLACES INTERACTIVOS DE CONTACTO (MINIMALISTAS)
+========================================================= */
+
+.info-contacto-directo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.link-contacto {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    color: #694a32;            /* Marrón medio suave */
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color 0.2s ease, transform 0.2s ease;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+
+/* Efecto al pasar el cursor por encima */
+.link-contacto:hover {
+    color: #3b2314;            /* Se oscurece al marrón editorial principal */
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transform: translateY(-1px); /* Mueve el link 1px hacia arriba de forma elegante */
+}
+
+.icono-mini {
+    width: 18px;
+    height: 18px;
+    color: inherit;            /* El ícono hereda automáticamente el cambio de color en hover */
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+.link-contacto:hover .icono-mini {
+    transform: scale(1.1);     /* El ícono hace un pequeño zoom al pasar el mouse */
 }
 

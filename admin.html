@@ -4,106 +4,284 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administración - Justina Store</title>
+    <title>Control de Stock- Justina store</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Playfair+Display:ital@0;1&display=swap"
+        rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="styleadmin.css">
 </head>
 
 <body>
 
-    <header class="header">
-        <div class="logo">
-            <span class="logo-principal">justina store</span>
+    <!-- CINTA DE ANUNCIOS INFINITA -->
+    <div class="cinta-promos">
+        <div class="cinta-track">
+            <!-- BLOQUE 1 -->
+            <div class="cinta-texto">
+                <span>✦ 15% OFF EFECTIVO / TRANSFERENCIA</span>
+                <span>✦ 3 CUOTAS SIN INTERÉS</span>
+                <span>✦ ENVÍOS A TODO EL PAÍS</span>
+                <span>✦ 15% OFF EFECTIVO / TRANSFERENCIA</span>
+                <span>✦ 3 CUOTAS SIN INTERÉS</span>
+                <span>✦ ENVÍOS A TODO EL PAÍS</span>
+            </div>
+            <!-- BLOQUE 2 (IDÉNTICO AL BLOQUE 1 PARA EL BUCLE CONTINUO) -->
+            <div class="cinta-texto">
+                <span>✦ 15% OFF EFECTIVO / TRANSFERENCIA</span>
+                <span>✦ 3 CUOTAS SIN INTERÉS</span>
+                <span>✦ ENVÍOS A TODO EL PAÍS</span>
+                <span>✦ 15% OFF EFECTIVO / TRANSFERENCIA</span>
+                <span>✦ 3 CUOTAS SIN INTERÉS</span>
+                <span>✦ ENVÍOS A TODO EL PAÍS</span>
+            </div>
         </div>
+    </div>
+
+    <!-- Header y Navegación -->
+    <header class="header">
+
+        <div class="logo">
+            <a href="index.html" class="logo-principal">justina</a>
+        </div>
+
         <nav>
-            <a href="#" style="font-family: 'Abril Fatface', serif;
-    font-size: 1.5rem;            
-    font-weight: 400;
-    color: #fffedf;
-    text-transform: lowercase;
-    letter-spacing: -2px;
-    line-height: 0.8;            
-    margin: 0;">Control de stock</a>
+            <a href="index.html" id="nav-inicio">Inicio</a>
 
-        </nav>
-        <a href="index.html" style="font-family: 'Abril Fatface', serif;
-    font-size: 1.3rem;            
-    font-weight: 400;
-    color: #fffedf;
-    text-transform: lowercase;
-    letter-spacing: -2px;
-    line-height: 0.8;            
-    margin: 0;">← Volver a la Tienda</a>
-    </header>
-
-    <main class="admin-contenedor">
-        <h1>Cargar Nueva Prenda</h1>
-
-        <form id="form-nuevo-producto" class="form-admin">
-            <label>Nombre de la prenda *</label>
-            <input type="text" id="prod-nombre" required placeholder="Ej. Calza Oxford">
-
-            <label>Precio ($) *</label>
-            <input type="number" id="prod-precio" required placeholder="22000">
-
-            <label for="prod-categoria">Categoría</label>
-            <div style="display: flex; gap: 0.5rem;">
-                <select id="prod-categoria" style="flex: 1;" required>
-                </select>
-                <button type="button" id="btn-nueva-categoria"
-                    style="background: #34495e; color: white; border: none; padding: 0 1rem; border-radius: 5px; cursor: pointer; font-weight: bold;">
-                    + Nueva Categoría
-                </button>
+            <!-- MENÚ DESPLEGABLE DE COLECCIÓN -->
+            <div class="dropdown-coleccion">
+                <a href="#" id="nav-coleccion" class="dropdown-btn">Colección ▾</a>
+                <div class="dropdown-contenido" id="menu-categorias">
+                    <a href="#" onclick="filtrarPorCategoria('Todos')">Ver Todo</a>
+                    <!-- Las categorías se cargarán acá dinámicamente con JS -->
+                </div>
             </div>
 
-            <!-- ZONA DINÁMICA DE TALLES, COLORES Y STOCK -->
-            <div style="background: #f8f9fa; padding: 1rem; border-radius: 6px; border: 1px solid #ddd;">
-                <label style="margin-bottom: 0.5rem; display: block;">Combinaciones de Talle, Color y Stock *</label>
+            <a href="#" id="nav-ofertas">Ofertas</a>
 
-                <div id="contenedor-variantes">
-                    <!-- Fila inicial por defecto -->
-                    <div class="fila-variante" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
-                        <input type="text" placeholder="Talle (S, M...)" class="var-talle" required style="width: 30%;">
-                        <input type="text" placeholder="Color (Negro...)" class="var-color" required
-                            style="width: 45%;">
-                        <input type="number" placeholder="Stock" class="var-stock" required min="0" style="width: 25%;">
+            <a href="contacto.html" id="nav-contacto">Contacto</a>
+        </nav>
+        <!-- ZONA DE ACCIONES DEL HEADER -->
+        <div class="acciones-header">
+
+            <!-- MENÚ DESPLEGABLE DE USUARIO / ADMIN -->
+            <div class="dropdown-menu" id="contenedor-dropdown-user">
+                <button id="btn-login-header" class="btn-user">👤 Iniciar Sesión</button>
+
+                <div class="dropdown-opciones" id="menu-opciones">
+                    <!-- Opciones exclusivas de ADMIN -->
+                    <a href="admin.html" id="btn-config-admin" class="item-dropdown admin-only" style="display: none;">
+                        ⚙️ Control de Stock
+                    </a>
+                    <a href="pedidos-admin.html" id="btn-pedidos-admin" class="item-dropdown admin-only"
+                        style="display: none;">
+                        📦 Control de Pedidos
+                    </a>
+
+                    <!-- Opciones generales de USUARIO LOGUEADO -->
+                    <a href="perfil.html" id="btn-perfil" class="item-dropdown user-only" style="display: none;">
+                        👤 Mi Perfil
+                    </a>
+                    <a href="#" id="btn-logout-header" class="item-dropdown user-only logout" style="display: none;">
+                        🚪 Cerrar Sesión
+                    </a>
+                </div>
+            </div>
+
+            <!-- Botón del Carrito -->
+            <div class="carrito" id="boton-carrito">
+                🛒 <span id="contador-carrito">0</span>
+            </div>
+        </div>
+    </header>
+
+
+    <main class="admin-container">
+
+        <!-- 1. BARRA SUPERIOR: Título a la izquierda, Botón compacto a la derecha -->
+        <div class="admin-top-bar">
+            <div>
+                <h1>Control de Stock</h1>
+                <p class="subtitulo-admin">Gestioná el inventario, talles y precios de tu tienda.</p>
+            </div>
+            <button id="btn-abrir-form" class="btn-nueva-prenda">
+                ➕ Cargar Nueva Prenda
+            </button>
+        </div>
+        <!-- TABLA DE INVENTARIO EDITORIAL -->
+        <div class="seccion-tabla">
+            <div class="tabla-header-bar">
+                <h3>Inventario Cargado</h3>
+                <!-- Buscador rápido por nombre -->
+                <input type="text" id="buscar-inventario" class="input-buscar-admin"
+                    placeholder="🔍 Buscar por prenda...">
+            </div>
+
+            <div class="contenedor-tabla-card">
+                <table class="tabla-admin">
+                    <thead>
+                        <tr>
+                            <th style="width: 70px;">Foto</th>
+                            <th>Prenda y Categoría</th>
+                            <th>Precio</th>
+                            <th>Variantes y Stock</th>
+                            <th style="text-align: right;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-inventario">
+                        <!-- Se genera con JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- FORMULARIO OCULTO POR DEFECTO -->
+        <div id="panel-nuevo-producto" class="panel-formulario oculto">
+
+            <!-- ENCABEZADO DEL PANEL CON LA CRUZ ALINEADA A LA DERECHA -->
+            <div class="panel-header">
+                <h3>Cargar Nueva Prenda</h3>
+                <button type="button" id="btn-cerrar-form" class="btn-cerrar-panel" title="Cerrar panel"> ✕ </button>
+            </div>
+
+            <form id="form-admin" class="form-editorial-admin">
+
+                <div class="campo-full">
+                    <label>Nombre de la prenda *</label>
+                    <input type="text" id="prod-nombre" required placeholder="Ej. Calza Oxford">
+                </div>
+
+                <div class="grilla-2-col">
+                    <div>
+                        <label>Precio ($) *</label>
+                        <input type="number" id="prod-precio" required placeholder="22000">
+                    </div>
+                    <div>
+                        <label>Categoría</label>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <select id="prod-categoria" style="flex: 1;" required></select>
+                            <button type="button" id="btn-nueva-categoria" class="btn-secundario">
+                                + Categoría
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <button type="button" id="btn-agregar-variante"
-                    style="margin-top: 0.5rem; background: #6c757d; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer;">
-                    + Agregar otra combinación
+                <div class="caja-variantes">
+                    <label style="margin-bottom: 0.8rem; display: block; font-weight: 600;">
+                        Combinaciones de Talle, Color y Stock *
+                    </label>
+
+                    <div id="contenedor-variantes">
+                        <div class="fila-variante">
+                            <input type="text" placeholder="Talle (S, M...)" class="var-talle" required
+                                style="width: 30%;">
+                            <input type="text" placeholder="Color (Negro...)" class="var-color" required
+                                style="width: 45%;">
+                            <input type="number" placeholder="Stock" class="var-stock" required min="0"
+                                style="width: 25%;">
+                        </div>
+                    </div>
+
+                    <button type="button" id="btn-agregar-variante" class="btn-secundario" style="margin-top: 0.8rem;">
+                        + Agregar otra combinación
+                    </button>
+                </div>
+
+                <div class="campo-full">
+                    <label>Fotos de la prenda (Podés seleccionar hasta 5 fotos) *</label>
+                    <input type="file" id="prod-imagenes" accept="image/*" multiple required>
+                </div>
+
+                <button type="submit" class="btn-guardar-admin">
+                    💾 Guardar Prenda y Stock
                 </button>
-            </div>
+            </form>
+        </div>
 
-            <label>Fotos de la prenda (Podés seleccionar hasta 5 fotos a la vez) *</label>
-            <input type="file" id="prod-imagenes" accept="image/*" multiple required>
+        </div>
 
-            <button type="submit" class="btn-guardar">💾 Guardar Prenda y Stock</button>
-        </form>
-
-        <hr style="margin: 3rem 0;">
-
-        <!-- TABLA DE GESTIÓN (EDITAR / BORRAR) -->
-        <h2>Inventario Cargado</h2>
-        <table style="width: 100%; border-collapse: collapse; margin-top: 1rem; text-align: left;">
-            <thead>
-                <tr style="border-bottom: 2px solid #333;">
-                    <th style="padding: 0.5rem;">Prenda</th>
-                    <th>Precio</th>
-                    <th>Variantes (Stock)</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="tabla-inventario">
-                <!-- Se genera con JS -->
-            </tbody>
-        </table>
-
-        <a href="index.html" class="nav-volver">← Volver a tienda</a>
     </main>
 
+
+    <!-- FOOTER MODERNO EN COLUMNAS -->
+    <footer class="footer-tienda">
+        <div class="footer-columnas">
+
+            <!-- COLUMNA 1: LEGALES Y AYUDA -->
+            <div class="col-footer">
+                <h4>Atención al Cliente</h4>
+                <a href="ayuda.html#faq">Preguntas Frecuentes</a>
+                <a href="ayuda.html#envios">Envíos y Devoluciones</a>
+                <a href="ayuda.html#terminos">Términos y Condiciones</a>
+                <a href="ayuda.html#legales">Avisos Legales</a>
+            </div>
+
+            <!-- COLUMNA 2: MARCA CENTRAL -->
+            <div class="col-footer col-marca">
+                <div class="logo-footer">
+                    <span class="logo-principal">justina</span>
+                    <span class="logo-sub">store</span>
+                </div>
+                <p class="slogan-footer">More than basics</p>
+            </div>
+
+            <!-- COLUMNA 3: CONTACTO Y REDES -->
+            <div class="col-footer">
+                <h4>Conectá con nosotros</h4>
+
+                <!-- WhatsApp -->
+                <a href="https://wa.me/5491125250523" target="_blank" class="link-app-footer">
+                    <svg viewBox="0 0 24 24" class="icono-footer" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                    </svg>
+                    <span>+54 9 11 2525-0523</span>
+                </a>
+
+                <!-- Gmail / Correo -->
+                <a href="mailto:justinastore2036@gmail.com" class="link-app-footer">
+                    <svg viewBox="0 0 24 24" class="icono-footer" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" />
+                    </svg>
+                    <span>justinastore2036@gmail.com</span>
+                </a>
+
+                <!-- Instagram -->
+                <a href="https://instagram.com/_justinastore" target="_blank" class="link-app-footer">
+                    <svg viewBox="0 0 24 24" class="icono-footer" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                    </svg>
+                    <span>@_justinastore</span>
+                </a>
+
+                <!-- TikTok -->
+                <a href="https://tiktok.com/@_justinastore" target="_blank" class="link-app-footer">
+                    <svg viewBox="0 0 24 24" class="icono-footer" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M16.5 7.5A4.5 4.5 0 0 0 21 8V4.5a8 8 0 0 1-4.5-1.5V14a5 5 0 1 1-5-5v3.5a1.5 1.5 0 1 0 1.5 1.5V7.5z" />
+                    </svg>
+                    <span>@_justinastore</span>
+                </a>
+            </div>
+
+        </div>
+        <!-- BARRA INFERIOR DE COPYRIGHT -->
+        <div class="footer-bottom">
+            <p>&copy; 2026 Justina Store. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
     <script src="admin.js"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>

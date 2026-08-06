@@ -4,13 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Justina Store</title>
-
-    <!-- TRAEMOS ABRIL FATFACE + PLAYFAIR DISPLAY CURSIVA (ITALIC) -->
+    <title>Contacto - Justina store</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Playfair+Display:ital,wght@1,400;1,500&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Playfair+Display:ital@0;1&display=swap"
         rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
@@ -42,7 +39,6 @@
         </div>
     </div>
 
-    <!-- Header y Navegación -->
     <header class="header">
 
         <div  class="logo">
@@ -61,7 +57,7 @@
                 </div>
             </div>
 
-            <a href="#" id="nav-ofertas">Ofertas</a>
+            <a href="index.html" id="nav-ofertas">Ofertas</a>
 
             <a href="contacto.html" id="nav-contacto">Contacto</a>
         </nav>
@@ -99,108 +95,79 @@
         </div>
     </header>
 
-    <!-- Banner Principal -->
-    <section class="banner">
+    <div class="banner-contacto">
+        <h1>Contacto </h1>
+        <div class="info-contacto-directo">
+            <!-- WhatsApp -->
+            <a href="https://wa.me/5491125250523?text=%C2%A1Hola!%20Quer%C3%ADa%20hacer%20una%20consulta..."
+                target="_blank" class="link-contacto">
+                <svg viewBox="0 0 24 24" class="icono-mini" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                </svg>
+                +54 9 11 2525-0523
+            </a>
 
-        <div class="banner-logo">
-            <h1>justina</h1>
-            <h2>store</h2>
+            <!-- Teléfono (Abre llamada directa en celular) -->
+            <a href="tel:+5491125250523" class="link-contacto">
+                <svg viewBox="0 0 24 24" class="icono-mini" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                </svg>
+                11 2525-0523
+            </a>
+
+            <!-- Email (Abre Gmail o gestor de correo) -->
+            <a href="mailto:justinastore2036@gmail.com" class="link-contacto">
+                <svg viewBox="0 0 24 24" class="icono-mini" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                    <polyline points="22,6 12,13 2,6" />
+                </svg>
+                justinastore2036@gmail.com
+            </a>
+
+            <!-- Ubicación (Abre Google Maps con la zona) -->
+            <a href="https://maps.google.com/?q=Los+Polvorines,+Malvinas+Argentinas" target="_blank"
+                class="link-contacto">
+                <svg viewBox="0 0 24 24" class="icono-mini" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                </svg>
+                Los Polvorines, Malvinas Argentinas
+            </a>
         </div>
 
-        <p>More than basics</p>
-    </section>
+    </div>
 
-    <!-- Catálogo de Productos -->
-    <main class="contenedor">
-        <h2 id="titulo-contenedor"> ✦ Productos destacados ✦</h2>
-        <div class="grilla-productos" id="grilla-productos">
-            <!-- Los productos se generarán acá desde script.js -->
-        </div>
+    <main class="contenedor-contacto">
+        <form id="form-contacto" class="formulario-editorial">
+            <div class="campo-form">
+                <label for="cont-nombre">Nombre</label>
+                <input type="text" id="cont-nombre" placeholder="ej.: María Pérez" required>
+            </div>
+
+            <div class="campo-form">
+                <label for="cont-email">Email</label>
+                <input type="email" id="cont-email" placeholder="ej.: tuemail@email.com" required>
+            </div>
+
+            <div class="campo-form">
+                <label for="cont-telefono">Teléfono</label>
+                <input type="tel" id="cont-telefono" placeholder="ej.: 1123445567">
+            </div>
+
+            <div class="campo-form">
+                <label for="cont-mensaje">Mensaje</label>
+                <textarea id="cont-mensaje" rows="5" placeholder="ej.: Tu mensaje" required></textarea>
+            </div>
+
+            <button type="submit" class="btn-comprar btn-enviar-contacto">Enviar</button>
+        </form>
     </main>
-
-
-    <!-- NUEVO: Ventana Modal del Carrito -->
-    <div class="modal-overlay" id="modal-carrito">
-        <div class="modal-contenido">
-            <div class="modal-header">
-                <h2>Tu Carrito</h2>
-                <button class="btn-cerrar" id="btn-cerrar-modal">&times;</button>
-            </div>
-
-            <!-- Acá se insertan los productos que agreguemos con JS -->
-            <div class="modal-cuerpo" id="lista-carrito">
-                <p class="carrito-vacio">El carrito está vacío.</p>
-            </div>
-
-            <!-- Pie del carrito con el total -->
-            <div class="modal-footer" style="flex-direction: column; gap: 0.8rem;">
-                <div style="width: 100%; text-align: left;">
-                    <label style="font-size: 0.85rem; font-weight: bold; color: #333; display: block;">
-                        📍 Elegí la dirección de envío:
-                    </label>
-                    <select id="select-direccion-envio"
-                        style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px; margin-top: 4px;">
-                        <option value="">Cargando direcciones...</option>
-                    </select>
-                    <small style="display:block; margin-top:0.3rem;">
-                        ¿Otra dirección? <a href="perfil.html" style="color:#3b2314; font-weight:bold;">Agregala en Mi
-                            Perfil</a>
-                    </small>
-                </div>
-
-                <div class="total-contenedor" style="width: 100%; display: flex; justify-content: space-between;">
-                    <span>Total:</span>
-                    <span id="total-precio">$0</span>
-                </div>
-                <button class="btn-comprar" id="btn-finalizar-compra" style="width: 100%;">Finalizar compra</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- VENTANA MODAL DOBLE: INICIO DE SESIÓN / REGISTRO -->
-    <div class="modal-overlay" id="modal-login">
-        <div class="modal-contenido modal-login-box">
-            <div class="modal-header">
-                <!-- Pestañas para alternar qué formulario ver -->
-                <div class="pestanas-login" style="display: flex; gap: 1rem; font-size: 1.2rem; font-weight: bold;">
-                    <span id="tab-login"
-                        style="cursor: pointer; color: #1a1a1a; border-bottom: 2px solid #1a1a1a;">Ingresar</span>
-                    <span id="tab-registro" style="cursor: pointer; color: #888;">Crear Cuenta</span>
-                </div>
-                <button class="btn-cerrar" id="btn-cerrar-modal-login">&times;</button>
-            </div>
-
-            <!-- 1. FORMULARIO DE INICIO DE SESIÓN -->
-            <form id="form-login" class="modal-cuerpo form-login">
-                <label>Correo Electrónico</label>
-                <input type="email" id="email-user" required placeholder="tuemail@ejemplo.com">
-
-                <label>Contraseña</label>
-                <input type="password" id="password-user" required placeholder="••••••••">
-
-                <button type="submit" class="btn-comprar" style="margin-top: 1rem; ">
-                    Iniciar Sesión
-                </button>
-            </form>
-
-            <!-- 2. FORMULARIO DE REGISTRO DE CLIENTE NUEVO (Oculto por defecto) -->
-            <form id="form-registro" class="modal-cuerpo form-login" style="display: none;">
-                <label>Nombre y Apellido *</label>
-                <input type="text" id="reg-nombre" required placeholder="Ej. Camila Pérez">
-
-                <label>Correo Electrónico *</label>
-                <input type="email" id="reg-email" required placeholder="camila@ejemplo.com">
-
-                <label>Contraseña *</label>
-                <input type="password" id="reg-pass" required placeholder="Mínimo 6 caracteres" minlength="6">
-
-                <button type="submit" class="btn-comprar" style="margin-top: 1rem; ">
-                    Registrarme y Entrar
-                </button>
-
-            </form>
-        </div>
-    </div>
 
     <!-- FOOTER MODERNO EN COLUMNAS -->
     <footer class="footer-tienda">
@@ -272,8 +239,7 @@
     </footer>
 
 
-
-    <!-- =========================================================
+        <!-- =========================================================
      BOTÓN FLOTANTE DE WHATSAPP
     ========================================================= -->
     <a href="https://wa.me/5491125250523?text=%C2%A1Hola!%20Quer%C3%ADa%20hacer%20una%20consulta%20sobre%20las%20prendas%20de%20la%20tienda..."
@@ -285,11 +251,7 @@
         </svg>
     </a>
 
-
     <script src="script.js"></script>
 </body>
-
-
-
 
 </html>

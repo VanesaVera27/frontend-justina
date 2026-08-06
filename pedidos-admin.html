@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Pedidos y Despachos - MODAWEB</title>
+    <title>Control de Pedidos- Justina Store</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Playfair+Display:ital@0;1&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
         .admin-box { max-width: 1000px; margin: 2rem auto; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
@@ -15,11 +19,59 @@
 </head>
 <body>
 
-    <header class="header">
-        <div class="logo">Justina<span>Pedidos</span></div>
-        <div style="display: flex; gap: 1rem;">
-            <a href="admin.html" style="color: white; text-decoration: none;">← Volver al Stock</a>
-            <a href="index.html" style="color: white; text-decoration: none;">Ver Tienda</a>
+<header class="header">
+
+        <div class="logo">
+            <a href="index.html" class="logo-principal">justina</a>
+        </div>
+
+        <nav>
+            <a href="index.html" id="nav-inicio">Inicio</a>
+
+            <!-- MENÚ DESPLEGABLE DE COLECCIÓN -->
+            <div class="dropdown-coleccion">
+                <a href="#" id="nav-coleccion" class="dropdown-btn">Colección ▾</a>
+                <div class="dropdown-contenido" id="menu-categorias">
+                    <a href="#" onclick="filtrarPorCategoria('Todos')">Ver Todo</a>
+                    <!-- Las categorías se cargarán acá dinámicamente con JS -->
+                </div>
+            </div>
+
+            <a href="#" id="nav-ofertas">Ofertas</a>
+
+            <a href="contacto.html" id="nav-contacto">Contacto</a>
+        </nav>
+        <!-- ZONA DE ACCIONES DEL HEADER -->
+        <div class="acciones-header">
+
+            <!-- MENÚ DESPLEGABLE DE USUARIO / ADMIN -->
+            <div class="dropdown-menu" id="contenedor-dropdown-user">
+                <button id="btn-login-header" class="btn-user">👤 Iniciar Sesión</button>
+
+                <div class="dropdown-opciones" id="menu-opciones">
+                    <!-- Opciones exclusivas de ADMIN -->
+                    <a href="admin.html" id="btn-config-admin" class="item-dropdown admin-only" style="display: none;">
+                        ⚙️ Control de Stock
+                    </a>
+                    <a href="pedidos-admin.html" id="btn-pedidos-admin" class="item-dropdown admin-only"
+                        style="display: none;">
+                        📦 Control de Pedidos
+                    </a>
+
+                    <!-- Opciones generales de USUARIO LOGUEADO -->
+                    <a href="perfil.html" id="btn-perfil" class="item-dropdown user-only" style="display: none;">
+                        👤 Mi Perfil
+                    </a>
+                    <a href="#" id="btn-logout-header" class="item-dropdown user-only logout" style="display: none;">
+                        🚪 Cerrar Sesión
+                    </a>
+                </div>
+            </div>
+
+            <!-- Botón del Carrito -->
+            <div class="carrito" id="boton-carrito">
+                🛒 <span id="contador-carrito">0</span>
+            </div>
         </div>
     </header>
 
@@ -45,5 +97,6 @@
     </main>
 
     <script src="pedidos-admin.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
