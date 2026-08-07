@@ -100,7 +100,7 @@
 
     <main class="admin-container">
 
-        <!-- 1. BARRA SUPERIOR: Título a la izquierda, Botón compacto a la derecha -->
+        <!-- BARRA SUPERIOR: Título a la izquierda, Botón compacto a la derecha -->
         <div class="admin-top-bar">
             <div>
                 <h1>Control de Stock</h1>
@@ -110,11 +110,11 @@
                 ➕ Cargar Nueva Prenda
             </button>
         </div>
-        <!-- TABLA DE INVENTARIO EDITORIAL -->
+        <!-- TABLA DE INVENTARIO -->
         <div class="seccion-tabla">
             <div class="tabla-header-bar">
                 <h3>Inventario Cargado</h3>
-                <!-- Buscador rápido por nombre -->
+                <!-- Buscador por nombre -->
                 <input type="text" id="buscar-inventario" class="input-buscar-admin"
                     placeholder="🔍 Buscar por prenda...">
             </div>
@@ -136,80 +136,137 @@
                 </table>
             </div>
         </div>
-        <!-- FORMULARIO OCULTO POR DEFECTO -->
-        <div id="panel-nuevo-producto" class="panel-formulario oculto">
 
-            <!-- ENCABEZADO DEL PANEL CON LA CRUZ ALINEADA A LA DERECHA -->
-            <div class="panel-header">
-                <h3>Cargar Nueva Prenda</h3>
-                <button type="button" id="btn-cerrar-form" class="btn-cerrar-panel" title="Cerrar panel"> ✕ </button>
-            </div>
-
-            <form id="form-admin" class="form-editorial-admin">
-
-                <div class="campo-full">
-                    <label>Nombre de la prenda *</label>
-                    <input type="text" id="prod-nombre" required placeholder="Ej. Calza Oxford">
+        <!-- BACKDROP Y VENTANA MODAL PARA CARGAR PRENDA -->
+        <div id="modal-backdrop-crear" class="modal-backdrop oculto">
+            <div class="modal-card">
+                <div class="panel-header">
+                    <h3>Cargar Nueva Prenda</h3>
+                    <button type="button" id="btn-cerrar-form" class="btn-cerrar-panel" title="Cerrar modal">✕</button>
                 </div>
 
-                <div class="grilla-2-col">
-                    <div>
-                        <label>Precio ($) *</label>
-                        <input type="number" id="prod-precio" required placeholder="22000">
+                <form id="form-admin" class="form-editorial-admin">
+                    <div class="campo-full">
+                        <label>Nombre de la prenda *</label>
+                        <input type="text" id="prod-nombre" required placeholder="Ej. Calza Oxford">
                     </div>
-                    <div>
-                        <label>Categoría</label>
-                        <div style="display: flex; gap: 0.5rem;">
-                            <select id="prod-categoria" style="flex: 1;" required></select>
-                            <button type="button" id="btn-nueva-categoria" class="btn-secundario">
-                                + Categoría
-                            </button>
+
+                    <div class="grilla-2-col">
+                        <div>
+                            <label>Precio ($) *</label>
+                            <input type="number" id="prod-precio" required placeholder="22000">
                         </div>
-                    </div>
-                </div>
-
-                <div class="caja-variantes">
-                    <label style="margin-bottom: 0.8rem; display: block; font-weight: 600;">
-                        Combinaciones de Talle, Color y Stock *
-                    </label>
-
-                    <div id="contenedor-variantes">
-                        <div class="fila-variante">
-                            <input type="text" placeholder="Talle (S, M...)" class="var-talle" required
-                                style="width: 30%;">
-                            <input type="text" placeholder="Color (Negro...)" class="var-color" required
-                                style="width: 45%;">
-                            <input type="number" placeholder="Stock" class="var-stock" required min="0"
-                                style="width: 25%;">
+                        <div>
+                            <label>Categoría</label>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <select id="prod-categoria" style="flex: 1;" required></select>
+                                <button type="button" id="btn-nueva-categoria" class="btn-secundario">+
+                                    Categoría</button>
+                            </div>
                         </div>
                     </div>
 
-                    <button type="button" id="btn-agregar-variante" class="btn-secundario" style="margin-top: 0.8rem;">
-                        + Agregar otra combinación
+                    <div class="caja-variantes">
+                        <label style="margin-bottom: 0.8rem; display: block; font-weight: 600;">
+                            Combinaciones de Talle, Color y Stock *
+                        </label>
+                        <div id="contenedor-variantes">
+                            <div class="fila-variante">
+                                <input type="text" placeholder="Talle (S, M...)" class="var-talle" required
+                                    style="width: 30%;">
+                                <input type="text" placeholder="Color (Negro...)" class="var-color" required
+                                    style="width: 45%;">
+                                <input type="number" placeholder="Stock" class="var-stock" required min="0"
+                                    style="width: 25%;">
+                            </div>
+                        </div>
+                        <button type="button" id="btn-agregar-variante" class="btn-secundario"
+                            style="margin-top: 0.8rem;">
+                            + Agregar otra combinación
+                        </button>
+                    </div>
+
+                    <div class="campo-full">
+                        <label>Fotos de la prenda (Podés seleccionar hasta 5 fotos) *</label>
+                        <input type="file" id="prod-imagenes" accept="image/*" multiple required>
+                    </div>
+
+                    <button type="submit" class="btn-guardar-admin">
+                        💾 Guardar Prenda y Stock
                     </button>
-                </div>
-
-                <div class="campo-full">
-                    <label>Fotos de la prenda (Podés seleccionar hasta 5 fotos) *</label>
-                    <input type="file" id="prod-imagenes" accept="image/*" multiple required>
-                </div>
-
-                <button type="submit" class="btn-guardar-admin">
-                    💾 Guardar Prenda y Stock
-                </button>
-            </form>
+                </form>
+            </div>
         </div>
 
+        <!-- MODAL DE EDICIÓN / RE-STOCK -->
+        <div id="modal-backdrop-editar" class="modal-backdrop oculto">
+            <div class="modal-card">
+                <div class="panel-header">
+                    <h3>Editar Prenda / Re-stock</h3>
+                    <button type="button" id="btn-cerrar-editar" class="btn-cerrar-panel"
+                        title="Cerrar modal">✕</button>
+                </div>
+
+                <form id="form-editar" class="form-editorial-admin">
+                    <input type="hidden" id="edit-prod-id">
+
+                    <div class="campo-full">
+                        <label>Nombre de la prenda</label>
+                        <input type="text" id="edit-prod-nombre" required>
+                    </div>
+
+                    <div class="grilla-2-col">
+                        <div>
+                            <label>Precio ($)</label>
+                            <input type="number" id="edit-prod-precio" required>
+                        </div>
+                        <div>
+                            <label>Categoría</label>
+                            <select id="edit-prod-categoria" required></select>
+                        </div>
+                        <!-- GESTOR DE IMÁGENES ACTUALES Y NUEVAS -->
+                        <div class="caja-variantes" style="margin-top: 1rem;">
+                            <label style="margin-bottom: 0.8rem; display: block; font-weight: 600;">
+                                Imágenes y Orden en la Tienda
+                            </label>
+
+                            <div id="contenedor-edit-fotos" class="grilla-fotos-edit"></div>
+
+                            <!-- Input para sumar fotos nuevas -->
+                            <div style="margin-top: 1rem;">
+                                <label style="font-size: 0.8rem; color: #694a32;">¿Querés agregar o reemplazar
+                                    fotos?</label>
+                                <input type="file" id="edit-prod-imagenes" accept="image/*" multiple>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lista autogenerada para cambiar cantidades de stock -->
+                    <div class="caja-variantes">
+                        <label style="margin-bottom: 0.8rem; display: block; font-weight: 600;">
+                            Ajustar Stock por Talle y Color (Re-stock)
+                        </label>
+                        <div id="contenedor-edit-variantes">
+                            <!-- Se llena con JS -->
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-guardar-admin">
+                        💾 Guardar Cambios de Stock
+                    </button>
+                </form>
+            </div>
         </div>
+
 
     </main>
 
 
-    <!-- FOOTER MODERNO EN COLUMNAS -->
+    <!-- FOOTER -->
     <footer class="footer-tienda">
         <div class="footer-columnas">
 
-            <!-- COLUMNA 1: LEGALES Y AYUDA -->
+            <!--  LEGALES Y AYUDA -->
             <div class="col-footer">
                 <h4>Atención al Cliente</h4>
                 <a href="ayuda.html#faq">Preguntas Frecuentes</a>
@@ -218,7 +275,7 @@
                 <a href="ayuda.html#legales">Avisos Legales</a>
             </div>
 
-            <!-- COLUMNA 2: MARCA CENTRAL -->
+            <!-- MARCA CENTRAL -->
             <div class="col-footer col-marca">
                 <div class="logo-footer">
                     <span class="logo-principal">justina</span>
@@ -227,7 +284,7 @@
                 <p class="slogan-footer">More than basics</p>
             </div>
 
-            <!-- COLUMNA 3: CONTACTO Y REDES -->
+            <!-- CONTACTO Y REDES -->
             <div class="col-footer">
                 <h4>Conectá con nosotros</h4>
 

@@ -1,5 +1,5 @@
 /* =========================================================
-   PANEL EDITORIAL DE CONTROL DE STOCK (ADMIN)
+   PANEL DE CONTROL DE STOCK (ADMIN)
 ========================================================= */
 
 .admin-container {
@@ -32,7 +32,7 @@
     margin-top: 0.3rem;
 }
 
-/* BOTÓN CARGAR NUEVA PRENDA */
+
 .btn-nueva-prenda {
     background-color: #3b2314;
     color: #ffffff;
@@ -50,7 +50,7 @@
     transform: translateY(-1px);
 }
 
-/* FORMULARIO EDITORIAL ORDENADO */
+
 .panel-formulario {
     background: #fffdfa;
     border: 1px solid #d8cec4;
@@ -72,7 +72,7 @@
     gap: 0.4rem;
 }
 
-/* Grilla para que Precio y Categoría queden en 2 columnas parejas */
+
 .grilla-2-col {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -99,7 +99,7 @@
     box-sizing: border-box;
 }
 
-/* BOTONES SECUNDARIOS (+ Categoría, + Combinación) EN TONO CREMA */
+
 .btn-secundario {
     background-color: #efe8de !important;
     color: #3b2314 !important;
@@ -116,7 +116,7 @@
     background-color: #e2d7c8 !important;
 }
 
-/* CAJA DE COMBINACIONES CON FONDO SUTIL */
+
 .caja-variantes {
     background: #f7f4ee;
     padding: 1.2rem;
@@ -130,7 +130,7 @@
     margin-bottom: 0.6rem;
 }
 
-/* BOTÓN GUARDAR FINAL */
+
 .btn-guardar-admin {
     background-color: #3b2314;
     color: white;
@@ -167,7 +167,7 @@
     margin: 0;
 }
 
-/* 3. Estilo prolijo para el botón X de cerrar */
+
 .btn-cerrar-panel {
     background: transparent;
     border: none;
@@ -186,7 +186,7 @@
 }
 
 /* =========================================================
-   TABLA DE INVENTARIO EDITORIAL (ADMIN)
+   TABLA DE INVENTARIO (ADMIN)
 ========================================================= */
 
 .tabla-header-bar {
@@ -215,7 +215,7 @@
     background: #fffdfa;
 }
 
-/* Tarjeta blanca que envuelve toda la tabla */
+
 .contenedor-tabla-card {
     background: #fffdfa;
     border: 1px solid #d8cec4;
@@ -249,7 +249,7 @@
     vertical-align: middle;
 }
 
-/* MINIATURA DE LA FOTO EN TABLA */
+
 .mini-foto-admin {
     width: 50px;
     height: 60px;
@@ -259,7 +259,7 @@
     background: #eee;
 }
 
-/* ETIQUETAS DE STOCK (PILLS) */
+
 .lista-tags-stock {
     display: flex;
     flex-wrap: wrap;
@@ -286,7 +286,6 @@
     font-weight: 600;
 }
 
-/* ACCIONES A LA DERECHA */
 .td-acciones {
     text-align: right;
     white-space: nowrap;
@@ -313,4 +312,125 @@
     background: #c53030;
     border-color: #c53030;
     color: white;
+}
+
+/* =========================================================
+   VENTANAS MODALES 
+========================================================= */
+
+/* Fondo oscuro que cubre toda la pantalla */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(30, 18, 10, 0.65); /* Marrón oscuro semitransparente */
+    backdrop-filter: blur(3px);               /* Leve desenfoque de la tabla de atrás */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+/* Ocultar el modal por defecto */
+.modal-backdrop.oculto {
+    display: none !important;
+}
+
+/* Tarjeta central del modal */
+.modal-card {
+    background: #fffdfa;
+    border: 1px solid #d8cec4;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 680px;
+    max-height: 90vh;                         /* Altura máxima para no salir de la pantalla */
+    overflow-y: auto;                         /* Scroll interno si la pantalla es chica */
+    padding: 2rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    animation: modalAparecer 0.25s ease-out;
+}
+
+/* Animación sutil de entrada */
+@keyframes modalAparecer {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* =========================================================
+   GESTOR DE IMÁGENES Y ORDEN (MODAL EDICIÓN)
+========================================================= */
+
+.grilla-fotos-edit {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.tarjeta-foto-edit {
+    position: relative;
+    border: 2px solid #e8e1d5;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tarjeta-foto-edit.es-portada {
+    border-color: #3b2314;
+    box-shadow: 0 0 0 1px #3b2314;
+}
+
+.tarjeta-foto-edit img {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+}
+
+.badge-portada {
+    background: #3b2314;
+    color: #ffffff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    width: 100%;
+    text-align: center;
+    padding: 0.15rem 0;
+    text-transform: uppercase;
+}
+
+.botones-foto-edit {
+    display: flex;
+    width: 100%;
+    border-top: 1px solid #e8e1d5;
+}
+
+.btn-foto-accion {
+    flex: 1;
+    background: #efe8de;
+    border: none;
+    font-size: 0.75rem;
+    padding: 0.3rem 0;
+    cursor: pointer;
+    transition: background 0.2s;
+    color: #3b2314;
+}
+
+.btn-foto-accion:hover {
+    background: #d8cec4;
+}
+
+.btn-foto-accion.borrar:hover {
+    background: #c53030;
+    color: #ffffff;
 }

@@ -1,6 +1,6 @@
-// ====================================================================
-// --- 1. GUARDIÁN DE SEGURIDAD DEL PANEL 
-// ====================================================================
+// =======================================================================
+// CONTROL DE USUARIO ADMIN, si no es admin no tiene acceso a esta pantalla
+// =======================================================================
 (function verificarPermisoAdmin() {
     const sesion = localStorage.getItem('usuario_tienda');
 
@@ -18,9 +18,9 @@
 })();
 
 // ====================================================================
-// --- 2. ELEMENTOS DEL DOM
+// ELEMENTOS DEL DOM Y VARIABLES
 // ====================================================================
-const formAdmin = document.getElementById('form-admin'); // <-- Corregido para coincidir con tu HTML
+const formAdmin = document.getElementById('form-admin'); 
 const contVariantes = document.getElementById('contenedor-variantes');
 const btnAgregarVariante = document.getElementById('btn-agregar-variante');
 const tablaInventario = document.getElementById('tabla-inventario');
@@ -31,24 +31,43 @@ const btnAbrirForm = document.getElementById('btn-abrir-form');
 const btnCerrarForm = document.getElementById('btn-cerrar-form');
 const panelNuevoProducto = document.getElementById('panel-nuevo-producto');
 
-// ====================================================================
-// --- 3. ABRIR Y CERRAR EL FORMULARIO DE NUEVA PRENDA
-// ====================================================================
-if (btnAbrirForm && panelNuevoProducto) {
-    btnAbrirForm.addEventListener('click', () => {
-        panelNuevoProducto.classList.remove('oculto');
-        panelNuevoProducto.scrollIntoView({ behavior: 'smooth' });
-    });
-}
+const modalCrear = document.getElementById('modal-backdrop-crear');
+const modalEditar = document.getElementById('modal-backdrop-editar');
+const btnCerrarEditar = document.getElementById('btn-cerrar-editar');
+const formEditar = document.getElementById('form-editar');
 
-if (btnCerrarForm && panelNuevoProducto) {
-    btnCerrarForm.addEventListener('click', () => {
-        panelNuevoProducto.classList.add('oculto');
-    });
-}
+// Variable temporal para el buscador rápido
+let listaProductosAdmin = []; 
+
+
+// Variable temporal para manipular el orden de las fotos mientras editamos
+let fotosEditTemporal = [];
 
 // ====================================================================
-// --- 4. COMBINACIONES DE TALLE, COLOR Y STOCK
+// GESTIÓN DE LAS VENTANAS MODALES
+// ====================================================================
+
+// 1. Abrir y cerrar Modal de Nueva Prenda
+if (btnAbrirForm && modalCrear) {
+    btnAbrirForm.addEventListener('click', () => modalCrear.classList.remove('oculto'));
+}
+if (btnCerrarForm && modalCrear) {
+    btnCerrarForm.addEventListener('click', () => modalCrear.classList.add('oculto'));
+}
+
+// 2. Cerrar Modal de Edición
+if (btnCerrarEditar && modalEditar) {
+    btnCerrarEditar.addEventListener('click', () => modalEditar.classList.add('oculto'));
+}
+
+// 3. Cerrar modales si hacen clic en el fondo oscuro de afuera
+window.addEventListener('click', (e) => {
+    if (e.target === modalCrear) modalCrear.classList.add('oculto');
+    if (e.target === modalEditar) modalEditar.classList.add('oculto');
+});
+
+// ====================================================================
+// COMBINACIONES DE TALLE, COLOR Y STOCK
 // ====================================================================
 if (btnAgregarVariante) {
     btnAgregarVariante.addEventListener('click', () => {
@@ -66,7 +85,7 @@ if (btnAgregarVariante) {
 }
 
 // ====================================================================
-// --- 5. GUARDAR NUEVO PRODUCTO
+// GUARDAR NUEVO PRODUCTO
 // ====================================================================
 if (formAdmin) {
     formAdmin.addEventListener('submit', async (e) => {
@@ -102,7 +121,7 @@ if (formAdmin) {
                 alert("¡Prenda y variantes cargadas con éxito!");
                 formAdmin.reset();
                 panelNuevoProducto.classList.add('oculto'); // Ocultamos el panel al guardar
-                cargarInventarioAdmin(); // Recargamos la tabla inferior
+                cargarInventarioAdmin(); // Recargamos la tabla de inventario
             }
         } catch (err) {
             console.error(err);
@@ -112,14 +131,13 @@ if (formAdmin) {
 }
 
 // ====================================================================
-// --- CARGAR INVENTARIO CON FOTOS Y TAGS DE STOCK
+//  CARGAR INVENTARIO CON FOTOS Y TAGS DE STOCK
 // ====================================================================
-let listaProductosAdmin = []; // Guardamos en memoria para el buscador rápido
 
 async function cargarInventarioAdmin() {
     if (!tablaInventario) return;
     tablaInventario.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem;">Cargando inventario...</td></tr>';
-    
+
     try {
         const res = await fetch('http://localhost:3000/api/productos');
         listaProductosAdmin = await res.json();
@@ -130,11 +148,7 @@ async function cargarInventarioAdmin() {
 }
 
 // ====================================================================
-// --- CARGAR INVENTARIO CON FOTOS Y TAGS DE STOCK
-// ====================================================================
-
-// ====================================================================
-// --- CARGAR INVENTARIO CON FOTOS LOCALES (CARPETA /imagenes)
+// CARGAR INVENTARIO CON FOTOS Y TAGS DE STOCK
 // ====================================================================
 
 // Imagen por defecto en formato SVG (No consume internet ni genera errores en consola)
@@ -149,24 +163,24 @@ function renderizarTablaAdmin(productos) {
     }
 
     productos.forEach(prod => {
-        // 1. Obtenemos el nombre del archivo (soporta si está en un array prod.fotos[0] o como texto simple en prod.imagen/prod.fotos)
-        const nombreArchivo = (Array.isArray(prod.fotos) && prod.fotos.length > 0) 
-            ? prod.fotos[0] 
+        // 1. Obtenemos el nombre del archivo 
+        const nombreArchivo = (Array.isArray(prod.fotos) && prod.fotos.length > 0)
+            ? prod.fotos[0]
             : (prod.imagen || (typeof prod.fotos === 'string' ? prod.fotos : null));
 
         // 2. Apuntamos directo a tu carpeta del frontend "imagenes/"
-        const rutaFoto = nombreArchivo 
-            ? `/${nombreArchivo}` 
+        const rutaFoto = nombreArchivo
+            ? `/${nombreArchivo}`
             : FOTO_DEFAULT;
 
-        // 3. Badges visuales de stock (con alerta en rojo si es 0)
+        // 3. Badges visuales de stock 
         const badgesStock = prod.variantes
             ? prod.variantes.map(v => {
                 const claseCero = v.stock === 0 ? 'sin-stock' : '';
                 return `<span class="tag-stock ${claseCero}">
                             <b>${v.talle}</b> ${v.color} (${v.stock})
                         </span>`;
-              }).join('')
+            }).join('')
             : '<span class="tag-stock">Sin variantes</span>';
 
         const tr = document.createElement('tr');
@@ -204,14 +218,14 @@ function renderizarTablaAdmin(productos) {
 }
 
 // ====================================================================
-// --- BUSCADOR RÁPIDO EN VIVO
+// BUSCADOR RAPIDO
 // ====================================================================
 const inputBuscarAdmin = document.getElementById('buscar-inventario');
 if (inputBuscarAdmin) {
     inputBuscarAdmin.addEventListener('input', (e) => {
         const busqueda = e.target.value.toLowerCase().trim();
-        const filtrados = listaProductosAdmin.filter(p => 
-            p.nombre.toLowerCase().includes(busqueda) || 
+        const filtrados = listaProductosAdmin.filter(p =>
+            p.nombre.toLowerCase().includes(busqueda) ||
             p.categoria.toLowerCase().includes(busqueda)
         );
         renderizarTablaAdmin(filtrados);
@@ -219,35 +233,159 @@ if (inputBuscarAdmin) {
 }
 
 // ====================================================================
-// --- 7. ACCIONES: BORRAR Y EDITAR
+// ABRIR MODAL DE EDICIÓN CON FOTOS Y ORDEN
 // ====================================================================
-async function borrarProducto(id) {
-    if (confirm("⚠️ ¿Estás segura de eliminar esta prenda y todas sus variantes de stock?")) {
-        await fetch(`http://localhost:3000/api/productos/${id}`, { method: 'DELETE' });
-        cargarInventarioAdmin();
+function editarProducto(id) {
+    const prod = listaProductosAdmin.find(p => p.id === id);
+    if (!prod || !modalEditar) return;
+
+    document.getElementById('edit-prod-id').value = prod.id;
+    document.getElementById('edit-prod-nombre').value = prod.nombre;
+    document.getElementById('edit-prod-precio').value = prod.precio;
+
+    const selectCatEdit = document.getElementById('edit-prod-categoria');
+    const selectCatMain = document.getElementById('prod-categoria');
+    if (selectCatEdit && selectCatMain) {
+        selectCatEdit.innerHTML = selectCatMain.innerHTML;
+        selectCatEdit.value = prod.categoria;
     }
-}
 
-async function editarProducto(id) {
-    const nuevoNombre = prompt("Nuevo nombre para la prenda:");
-    const nuevoPrecio = prompt("Nuevo precio ($):");
-
-    if (nuevoNombre && nuevoPrecio) {
-        await fetch(`http://localhost:3000/api/productos/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                nombre: nuevoNombre,
-                precio: Number(nuevoPrecio),
-                categoria: "Calzas" // Podés cambiarlo para pedir categoría también si querés
-            })
+    const contVariantesEdit = document.getElementById('contenedor-edit-variantes');
+    contVariantesEdit.innerHTML = '';
+    if (prod.variantes) {
+        prod.variantes.forEach(varItem => {
+            const fila = document.createElement('div');
+            fila.classList.add('fila-variante');
+            fila.innerHTML = `
+                <input type="text" value="${varItem.talle}" class="edit-var-talle" readonly style="width: 30%; background:#eae4dc; font-weight:bold;">
+                <input type="text" value="${varItem.color}" class="edit-var-color" readonly style="width: 45%; background:#eae4dc;">
+                <input type="number" value="${varItem.stock}" class="edit-var-stock" required min="0" style="width: 25%; font-weight:600; border:2px solid #3b2314;">
+            `;
+            contVariantesEdit.appendChild(fila);
         });
-        cargarInventarioAdmin();
     }
+
+    let datoFotos = prod.imagenes || prod.fotos || prod.imagen || [];
+
+    if (typeof datoFotos === 'string') {
+        const texto = datoFotos.trim();
+        if (texto.startsWith('[') && texto.endsWith(']')) {
+            try { datoFotos = JSON.parse(texto); } catch (e) { datoFotos = [texto]; }
+        } else if (texto.includes(',')) {
+            datoFotos = texto.split(',').map(n => n.trim()).filter(n => n !== '');
+        } else if (texto !== '') {
+            datoFotos = [texto];
+        } else {
+            datoFotos = [];
+        }
+    }
+
+    fotosEditTemporal = Array.isArray(datoFotos) ? [...datoFotos] : [];
+
+    renderizarFotosEdicion();
+    modalEditar.classList.remove('oculto');
 }
 
 // ====================================================================
-// --- 8. CARGAR Y CREAR CATEGORÍAS EN EL DESPLEGABLE
+// DIBUJAR LAS FOTOS Y SUS CONTROLES DE PORTADA/BORRAR
+// ====================================================================
+function renderizarFotosEdicion() {
+    const contenedorFotos = document.getElementById('contenedor-edit-fotos');
+    if (!contenedorFotos) return;
+    contenedorFotos.innerHTML = '';
+
+    if (fotosEditTemporal.length === 0) {
+        contenedorFotos.innerHTML = '<p style="font-size:0.8rem; color:#888; grid-column: 1/-1;">No hay imágenes guardadas.</p>';
+        return;
+    }
+
+    fotosEditTemporal.forEach((rutaFoto, index) => {
+        const esPortada = (index === 0);
+        const srcFinal = rutaFoto.startsWith('imagenes/') ? rutaFoto : `/${rutaFoto}`;
+
+        const tarjeta = document.createElement('div');
+        tarjeta.className = `tarjeta-foto-edit ${esPortada ? 'es-portada' : ''}`;
+        
+        tarjeta.innerHTML = `
+            ${esPortada ? '<div class="badge-portada">Portada #1</div>' : ''}
+            <img src="${srcFinal}" alt="Foto ${index + 1}" onerror="this.src='https://via.placeholder.com/80?text=Foto'">
+            <div class="botones-foto-edit">
+                ${!esPortada ? `<button type="button" class="btn-foto-accion" onclick="hacerFotoPortada(${index})" title="Poner primero en la tienda">⭐ Portada</button>` : ''}
+                <button type="button" class="btn-foto-accion borrar" onclick="borrarFotoEdicion(${index})" title="Eliminar imagen">🗑️</button>
+            </div>
+        `;
+        contenedorFotos.appendChild(tarjeta);
+    });
+}
+// Mover una imagen a la posición 0 (Portada de la card)
+window.hacerFotoPortada = function (index) {
+    const fotoSeleccionada = fotosEditTemporal.splice(index, 1)[0];
+    fotosEditTemporal.unshift(fotoSeleccionada); // La mandamos adelante de todo
+    renderizarFotosEdicion();
+};
+
+// Quitar una imagen de la lista
+window.borrarFotoEdicion = function (index) {
+    if (confirm("¿Sacar esta foto del producto?")) {
+        fotosEditTemporal.splice(index, 1);
+        renderizarFotosEdicion();
+    }
+};
+
+// ====================================================================
+// GUARDAR TODO (STOCK + FOTOS ORDENADAS + FOTOS NUEVAS)
+// ====================================================================
+if (formEditar) {
+    formEditar.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('edit-prod-id').value;
+
+        const filasEdit = document.querySelectorAll('#contenedor-edit-variantes .fila-variante');
+        const variantesActualizadas = [];
+        filasEdit.forEach(fila => {
+            variantesActualizadas.push({
+                talle: fila.querySelector('.edit-var-talle').value,
+                color: fila.querySelector('.edit-var-color').value,
+                stock: parseInt(fila.querySelector('.edit-var-stock').value)
+            });
+        });
+
+        // Usamos FormData porque ahora podemos estar enviando archivos nuevos + el array ordenado
+        const formData = new FormData();
+        formData.append('nombre', document.getElementById('edit-prod-nombre').value.trim());
+        formData.append('precio', document.getElementById('edit-prod-precio').value);
+        formData.append('categoria', document.getElementById('edit-prod-categoria').value);
+        formData.append('variantes', JSON.stringify(variantesActualizadas));
+
+        // Enviamos el array con el NUEVO ORDEN de las fotos que ya existían
+        formData.append('fotosExistentes', JSON.stringify(fotosEditTemporal));
+
+        // Si subió archivos nuevos los sumamos
+        const archivosNuevos = document.getElementById('edit-prod-imagenes').files;
+        for (let i = 0; i < archivosNuevos.length; i++) {
+            formData.append('fotosNuevas', archivosNuevos[i]);
+        }
+
+        try {
+            const res = await fetch(`http://localhost:3000/api/productos/${id}`, {
+                method: 'PUT',
+                body: formData 
+            });
+
+            if (res.ok) {
+                alert("¡Prenda, orden de fotos y stock actualizados!");
+                modalEditar.classList.add('oculto');
+                formEditar.reset();
+                cargarInventarioAdmin(); 
+            }
+        } catch (err) {
+            console.error("Error actualizando prenda:", err);
+            alert("Error al conectar con el servidor para guardar los cambios.");
+        }
+    });
+}
+// ====================================================================
+// CARGAR Y CREAR CATEGORÍAS EN EL DESPLEGABLE
 // ====================================================================
 async function cargarCategorias(categoriaSeleccionada = null) {
     if (!selectCategoria) return;
@@ -300,6 +438,9 @@ if (btnNuevaCategoria) {
     });
 }
 
+
 // Cargas iniciales al entrar a la página
 cargarCategorias();
+
+// Cargar inventario al entrar a la página
 cargarInventarioAdmin();
