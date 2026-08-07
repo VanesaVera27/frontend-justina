@@ -10,7 +10,7 @@ const usuario = JSON.parse(sesion);
 function cambiarTab(pestaña) {
     document.querySelectorAll('.vista-perfil').forEach(v => v.classList.remove('activo'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('activo'));
-    
+
     document.getElementById(`tab-${pestaña}`).classList.add('activo');
     event.currentTarget.classList.add('activo');
 
@@ -55,7 +55,35 @@ document.getElementById('btn-eliminar-cuenta').addEventListener('click', async (
     }
 });
 
-// 3. CARGAR DIRECCIONES
+// ====================================================================
+// 3. GESTIÓN DE DIRECCIONES (CON VERIFICACIÓN DE CONTRASEÑA)
+// ====================================================================
+
+// A. Función auxiliar: Pedir contraseña y validarla con el backend
+async function verificarPasswordSeguridad() {
+    const passwordIngresada = prompt("🔐 Por seguridad, ingresá tu contraseña para confirmar esta acción:");
+    if (!passwordIngresada) return false; // Si tocó cancelar o dejó vacío
+
+    try {
+        const resp = await fetch('http://localhost:3000/api/usuarios/verificar-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ usuario_id: usuario.id, password: passwordIngresada })
+        });
+
+        if (resp.ok) {
+            return true;
+        } else {
+            alert("❌ Contraseña incorrecta. Acción cancelada por seguridad.");
+            return false;
+        }
+    } catch (err) {
+        alert("Error al conectar con el servidor para verificar seguridad.");
+        return false;
+    }
+}
+
+// B. Cargar direcciones en pantalla sumando botones de Editar y Eliminar
 async function cargarDirecciones() {
     const cont = document.getElementById('lista-direcciones');
     cont.innerHTML = '<p>Cargando direcciones...</p>';
@@ -63,16 +91,38 @@ async function cargarDirecciones() {
         const res = await fetch(`http://localhost:3000/api/direcciones/${usuario.id}`);
         const direcciones = await res.json();
         cont.innerHTML = '';
+        
         if (direcciones.length === 0) {
             cont.innerHTML = '<p style="color:#888;">Todavía no tenés direcciones guardadas.</p>';
             return;
         }
+
         direcciones.forEach(d => {
             const div = document.createElement('div');
             div.className = 'card-dir';
+            
+            // Usamos encodeURIComponent para pasar el objeto completo a la función de edición
+            const datosDirJson = encodeURIComponent(JSON.stringify(d));
+
             div.innerHTML = `
-                <b>📍 ${d.calle_numero}</b><br>
-                <small>${d.localidad}, ${d.provincia} (CP: ${d.codigo_postal}) - ${d.pais}</small>
+                <div>
+                    <b style="color: #3b2314; font-size: 1.05rem;">📍 ${d.calle_numero}</b><br>
+                    <small style="color: #666; font-size: 0.9rem;">
+                        ${d.localidad}, ${d.provincia} — CP: <b>${d.codigo_postal}</b> (${d.pais})
+                    </small>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button type="button" onclick="iniciarEdicionDir('${datosDirJson}')"
+                            style="background: #efe8de; border: none; padding: 0.5rem 0.8rem; border-radius: 4px; cursor: pointer; color: #3b2314;" 
+                            title="Editar dirección">
+                        ✏️
+                    </button>
+                    <button type="button" onclick="eliminarDireccion(${d.id})"
+                            style="background: #fff0f0; border: 1px solid #ffccd0; padding: 0.5rem 0.8rem; border-radius: 4px; cursor: pointer; color: #c53030;" 
+                            title="Eliminar dirección">
+                        🗑️
+                    </button>
+                </div>
             `;
             cont.appendChild(div);
         });
@@ -81,10 +131,69 @@ async function cargarDirecciones() {
     }
 }
 
-// Guardar nueva dirección
+// C. ELIMINAR DIRECCIÓN (Pidiendo contraseña primero)
+async function eliminarDireccion(idDireccion) {
+    // 1. Verificamos contraseña
+    const esValido = await verificarPasswordSeguridad();
+    if (!esValido) return;
+
+    // 2. Si la clave es correcta, borramos la dirección
+    try {
+        const resp = await fetch(`http://localhost:3000/api/direcciones/${idDireccion}`, {
+            method: 'DELETE'
+        });
+        if (resp.ok) {
+            alert("🗑️ Dirección eliminada correctamente.");
+            cargarDirecciones();
+        }
+    } catch (err) {
+        alert("Error al intentar eliminar la dirección.");
+    }
+}
+
+// D. INICIAR MODO EDICIÓN (Llenamos el formulario con los datos viejos)
+function iniciarEdicionDir(datosCifrados) {
+    const d = JSON.parse(decodeURIComponent(datosCifrados));
+
+    // Llenamos el form con los valores actuales
+    document.getElementById('dir-id-edicion').value = d.id;
+    document.getElementById('dir-calle').value = d.calle_numero;
+    document.getElementById('dir-cp').value = d.codigo_postal;
+    document.getElementById('dir-localidad').value = d.localidad;
+    document.getElementById('dir-provincia').value = d.provincia;
+    document.getElementById('dir-pais').value = d.pais;
+
+    // Cambiamos el texto del botón y mostramos "Cancelar"
+    document.getElementById('titulo-form-direccion').textContent = "✏️ Editar Dirección";
+    document.getElementById('btn-submit-dir').textContent = "💾 Actualizar Dirección";
+    document.getElementById('btn-cancelar-edicion').style.display = 'inline-block';
+
+    // Scrolleamos suavemente hasta el formulario para que la clienta vea dónde editar
+    document.getElementById('form-nueva-direccion').scrollIntoView({ behavior: 'smooth' });
+}
+
+// E. CANCELAR EDICIÓN (Limpiamos y volvemos a modo "Crear")
+function cancelarEdicionDir() {
+    document.getElementById('form-nueva-direccion').reset();
+    document.getElementById('dir-id-edicion').value = "";
+    document.getElementById('titulo-form-direccion').textContent = "➕ Agregar una nueva dirección";
+    document.getElementById('btn-submit-dir').textContent = "📍 Guardar Dirección";
+    document.getElementById('btn-cancelar-edicion').style.display = 'none';
+}
+
+// F. SUBMIT: Sirve tanto para CREAR NUEVA como para ACTUALIZAR UNA VIEJA
 document.getElementById('form-nueva-direccion').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const nuevaDir = {
+    
+    const idEdicion = document.getElementById('dir-id-edicion').value;
+
+    // Si está editando una dirección existente -> PEDIMOS CONTRASEÑA POR SEGURIDAD
+    if (idEdicion !== "") {
+        const esValido = await verificarPasswordSeguridad();
+        if (!esValido) return;
+    }
+
+    const datosDir = {
         usuario_id: usuario.id,
         calle_numero: document.getElementById('dir-calle').value.trim(),
         codigo_postal: document.getElementById('dir-cp').value.trim(),
@@ -92,16 +201,29 @@ document.getElementById('form-nueva-direccion').addEventListener('submit', async
         provincia: document.getElementById('dir-provincia').value.trim(),
         pais: document.getElementById('dir-pais').value.trim()
     };
+
     try {
-        const resp = await fetch('http://localhost:3000/api/direcciones', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(nuevaDir)
-        });
+        let resp;
+        if (idEdicion === "") {
+            // CREAR NUEVA (POST)
+            resp = await fetch('http://localhost:3000/api/direcciones', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datosDir)
+            });
+        } else {
+            // ACTUALIZAR EXISTENTE (PUT)
+            resp = await fetch(`http://localhost:3000/api/direcciones/${idEdicion}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datosDir)
+            });
+        }
+
         if (resp.ok) {
-            alert("¡Dirección guardada!");
-            document.getElementById('form-nueva-direccion').reset();
-            cargarDirecciones();
+            alert(idEdicion === "" ? "¡Dirección guardada con éxito!" : "¡Dirección actualizada con éxito!");
+            cancelarEdicionDir(); // Limpia el formulario y resetea los botones
+            cargarDirecciones();  // Recarga la lista
         }
     } catch (err) {
         alert("Error al guardar la dirección.");

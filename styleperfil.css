@@ -1,0 +1,208 @@
+/* =========================================================
+   CONTENEDOR PRINCIPAL DEL PERFIL
+========================================================= */
+.perfil-container {
+    max-width: 920px;
+    margin: 3rem auto;
+    background: #fffdfa;              /* Fondo crema boutique */
+    padding: 2.5rem 3rem;
+    border: 1px solid #e8e1d5;
+    border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(59, 35, 20, 0.08);
+}
+
+.perfil-container h1 {
+    font-family: 'Abril Fatface', serif;
+    color: #3b2314;
+    font-size: 2.2rem;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+}
+
+/* =========================================================
+   PESTAÑAS DE NAVEGACIÓN (TABS)
+========================================================= */
+.pestanas-perfil {
+    display: flex;
+    border-bottom: 2px solid #e8e1d5;
+    margin-bottom: 2.5rem;
+    gap: 0.5rem;
+    overflow-x: auto;                 /* Scroll en celular si no entra */
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.05rem;
+    padding: 0.9rem 1.8rem;
+    cursor: pointer;
+    font-weight: 600;
+    color: #88786b;
+    border-bottom: 3px solid transparent;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+}
+
+.tab-btn:hover {
+    color: #3b2314;
+    background: #fcf9f5;
+}
+
+.tab-btn.activo {
+    color: #3b2314;
+    border-bottom: 3px solid #3b2314;
+    margin-bottom: -2px;
+    font-weight: 700;
+}
+
+.vista-perfil {
+    display: none;
+    animation: fadeInTab 0.3s ease;
+}
+
+.vista-perfil.activo {
+    display: block;
+}
+
+@keyframes fadeInTab {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================================
+   ESTILOS GENERALES DE FORMULARIOS DEL PERFIL
+========================================================= */
+.form-perfil-estilizado label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #5a3d28;
+    margin-top: 1rem;
+    margin-bottom: 0.35rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-perfil-estilizado input[type="text"],
+.form-perfil-estilizado input[type="email"],
+.form-perfil-estilizado input[type="password"] {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1px solid #d8cec4;
+    border-radius: 6px;
+    background-color: #ffffff;
+    font-size: 0.95rem;
+    color: #3b2314;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-perfil-estilizado input:focus {
+    border-color: #3b2314;
+    box-shadow: 0 0 0 3px rgba(59, 35, 20, 0.08);
+}
+
+.form-perfil-estilizado input:disabled {
+    background-color: #f2ede6 !important;
+    color: #7d6b5d !important;
+    cursor: not-allowed;
+    border-color: #e2dad0;
+}
+
+/* Grilla responsive para agregar dirección */
+.grilla-direcciones {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.grilla-full {
+    grid-column: span 2;
+}
+
+/* =========================================================
+   TARJETAS DE DIRECCIÓN Y ZONA DE RIESGO
+========================================================= */
+.card-dir {
+    border: 1px solid #d8cec4;
+    padding: 1.2rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    background: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: border-color 0.2s;
+}
+
+.card-dir:hover {
+    border-color: #3b2314;
+}
+
+.zona-riesgo {
+    background: #fff8f8;
+    border: 1px solid #fed7d7;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-top: 2.5rem;
+}
+
+/* =========================================================
+   TABLA DE PEDIDOS EDITORIAL
+========================================================= */
+.tabla-mis-pedidos {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 1.2rem;
+    font-size: 0.95rem;
+}
+
+.tabla-mis-pedidos th {
+    background-color: #efe8de;
+    color: #3b2314;
+    font-weight: 700;
+    text-align: left;
+    padding: 1rem;
+    border-bottom: 2px solid #d8cec4;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+}
+
+.tabla-mis-pedidos td {
+    padding: 1.1rem 1rem;
+    border-bottom: 1px solid #e8e1d5;
+    color: #4a3322;
+    vertical-align: middle;
+}
+
+.tabla-mis-pedidos tr:hover td {
+    background-color: #fcf9f5;
+}
+
+/* =========================================================
+   ADAPTACIÓN CELULAR (RESPONSIVE)
+========================================================= */
+@media (max-width: 768px) {
+    .perfil-container {
+        padding: 1.5rem;
+        margin: 1.5rem 1rem;
+    }
+    
+    .grilla-direcciones {
+        grid-template-columns: 1fr;
+    }
+    
+    .grilla-full {
+        grid-column: span 1;
+    }
+    
+    .tabla-mis-pedidos {
+        display: block;
+        overflow-x: auto;
+    }
+}

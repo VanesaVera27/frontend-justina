@@ -30,6 +30,7 @@ const btnCerrarModalLogin = document.getElementById('btn-cerrar-modal-login');
 //NAVEGACION DE HEADER
 const menuCategorias = document.getElementById('menu-categorias');
 const navInicio = document.getElementById('nav-inicio');
+const logoLink = document.getElementById('logo-link');
 
 //VARIABLES
 
@@ -39,6 +40,9 @@ let productos = [];
 let carrito = [];
 // Objeto en memoria para saber qué índice de foto está mirando el cliente en cada tarjeta
 const indiceImagenActual = {};
+// Arreglo que carga los IDs de productos favoritos desde el navegador
+let favoritos = [];
+
 
 
 
@@ -137,8 +141,21 @@ function mostrarProductosEnPantalla(listaProductos) {
             opcionesColores = `<option value="Único">Único</option>`;
         }
 
+        const esFavorito = favoritos.includes(prod.id);
+
         card.innerHTML = `
             <div class="carrusel-card ${tieneMasDeUnaFoto ? '' : 'sin-flechas'}">
+
+                <!-- BOTÓN FLOTANTE DE FAVORITOS CON SVG MINIMALISTA -->
+                <button type="button" 
+                        class="btn-favorito ${esFavorito ? 'liked' : ''}" 
+                        onclick="toggleFavorito(${prod.id}, this)" 
+                        title="${esFavorito ? 'Quitar de favoritos' : 'Agregar a favoritos'}">
+                    <svg viewBox="0 0 24 24" class="icono-corazon">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </button>
+
                 <img src="${fotos[0]}" alt="${prod.nombre}" id="img-card-${prod.id}">
                 <button class="btn-flecha prev" onclick="cambiarImagenCard(${prod.id}, -1)" title="Anterior">◄</button>
                 <button class="btn-flecha next" onclick="cambiarImagenCard(${prod.id}, 1)" title="Siguiente">►</button>
@@ -176,6 +193,49 @@ function mostrarProductosEnPantalla(listaProductos) {
 
 
 // ====================================================================
+// CARGAR FAVORITOS DEL USUARIO DESDE POSTGRESQL
+// ====================================================================
+async function cargarFavoritosDesdeBD() {
+    const sesion = localStorage.getItem('usuario_tienda');
+    if (!sesion) {
+        favoritos = [];
+        return;
+    }
+
+    const usuario = JSON.parse(sesion);
+    try {
+        const res = await fetch(`http://localhost:3000/api/favoritos/${usuario.id}`);
+        if (res.ok) {
+            favoritos = await res.json();
+            // Si las tarjetas ya estaban dibujadas en pantalla, actualizamos qué corazones están rojos
+            actualizarCorazonesEnPantalla();
+        }
+    } catch (err) {
+        console.error("No se pudieron cargar los favoritos desde la base de datos:", err);
+    }
+}
+
+// Función auxiliar que repinta los corazones sin tener que recargar toda la página
+function actualizarCorazonesEnPantalla() {
+    productos.forEach(prod => {
+        const btnFav = document.querySelector(`.card-producto #img-card-${prod.id}`)
+            ?.closest('.carrusel-card')
+            ?.querySelector('.btn-favorito');
+
+        if (btnFav) {
+            const esFav = favoritos.includes(prod.id);
+            if (esFav) {
+                btnFav.classList.add('liked');
+                btnFav.title = "Quitar de favoritos";
+            } else {
+                btnFav.classList.remove('liked');
+                btnFav.title = "Agregar a favoritos";
+            }
+        }
+    });
+}
+
+// ====================================================================
 // FUNCION PARA ACTUALIZAR LOS COLORES SEGUN EL TALLE ELEGIDO
 // ====================================================================
 
@@ -201,6 +261,56 @@ function actualizarColoresDisponibles(idProducto) {
         option.textContent = color;
         selectColor.appendChild(option);
     });
+}
+
+// ====================================================================
+// FUNCIÓN PARA AGREGAR / QUITAR DE FAVORITOS 
+// ====================================================================
+async function toggleFavorito(idProducto, btnElemento) {
+    const sesion = localStorage.getItem('usuario_tienda');
+    
+    // 1. SI NO INICIÓ SESIÓN: Le avisamos de forma profesional que ingrese
+    if (!sesion) {
+        alert("Iniciá sesión o creá una cuenta gratis para guardar productos en tu lista de favoritos ❤️");
+        if (modalLogin) {
+            modalLogin.classList.add('activo');
+            document.getElementById('tab-login')?.click();
+        }
+        return;
+    }
+
+    const usuario = JSON.parse(sesion);
+    const yaEraFavorito = favoritos.includes(idProducto);
+
+    try {
+        if (!yaEraFavorito) {
+            // A. AGREGAR A LA BASE DE DATOS
+            const res = await fetch('http://localhost:3000/api/favoritos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usuario_id: usuario.id, producto_id: idProducto })
+            });
+
+            if (res.ok) {
+                favoritos.push(idProducto);
+                btnElemento.classList.add('liked');
+                btnElemento.title = "Quitar de favoritos";
+            }
+        } else {
+            // B. BORRAR DE LA BASE DE DATOS
+            const res = await fetch(`http://localhost:3000/api/favoritos/${usuario.id}/${idProducto}`, {
+                method: 'DELETE'
+            });
+
+            if (res.ok) {
+                favoritos = favoritos.filter(id => id !== idProducto);
+                btnElemento.classList.remove('liked');
+                btnElemento.title = "Agregar a favoritos";
+            }
+        }
+    } catch (err) {
+        alert("Hubo un error al guardar tu favorito. Verificá tu conexión.");
+    }
 }
 
 // ====================================================================
@@ -308,7 +418,6 @@ async function cargarDireccionesEnCarrito() {
     }
 }
 
-
 // ====================================================================
 // EVENTO DEL MODAL CARRITO, ABRIR Y CERRAR
 // ====================================================================
@@ -405,14 +514,10 @@ if (btnFinalizarCompra) {
     });
 }
 
-
 // =========================================================
 // CONTROL DEL HEADER SEGUN ROL
 // =========================================================
 
-
-
-// 1. Función para actualizar el header según quién entró
 function actualizarInterfazHeader() {
     const sesionGuardada = localStorage.getItem('usuario_tienda');
 
@@ -421,7 +526,7 @@ function actualizarInterfazHeader() {
         const primerNombre = usuario.nombre.split(' ')[0];
 
         // Cambiamos el texto del botón y activamos el desplegable
-        btnLoginHeader.innerHTML = `Hola, ${primerNombre.toLowerCase()} ▾`;
+        btnLoginHeader.innerHTML = `Hola, ${primerNombre} ▾`;
         if (contenedorDropdown) contenedorDropdown.classList.add('sesion-activa');
 
         // A. Opciones comunes para cualquier logueado (Cliente o Admin)
@@ -440,8 +545,8 @@ function actualizarInterfazHeader() {
     } else {
         // NO HAY SESIÓN: dejamos el botón normal y ocultamos todo el menú
         btnLoginHeader.innerHTML = `👤 Iniciar Sesión`;
+        btnCarrito.style.display ="block"
         if (contenedorDropdown) contenedorDropdown.classList.remove('sesion-activa');
-
         if (btnConfigAdmin) btnConfigAdmin.style.display = 'none';
         if (btnPedidosAdmin) btnPedidosAdmin.style.display = 'none';
         if (btnPerfil) btnPerfil.style.display = 'none';
@@ -472,6 +577,8 @@ if (btnLogoutHeader) {
             if (confirm(`¿Querés cerrar la sesión de ${usuario.nombre}?`)) {
                 localStorage.removeItem('usuario_tienda');
                 actualizarInterfazHeader();
+                favoritos = [];
+                actualizarCorazonesEnPantalla();
             }
         }
     });
@@ -499,6 +606,7 @@ if (formLogin) {
 
                 // Actualizamos el header en vivo sin recargar la página
                 actualizarInterfazHeader();
+                cargarFavoritosDesdeBD();
 
                 // Cerramos la ventana modal
                 if (modalLogin) modalLogin.classList.remove('activo');
@@ -575,6 +683,7 @@ if (formRegistro) {
                 // Guardamos la sesión local e iniciamos su cuenta automáticamente
                 localStorage.setItem('usuario_tienda', JSON.stringify(nuevoUsuario));
                 actualizarInterfazHeader(); 
+                cargarFavoritosDesdeBD();
 
                 formRegistro.reset();
                 if (modalLogin) modalLogin.classList.remove('activo');
@@ -587,6 +696,7 @@ if (formRegistro) {
         }
     });
 }
+
 // =========================================================
 //  NAVEGACIÓN DE HEADER
 // =========================================================
@@ -648,8 +758,6 @@ function filtrarPorCategoria(categoriaSeleccionada) {
 
 // COMPORTAMIENTO DEL BOTÓN "INICIO" O LOGO 
 
-const logoLink = document.getElementById('logo-link');
-
 function irAlInicio(e) {
     const paginaActual = window.location.pathname;
     const estamosEnIndex = paginaActual.endsWith('index.html') || paginaActual === '/' || paginaActual.endsWith('/');
@@ -682,3 +790,5 @@ cargarCategoriasEnHeader();
 
 // ¡Apenas carga index.html, revisamos quién está conectado para dibujar el header correcto!
 actualizarInterfazHeader();
+
+cargarFavoritosDesdeBD();

@@ -448,6 +448,55 @@
     display: none;
 }
 
+/* Botón favoritos */
+.carrusel-card {
+    position: relative !important;
+}
+
+/* Botón flotante limpio en la esquina superior derecha */
+.card-producto .btn-favorito {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.85); /* Fondo blanco semitransparente sutil */
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    padding: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.card-producto .btn-favorito:hover {
+    transform: scale(1.1);
+}
+
+/* Estilo por defecto: Corazón VACÍO (Solo contorno negro/oscuro) */
+.card-producto .icono-corazon {
+    width: 20px;
+    height: 20px;
+    fill: none;               /* Interior vacío */
+    stroke: #222222;          /* Contorno negro minimalista */
+    stroke-width: 1;
+    transition: fill 0.25s ease, stroke 0.25s ease;
+}
+
+/* CUANDO ESTÁ SELECCIONADO (LIKED): Fondo y corazón rojos */
+.card-producto .btn-favorito.liked {
+    background: #e63946;      /* Fondo rojo moderno */
+}
+
+.card-producto .btn-favorito.liked .icono-corazon {
+    fill: #ffffff;            /* Corazón relleno blanco sobre fondo rojo */
+    stroke: #ffffff;
+}
+
 
 /* -------------------------------------------------------------------------------ventana modal de carrito */
 .modal-overlay {
@@ -576,19 +625,109 @@
 /*-----------------------------------------------------------------------------ventana modal login/cuenta*/
 
 
-.modal-cuerpo {
-    background-color: #fffedf;
-    justify-content: center;
-    width: 100%;
-    max-width: 500px;
-    overflow: hidden;
+/* Caja principal del modal */
+.modal-login-box {
+    background: #fffdfa !important; /* Unificamos todo en crema editorial */
+    border: 1px solid #d8cec4;
+    border-radius: 12px;
+    width: 90% !important;
+    max-width: 440px !important;
+    padding: 2.2rem 2rem !important;
+    box-shadow: 0 20px 40px rgba(59, 35, 20, 0.15);
+    position: relative;
+}
+
+/* Cabecera y Pestañas */
+.modal-login-box .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e8e1d5;
+    padding-bottom: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.pestanas-login {
+    display: flex;
+    gap: 1.5rem;
+    font-family: 'Abril Fatface', serif;
+    font-size: 1.35rem;
+}
+
+.pestanas-login span {
+    transition: color 0.2s, border-color 0.2s;
+    padding-bottom: 0.3rem;
+}
+
+/* Formularios ordenados y con respiración */
+.form-login {
     display: flex;
     flex-direction: column;
+    gap: 0.8rem;
+}
+
+.form-login label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #5a3d28;
+    margin-top: 0.3rem;
+}
+
+.form-login input[type="email"],
+.form-login input[type="password"],
+.form-login input[type="text"] {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1px solid #d8cec4;
+    border-radius: 6px;
+    background-color: #ffffff;
+    font-size: 0.95rem;
+    color: #3b2314;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-login input:focus {
+    border-color: #3b2314;
+    box-shadow: 0 0 0 3px rgba(59, 35, 20, 0.08);
+}
+
+.form-login .btn-comprar {
+    margin-top: 1.2rem !important;
+    padding: 0.95rem;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+}
+
+/* AJUSTES RESPONSIVE PARA CELULARES */
+@media (max-width: 480px) {
+    .modal-login-box {
+        padding: 1.5rem 1.2rem !important;
+        width: 95% !important;
+    }
+    .pestanas-login {
+        font-size: 1.15rem;
+        gap: 1rem;
+    }
 }
 
 
 
+
 /*----------------------------------------------------------------------------- footer*/
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/* El main toma todo el espacio sobrante y empuja el footer al final */
+main, .contenedor, .contenedor-perfil {
+    flex: 1;
+}
 
 .footer-tienda {
     background-color: #3b2314;
@@ -761,7 +900,7 @@
 
 
 /* =========================================================
-   PÁGINA DE CONTACTO EDITORIAL
+   PÁGINA DE CONTACTO 
 ========================================================= */
 
 .banner-contacto {
