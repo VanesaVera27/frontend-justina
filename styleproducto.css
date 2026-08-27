@@ -1,0 +1,187 @@
+/* =========================================================
+   PÁGINA DE DETALLE DE PRODUCTO (PDP)
+========================================================= */
+.vista-producto-detalle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    padding-top: 3rem;
+    padding-bottom: 5rem;
+    align-items: start;
+}
+
+.detalle-galeria img {
+    width: 100%;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.detalle-breadcrumbs {
+    font-size: 0.75rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#detalle-titulo {
+    font-family: inherit;
+    font-size: 2rem;
+    color: #3b2314;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.detalle-bloque-precio {
+    margin: 1.5rem 0;
+}
+
+.detalle-bloque-precio .precio-final {
+    font-size: 1.5rem;
+}
+
+.selector-fila {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e0d9d3;
+    padding: 1rem 0;
+}
+
+.selector-fila select {
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: #3b2314;
+    outline: none;
+    cursor: pointer;
+    text-align: right;
+}
+
+.btn-comprar-detalle {
+    width: 100%;
+    padding: 1.2rem;
+    font-size: 1rem;
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+}
+
+/* Acordeones */
+.acordeon-item {
+    border-bottom: 1px solid #e0d9d3;
+}
+
+.acordeon-titulo {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    background: none;
+    border: none;
+    padding: 1rem 0;
+    font-family: inherit;
+    color: #5a3d28;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-align: left;
+}
+
+.acordeon-contenido {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.6;
+}
+
+.acordeon-contenido.abierto {
+    max-height: 200px;
+    padding-bottom: 1rem;
+}
+
+.caja-envio-promo {
+    background-color: #f9f7f4;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    font-size: 0.85rem;
+    color: #3b2314;
+    border-radius: 4px;
+}
+
+/* Responsive para celulares */
+@media (max-width: 768px) {
+    .vista-producto-detalle {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
+/* =========================================================
+   MEJORAS VISUALES: CORAZÓN Y SELECTORES EN DETALLE
+========================================================= */
+
+/* 1. Estilo del botón de favoritos grande */
+.btn-favorito-grande {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+
+.btn-favorito-grande .icono-corazon {
+    width: 28px;
+    height: 28px;
+    fill: transparent;
+    stroke: #3b2314; /* Color marrón de la marca */
+    stroke-width: 2px;
+    transition: all 0.3s ease;
+}
+
+/* Cuando le damos "Me gusta" */
+.btn-favorito-grande.liked .icono-corazon {
+    fill: #c53030; /* Rojo */
+    stroke: #c53030;
+}
+
+/* 2. Estilo elegante para los selectores de Talle y Color */
+.selector-fila select {
+    /* Borramos la caja y la flecha fea por defecto del navegador */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 1rem;
+    color: #3b2314;
+    font-weight: 500;
+    outline: none;
+    cursor: pointer;
+    text-align: right;
+    padding: 0.5rem 1.5rem 0.5rem 0.5rem;
+    
+    /* Agregamos una flechita minimalista y elegante hecha en SVG */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b2314' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: 1.2rem;
+    transition: color 0.2s;
+}
+
+.selector-fila select:hover {
+    color: #88786b; /* Un tono más claro al pasar el mouse */
+}
+
+/* Centramos el título a la misma altura que el corazón */
+.detalle-info > div:nth-child(3) {
+    align-items: center !important;
+}

@@ -32,12 +32,16 @@ const menuCategorias = document.getElementById('menu-categorias');
 const navInicio = document.getElementById('nav-inicio');
 const logoLink = document.getElementById('logo-link');
 
+//NAVEGACION MOBILE
+const btnMenuMobile = document.getElementById('btn-menu-mobile');
+const navPrincipal = document.getElementById('nav-principal');
+
 //VARIABLES
 
 //Arreglo de productos
 let productos = [];
 // Arreglo vacío donde se irán guardando los productos elegidos
-let carrito = [];
+let carrito = JSON.parse(localStorage.getItem('carrito_justina')) || [];
 // Objeto en memoria para saber qué índice de foto está mirando el cliente en cada tarjeta
 const indiceImagenActual = {};
 // Arreglo que carga los IDs de productos favoritos desde el navegador
@@ -101,26 +105,27 @@ function cambiarImagenCard(idProducto, direccion) {
 }
 
 // ====================================================================
-// FUNCIÓN PARA MOSTRAR LOS PRODUCTOS EN LA GRILLA
+// FUNCIÓN PARA MOSTRAR LOS PRODUCTOS 
 // ====================================================================
- 
+
 function mostrarProductosEnPantalla(listaProductos) {
     if (!grilla) return;
     grilla.innerHTML = '';
 
     listaProductos.forEach(prod => {
-        const card = document.createElement('div');
-        card.classList.add('card-producto');
-
-        const fotos = (prod.imagenes && prod.imagenes.length > 0) ? prod.imagenes : [prod.imagen];
-        const tieneMasDeUnaFoto = fotos.length > 1;
-
         let opcionesTalles = '';
         let opcionesColores = '';
         let sinStock = false;
 
+        // 1. Calculamos el stock real restando el carrito
         if (Array.isArray(prod.variantes) && prod.variantes.length > 0) {
-            const variantesConStock = prod.variantes.filter(v => Number(v.stock) > 0);
+            const variantesConStock = prod.variantes.filter(v => {
+                const cantEnCarrito = carrito.filter(item =>
+                    item.id === prod.id && item.talleElegido === v.talle && item.colorElegido === v.color
+                ).length;
+                return (Number(v.stock) - cantEnCarrito) > 0;
+            });
+
             if (variantesConStock.length > 0) {
                 const tallesUnicos = [...new Set(variantesConStock.map(v => v.talle))];
                 tallesUnicos.forEach(t => opcionesTalles += `<option value="${t}">${t}</option>`);
@@ -132,21 +137,47 @@ function mostrarProductosEnPantalla(listaProductos) {
                 coloresDelPrimerTalle.forEach(c => opcionesColores += `<option value="${c}">${c}</option>`);
             } else {
                 sinStock = true;
-                opcionesTalles = `<option disabled selected>Sin stock</option>`;
-                opcionesColores = `<option disabled selected>Sin stock</option>`;
+                opcionesTalles = `<option disabled selected>Agotado</option>`;
+                opcionesColores = `<option disabled selected>Agotado</option>`;
             }
         } else {
-            let listaTalles = Array.isArray(prod.talles) ? prod.talles : (prod.talles || 'U').split(',').map(t => t.trim());
-            listaTalles.forEach(t => opcionesTalles += `<option value="${t}">${t}</option>`);
-            opcionesColores = `<option value="Único">Único</option>`;
+            const cantEnCarrito = carrito.filter(item => item.id === prod.id).length;
+            const stockTotal = Number(prod.stock || 0);
+
+            if ((stockTotal - cantEnCarrito) > 0) {
+                let listaTalles = Array.isArray(prod.talles) ? prod.talles : (prod.talles || 'U').split(',').map(t => t.trim());
+                listaTalles.forEach(t => opcionesTalles += `<option value="${t}">${t}</option>`);
+                opcionesColores = `<option value="Único">Único</option>`;
+            } else {
+                sinStock = true;
+                opcionesTalles = `<option disabled selected>Agotado</option>`;
+                opcionesColores = `<option disabled selected>Agotado</option>`;
+            }
         }
 
+        // =======================================================
+        // 2. FILTRO DE INICIO: DESCARTAR SIN STOCK Y OFERTAS
+        // =======================================================
+        // Si el producto está en oferta o si nos quedamos sin stock, 
+        // usamos 'return' para saltar a la siguiente prenda sin dibujarla.
+        if (prod.en_oferta || sinStock) {
+            return;
+        }
+
+        // 3. Preparamos los datos visuales
+        const card = document.createElement('div');
+        card.classList.add('card-producto');
+
+        const fotos = (prod.imagenes && prod.imagenes.length > 0) ? prod.imagenes : [prod.imagen];
+        const tieneMasDeUnaFoto = fotos.length > 1;
         const esFavorito = favoritos.includes(prod.id);
 
+        const precioNumerico = Number(prod.precio);
+        const valorCuota = (precioNumerico / 3).toLocaleString();
+
+        // 4. Armado de la tarjeta (Ya limpia, sin código de ofertas ni carteles de agotado porque los filtramos arriba)
         card.innerHTML = `
             <div class="carrusel-card ${tieneMasDeUnaFoto ? '' : 'sin-flechas'}">
-
-                <!-- BOTÓN FLOTANTE DE FAVORITOS CON SVG MINIMALISTA -->
                 <button type="button" 
                         class="btn-favorito ${esFavorito ? 'liked' : ''}" 
                         onclick="toggleFavorito(${prod.id}, this)" 
@@ -156,41 +187,45 @@ function mostrarProductosEnPantalla(listaProductos) {
                     </svg>
                 </button>
 
-                <img src="${fotos[0]}" alt="${prod.nombre}" id="img-card-${prod.id}">
+            <!-- ADENTRO DEL ARMADO DE TU TARJETA EN SCRIPT.JS -->
+                <a href="producto.html?id=${prod.id}">
+                    <img src="${fotos[0]}" alt="${prod.nombre}" id="img-card-${prod.id}">
+                </a>
+                
                 <button class="btn-flecha prev" onclick="cambiarImagenCard(${prod.id}, -1)" title="Anterior">◄</button>
                 <button class="btn-flecha next" onclick="cambiarImagenCard(${prod.id}, 1)" title="Siguiente">►</button>
             </div>
 
-            <h3>${prod.nombre}</h3>
-            <p class="precio">$${Number(prod.precio).toLocaleString()}</p>
+            <h3 style="margin-top: 0.5rem;">${prod.nombre}</h3>
+            <p class="precio" style="margin-bottom: 0.2rem;">$${precioNumerico.toLocaleString()}</p>
+            <small class="texto-cuotas">3 cuotas de $${valorCuota}</small>
             
             <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; width: 100%;">
                 <div style="flex: 1;">
                     <label style="font-size: 0.75rem; color: #666; display: block;">Talle:</label>
                     <select class="select-talle" id="talle-${prod.id}" 
                             onchange="actualizarColoresDisponibles(${prod.id})" 
-                            style="width: 100%; padding: 0.4rem;" ${sinStock ? 'disabled' : ''}>
+                            style="width: 100%; padding: 0.4rem;">
                         ${opcionesTalles}
                     </select>
                 </div>
                 <div style="flex: 1;">
                     <label style="font-size: 0.75rem; color: #666; display: block;">Color:</label>
                     <select class="select-color" id="color-${prod.id}" 
-                            style="width: 100%; padding: 0.4rem;" ${sinStock ? 'disabled' : ''}>
+                            style="width: 100%; padding: 0.4rem;">
                         ${opcionesColores}
                     </select>
                 </div>
             </div>
 
-            <button onclick="agregarAlCarrito(${prod.id})" ${sinStock ? 'disabled style="background:#ccc; cursor:not-allowed;"' : ''}>
-                ${sinStock ? 'Agotado' : 'Agregar al carrito'}
+            <button onclick="agregarAlCarrito(${prod.id})">
+                Agregar al carrito
             </button>
         `;
 
         grilla.appendChild(card);
     });
 }
-
 
 // ====================================================================
 // CARGAR FAVORITOS DEL USUARIO DESDE POSTGRESQL
@@ -248,19 +283,29 @@ function actualizarColoresDisponibles(idProducto) {
     if (!selectTalle || !selectColor) return;
 
     const talleElegido = selectTalle.value;
+
+    // Buscamos colores disponibles descontando lo que ya hay en el carrito
     const coloresDisponibles = [...new Set(
         producto.variantes
-            .filter(v => v.talle === talleElegido && Number(v.stock) > 0)
+            .filter(v => {
+                if (v.talle !== talleElegido) return false;
+                const cantEnCarrito = carrito.filter(item => item.id === idProducto && item.talleElegido === v.talle && item.colorElegido === v.color).length;
+                return (Number(v.stock) - cantEnCarrito) > 0;
+            })
             .map(v => v.color)
     )];
 
     selectColor.innerHTML = '';
-    coloresDisponibles.forEach(color => {
-        const option = document.createElement('option');
-        option.value = color;
-        option.textContent = color;
-        selectColor.appendChild(option);
-    });
+    if (coloresDisponibles.length > 0) {
+        coloresDisponibles.forEach(color => {
+            const option = document.createElement('option');
+            option.value = color;
+            option.textContent = color;
+            selectColor.appendChild(option);
+        });
+    } else {
+        selectColor.innerHTML = '<option disabled selected>Agotado</option>';
+    }
 }
 
 // ====================================================================
@@ -268,7 +313,7 @@ function actualizarColoresDisponibles(idProducto) {
 // ====================================================================
 async function toggleFavorito(idProducto, btnElemento) {
     const sesion = localStorage.getItem('usuario_tienda');
-    
+
     // 1. SI NO INICIÓ SESIÓN: Le avisamos de forma profesional que ingrese
     if (!sesion) {
         alert("Iniciá sesión o creá una cuenta gratis para guardar productos en tu lista de favoritos ❤️");
@@ -316,7 +361,7 @@ async function toggleFavorito(idProducto, btnElemento) {
 // ====================================================================
 // FUNCION PARA AGREGAR AL CARRITO  
 // ====================================================================
- 
+
 function agregarAlCarrito(idProducto) {
     const productoOriginal = productos.find(p => p.id === idProducto);
 
@@ -327,14 +372,48 @@ function agregarAlCarrito(idProducto) {
         const talleSeleccionado = selectTalle ? selectTalle.value : 'Único';
         const colorSeleccionado = selectColor ? selectColor.value : 'Único';
 
+        // 1. Calculamos el stock real disponible en la base de datos para esta combinación exacta
+        let stockDisponible = 1; // Valor por defecto en caso de no usar variantes
+        if (Array.isArray(productoOriginal.variantes) && productoOriginal.variantes.length > 0) {
+            const varianteElegida = productoOriginal.variantes.find(v =>
+                v.talle === talleSeleccionado && v.color === colorSeleccionado
+            );
+            if (varianteElegida) {
+                stockDisponible = Number(varianteElegida.stock);
+            }
+        } else if (productoOriginal.stock !== undefined) {
+            stockDisponible = Number(productoOriginal.stock);
+        }
+
+        // 2. Contamos cuántas unidades idénticas (mismo id, talle y color) ya están en el carrito
+        const cantidadEnCarrito = carrito.filter(prod =>
+            prod.id === idProducto &&
+            prod.talleElegido === talleSeleccionado &&
+            prod.colorElegido === colorSeleccionado
+        ).length;
+
+        // 3. Bloqueamos la acción si el cliente intenta superar el stock físico
+        if (cantidadEnCarrito >= stockDisponible) {
+            alert(`¡Ups! Solo tenemos ${stockDisponible} unidad(es) disponible(s) en talle ${talleSeleccionado} y color ${colorSeleccionado}.`);
+            return; // Cortamos la ejecución acá para que no se guarde
+        }
+
+        // 4. Si hay stock suficiente, empaquetamos y agregamos al carrito
+        // Calculamos el precio real que va a pagar
+        const precioReal = productoOriginal.en_oferta
+            ? (Number(productoOriginal.precio) - (Number(productoOriginal.precio) * (Number(productoOriginal.descuento || 20) / 100)))
+            : Number(productoOriginal.precio);
+
         const productoParaCarrito = {
             ...productoOriginal,
             talleElegido: talleSeleccionado,
-            colorElegido: colorSeleccionado
+            colorElegido: colorSeleccionado,
+            precio: precioReal // ¡Guardamos el precio ya rebajado!
         };
 
         carrito.push(productoParaCarrito);
         actualizarCarrito();
+        mostrarProductosEnPantalla(productos);
     }
 }
 
@@ -352,6 +431,9 @@ function eliminarDelCarrito(index) {
 // ====================================================================
 
 function actualizarCarrito() {
+    // MAGIA ACÁ: Cada vez que el carrito cambia, lo guardamos fijo en el navegador
+    localStorage.setItem('carrito_justina', JSON.stringify(carrito));
+
     if (elemContador) elemContador.textContent = carrito.length;
     if (!listaCarrito || !elemTotal) return;
 
@@ -430,7 +512,26 @@ if (botonAbrirCarrito && modalCarrito) {
 
 if (botonCerrarModal && modalCarrito) {
     botonCerrarModal.addEventListener('click', () => {
-        modalCarrito.classList.remove('activo');
+        const modalCarrito = document.getElementById('modal-carrito');
+        if (modalCarrito) modalCarrito.classList.remove('activo');
+
+        // 🧹 BORRAMOS EL CARTEL AMARILLO PARA QUE NO VUELVA A APARECER
+        const avisoStock = document.getElementById('aviso-stock-recuperado');
+        if (avisoStock) avisoStock.remove();
+    });
+}
+
+// Y hacé lo mismo si hacés clic en el fondo oscuro (overlay) para cerrar:
+const modalOverlay = document.getElementById('modal-carrito');
+if (modalOverlay) {
+    modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) {
+            modalOverlay.classList.remove('activo');
+            
+            // 🧹 BORRAMOS EL CARTEL AMARILLO ACÁ TAMBIÉN
+            const avisoStock = document.getElementById('aviso-stock-recuperado');
+            if (avisoStock) avisoStock.remove();
+        }
     });
 }
 
@@ -462,6 +563,16 @@ if (btnFinalizarCompra) {
             return;
         }
 
+        const usuario = JSON.parse(sesionGuardada);
+
+        // VALIDACIÓN OBLIGATORIA DE DNI Y TELÉFONO
+        if (!usuario.dni || !usuario.telefono || usuario.dni.trim() === '' || usuario.telefono.trim() === '') {
+            if (modalCarrito) modalCarrito.classList.remove('activo');
+            alert("⚠️ Por favor, completá tu DNI y Teléfono en tu perfil antes de finalizar la compra.");
+            window.location.href = 'perfil.html'; // Te manda directo a completarlo
+            return;
+        }
+
         // Validamos que hayan ingresado su domicilio
         const selectDir = document.getElementById('select-direccion-envio');
         const domicilio = selectDir ? selectDir.value : '';
@@ -471,21 +582,22 @@ if (btnFinalizarCompra) {
             return;
         }
 
-        const usuario = JSON.parse(sesionGuardada);
         const totalCompra = carrito.reduce((acum, p) => acum + Number(p.precio), 0);
 
-        // Armamos el paquete del pedido
+        // Armamos el paquete del pedido enviando también DNI y teléfono
         const nuevoPedido = {
             usuario_id: usuario.id || null,
             nombre: usuario.nombre,
             email: usuario.email,
+            dni: usuario.dni,
+            telefono: usuario.telefono,
             domicilio: domicilio,
             total: totalCompra,
             items: carrito
         };
 
         try {
-            //  Enviamos el pedido a PostgreSQL para descontar stock
+            // Enviamos el pedido a PostgreSQL
             const respuesta = await fetch('http://localhost:3000/api/pedidos', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -495,57 +607,121 @@ if (btnFinalizarCompra) {
             const datos = await respuesta.json();
 
             if (respuesta.ok) {
-                alert(`¡Gracias por tu compra, ${usuario.nombre}! 📦\nTu pedido #${datos.pedido_id} fue registrado y está en proceso de despacho.`);
+                // 1. Mostramos el éxito PRIMERO
+                alert(`¡Gracias por tu compra, ${usuario.nombre}! 📦\nTu pedido #${datos.pedido_id} fue registrado con éxito.`);
 
-                // Limpiamos todo
+                // 2. Limpiamos el carrito local
                 carrito = [];
-                actualizarCarrito();
-                if (inputDomicilio) inputDomicilio.value = '';
-                if (modalCarrito) modalCarrito.classList.remove('activo');
+                localStorage.removeItem('carrito_justina');
 
-                // VOLVEMOS A CARGAR LA TIENDA PARA QUE REFRESQUE EL STOCK REAL EN PANTALLA
-                await cargarBaseDeDatos();
+                // 3. Recargamos la página completa. 
+                window.location.reload();
+
             } else {
                 alert(`No se pudo completar el pedido: ${datos.error}`);
             }
         } catch (error) {
-            alert("Error conectando con el servidor para procesar la compra.");
+            alert("El pedido se procesó, pero ocurrió un error en la pantalla: " + error.message);
+            console.error("Detalle técnico del error:", error);
         }
     });
 }
 
 // =========================================================
+// FUNCIÓN PARA VERIFICAR CARRITO PENDIENTE AL LOGUEARSE
+// =========================================================
+async function verificarCarritoPendiente(usuarioId) {
+    const clavePendiente = `carrito_pendiente_${usuarioId}`;
+    const carritoGuardado = localStorage.getItem(clavePendiente);
+
+    if (!carritoGuardado) return;
+
+    const itemsAntiguos = JSON.parse(carritoGuardado);
+    if (itemsAntiguos.length === 0) return;
+
+    let itemsValidos = [];
+    let cantidadSinStock = 0;
+
+    // 1. Chequeamos el stock real en la base de datos
+    for (const item of itemsAntiguos) {
+        try {
+            // Modificá el fetch dentro del for de verificarCarritoPendiente para que quede así:
+            const res = await fetch(`http://localhost:3000/api/variantes/stock?producto_id=${item.id}&talle=${item.talleElegido}&color=${item.colorElegido}`);
+            const data = await res.json();
+
+            // Verificamos si hay stock disponible real en la base de datos
+            if (data.stock !== undefined && data.stock > 0) {
+                itemsValidos.push(item);
+            } else {
+                cantidadSinStock++; // Si el stock es 0 o menor, lo contamos para borrarlo y avisar
+            }
+        } catch (err) {
+        itemsValidos.push(item);
+    }
+}
+
+// 2. Guardamos los ítems válidos en el carrito principal
+if (itemsValidos.length > 0) {
+    carrito = itemsValidos;
+    localStorage.setItem('carrito_justina', JSON.stringify(carrito));
+    actualizarCarrito();
+
+    localStorage.removeItem(clavePendiente);
+
+    // 3. Dejamos una orden guardada en sessionStorage para abrir el modal y mostrar el aviso post-recarga
+    sessionStorage.setItem('abrir_carrito_recuperado', 'true');
+    if (cantidadSinStock > 0) {
+        sessionStorage.setItem('aviso_stock_faltante', cantidadSinStock);
+    }
+
+    // Recargamos la página para que la interfaz limpie el login y muestre todo fresco
+    window.location.reload();
+
+} else {
+    localStorage.removeItem(clavePendiente);
+    alert("⚠️ Tenías productos guardados en tu carrito anterior, pero lamentablemente ya no hay stock disponible.");
+}
+}
+
+// =========================================================
 // CONTROL DEL HEADER SEGUN ROL
 // =========================================================
-
 function actualizarInterfazHeader() {
     const sesionGuardada = localStorage.getItem('usuario_tienda');
+
+    // 1. Definimos el ícono SVG minimalista (trazo fino, sin relleno)
+    const iconoUserSVG = `
+        <svg viewBox="0 0 24 24" class="icono-svg-user" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+    `;
 
     if (sesionGuardada) {
         const usuario = JSON.parse(sesionGuardada);
         const primerNombre = usuario.nombre.split(' ')[0];
 
-        // Cambiamos el texto del botón y activamos el desplegable
-        btnLoginHeader.innerHTML = `Hola, ${primerNombre} ▾`;
+        btnLoginHeader.innerHTML = `<span class="icono-user">${iconoUserSVG}</span> <span class="texto-user">Hola, ${primerNombre} ▾</span>`;
+
         if (contenedorDropdown) contenedorDropdown.classList.add('sesion-activa');
+        if (btnLogoutHeader) btnLogoutHeader.style.display = 'block'; // El logout lo ven todos
 
-        // A. Opciones comunes para cualquier logueado (Cliente o Admin)
-        if (btnPerfil) btnPerfil.style.display = 'block';
-        if (btnLogoutHeader) btnLogoutHeader.style.display = 'block';
-
-        // B. Opciones exclusivas si el rol es 'admin'
+        // 2. Separamos la lógica según el ROL
         if (usuario.rol === 'admin') {
             if (btnConfigAdmin) btnConfigAdmin.style.display = 'block';
             if (btnPedidosAdmin) btnPedidosAdmin.style.display = 'block';
+            if (btnPerfil) btnPerfil.style.display = 'none';
             btnCarrito.style.display = 'none';
         } else {
             if (btnConfigAdmin) btnConfigAdmin.style.display = 'none';
             if (btnPedidosAdmin) btnPedidosAdmin.style.display = 'none';
+            if (btnPerfil) btnPerfil.style.display = 'block'; // Solo los clientes ven su perfil
+            btnCarrito.style.display = 'block'; // Aseguramos que el cliente vea su carrito
         }
     } else {
-        // NO HAY SESIÓN: dejamos el botón normal y ocultamos todo el menú
-        btnLoginHeader.innerHTML = `👤 Iniciar Sesión`;
-        btnCarrito.style.display ="block"
+        btnLoginHeader.innerHTML = `<span class="icono-user">${iconoUserSVG}</span> <span class="texto-user">Iniciar Sesión</span>`;
+
+        btnCarrito.style.display = "block";
         if (contenedorDropdown) contenedorDropdown.classList.remove('sesion-activa');
         if (btnConfigAdmin) btnConfigAdmin.style.display = 'none';
         if (btnPedidosAdmin) btnPedidosAdmin.style.display = 'none';
@@ -571,18 +747,25 @@ if (btnLoginHeader) {
 if (btnLogoutHeader) {
     btnLogoutHeader.addEventListener('click', (e) => {
         e.preventDefault();
-        const sesionGuardada = localStorage.getItem('usuario_tienda');
-        if (sesionGuardada) {
-            const usuario = JSON.parse(sesionGuardada);
-            if (confirm(`¿Querés cerrar la sesión de ${usuario.nombre}?`)) {
-                localStorage.removeItem('usuario_tienda');
-                actualizarInterfazHeader();
-                favoritos = [];
-                actualizarCorazonesEnPantalla();
-            }
+
+        // 1. Si hay una sesión activa y productos en el carrito, los guardamos a su nombre
+        const sesionActual = localStorage.getItem('usuario_tienda');
+        if (sesionActual && typeof carrito !== 'undefined' && carrito.length > 0) {
+            const usuario = JSON.parse(sesionActual);
+            localStorage.setItem(`carrito_pendiente_${usuario.id}`, JSON.stringify(carrito));
         }
+
+        // 2. Limpiamos la sesión general y el carrito visual actual
+        localStorage.removeItem('usuario_tienda');
+        localStorage.removeItem('carrito_justina');
+        carrito = [];
+
+        // 3. Actualizamos la interfaz del header y recargamos o mandamos al inicio
+        actualizarInterfazHeader();
+        window.location.href = 'index.html';
     });
 }
+
 
 // 3. Procesar el formulario del Modal de Login
 if (formLogin) {
@@ -603,13 +786,10 @@ if (formLogin) {
 
             if (respuesta.ok) {
                 localStorage.setItem('usuario_tienda', JSON.stringify(datos.usuario));
-
-                // Actualizamos el header en vivo sin recargar la página
                 actualizarInterfazHeader();
-                cargarFavoritosDesdeBD();
-
-                // Cerramos la ventana modal
+                await verificarCarritoPendiente(datos.usuario.id);
                 if (modalLogin) modalLogin.classList.remove('activo');
+                window.location.reload();
                 alert(`¡Bienvenida/o, ${datos.usuario.nombre}!`);
             } else {
                 alert(`Error: ${datos.error}`);
@@ -682,7 +862,7 @@ if (formRegistro) {
 
                 // Guardamos la sesión local e iniciamos su cuenta automáticamente
                 localStorage.setItem('usuario_tienda', JSON.stringify(nuevoUsuario));
-                actualizarInterfazHeader(); 
+                actualizarInterfazHeader();
                 cargarFavoritosDesdeBD();
 
                 formRegistro.reset();
@@ -703,28 +883,26 @@ if (formRegistro) {
 
 // CARGAR CATEGORÍAS DESDE POSTGRESQL AL MENÚ DESPLEGABLE
 async function cargarCategoriasEnHeader() {
-    if (!menuCategorias) return;
+    const contenedorMenu = document.getElementById('menu-categorias');
+    if (!contenedorMenu) return;
 
     try {
-        const respuesta = await fetch('http://localhost:3000/api/categorias');
-        const categorias = await respuesta.json();
+        const res = await fetch('http://localhost:3000/api/categorias');
+        const categorias = await res.json();
 
-        // Mantenemos la primera opción "Ver Todo" y agregamos las de la base de datos
-        menuCategorias.innerHTML = `<a href="#" onclick="filtrarPorCategoria('Todos')">Ver Todo</a>`;
+        let html = `<a href="index.html?categoria=Todos">Ver Todo</a>`;
 
         categorias.forEach(cat => {
-            const link = document.createElement('a');
-            link.href = "#";
-            link.textContent = cat.nombre;
-            // Al hacer clic, ejecuta el filtro pasando el nombre de la categoría
-            link.onclick = (e) => {
-                e.preventDefault();
-                filtrarPorCategoria(cat.nombre);
-            };
-            menuCategorias.appendChild(link);
+            const nombreCat = (typeof cat === 'object' && cat !== null) ? (cat.categoria || cat.nombre || Object.values(cat)[0]) : cat;
+
+            if (nombreCat) {
+                html += `<a href="index.html?categoria=${encodeURIComponent(nombreCat)}">${nombreCat}</a>`;
+            }
         });
-    } catch (error) {
-        console.error("Error cargando categorías en el menú:", error);
+
+        contenedorMenu.innerHTML = html;
+    } catch (err) {
+        console.error("Error cargando categorías en el header:", err);
     }
 }
 
@@ -780,6 +958,13 @@ if (navInicio) navInicio.addEventListener('click', irAlInicio);
 if (logoLink) logoLink.addEventListener('click', irAlInicio);
 
 
+// CONTROL DEL MENÚ EN MÓVILES
+if (btnMenuMobile && navPrincipal) {
+    btnMenuMobile.addEventListener('click', () => {
+        // Toggle: Si no tiene la clase 'activo' se la pone, si la tiene se la saca
+        navPrincipal.classList.toggle('activo');
+    });
+}
 
 
 // ¡INICIO DE LA APP!
@@ -792,3 +977,51 @@ cargarCategoriasEnHeader();
 actualizarInterfazHeader();
 
 cargarFavoritosDesdeBD();
+
+
+// Apenas carga index.html, revisamos si la URL trae una categoría seleccionada
+document.addEventListener('DOMContentLoaded', async () => {
+    actualizarCarrito();
+
+    const parametrosUrl = new URLSearchParams(window.location.search);
+    const categoriaUrl = parametrosUrl.get('categoria');
+
+    if (categoriaUrl) {
+        // Esperamos a que los productos se carguen de la base de datos y filtramos
+        await cargarBaseDeDatos();
+        filtrarPorCategoria(categoriaUrl);
+    }
+});
+
+// Apenas carga cualquier página, revisamos si hay que abrir el carrito recuperado
+document.addEventListener('DOMContentLoaded', () => {
+    actualizarCarrito();
+
+    if (sessionStorage.getItem('abrir_carrito_recuperado') === 'true') {
+        sessionStorage.removeItem('abrir_carrito_recuperado'); // Se limpia de inmediato
+
+        const modalCarrito = document.getElementById('modal-carrito');
+        if (modalCarrito) {
+            modalCarrito.classList.add('activo');
+            cargarDireccionesEnCarrito();
+        }
+
+        const cantSinStock = sessionStorage.getItem('aviso_stock_faltante');
+        if (cantSinStock) {
+            sessionStorage.removeItem('aviso_stock_faltante'); // Se limpia para que no se repita
+
+            let avisoStock = document.getElementById('aviso-stock-recuperado');
+            if (!avisoStock) {
+                avisoStock = document.createElement('div');
+                avisoStock.id = 'aviso-stock-recuperado';
+                avisoStock.style.cssText = "background: #fff3cd; color: #856404; padding: 0.6rem; font-size: 0.85rem; border-radius: 4px; margin-bottom: 0.8rem; border: 1px solid #ffeeba;";
+                
+                const cuerpoModal = document.getElementById('lista-carrito');
+                if (cuerpoModal) {
+                    cuerpoModal.before(avisoStock);
+                }
+            }
+            avisoStock.innerHTML = `⚠️ ${cantSinStock} producto(s) de tu carrito anterior fueron eliminados automáticamente por falta de stock.`;
+        }
+    }
+});

@@ -18,21 +18,31 @@ function cambiarTab(pestaña) {
     if (pestaña === 'pedidos') cargarMisPedidos();
 }
 
-// 2. CARGAR MIS DATOS INICIALES
-document.getElementById('perfil-nombre').value = usuario.nombre;
-document.getElementById('perfil-email').value = usuario.email;
+document.getElementById('perfil-nombre').value = usuario.nombre || '';
+document.getElementById('perfil-email').value = usuario.email || '';
+document.getElementById('perfil-dni').value = usuario.dni || '';
+document.getElementById('perfil-telefono').value = usuario.telefono || ''; 
 
 // Actualizar Datos o Clave
 document.getElementById('form-perfil').addEventListener('submit', async (e) => {
     e.preventDefault();
     const nuevoNombre = document.getElementById('perfil-nombre').value.trim();
     const nuevaClave = document.getElementById('perfil-pass').value.trim();
+    
+    // 1. Capturamos los valores de los nuevos inputs
+    const nuevoDni = document.getElementById('perfil-dni').value.trim();
+    const nuevoTelefono = document.getElementById('perfil-telefono').value.trim();
 
     try {
         const resp = await fetch(`http://localhost:3000/api/usuarios/${usuario.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nombre: nuevoNombre, password: nuevaClave || undefined })
+            body: JSON.stringify({ 
+                nombre: nuevoNombre, 
+                password: nuevaClave || undefined,
+                dni: nuevoDni,          
+                telefono: nuevoTelefono   
+            })
         });
         const datos = await resp.json();
         if (resp.ok) {
@@ -91,7 +101,7 @@ async function cargarDirecciones() {
         const res = await fetch(`http://localhost:3000/api/direcciones/${usuario.id}`);
         const direcciones = await res.json();
         cont.innerHTML = '';
-        
+
         if (direcciones.length === 0) {
             cont.innerHTML = '<p style="color:#888;">Todavía no tenés direcciones guardadas.</p>';
             return;
@@ -100,7 +110,7 @@ async function cargarDirecciones() {
         direcciones.forEach(d => {
             const div = document.createElement('div');
             div.className = 'card-dir';
-            
+
             // Usamos encodeURIComponent para pasar el objeto completo a la función de edición
             const datosDirJson = encodeURIComponent(JSON.stringify(d));
 
@@ -184,7 +194,7 @@ function cancelarEdicionDir() {
 // F. SUBMIT: Sirve tanto para CREAR NUEVA como para ACTUALIZAR UNA VIEJA
 document.getElementById('form-nueva-direccion').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     const idEdicion = document.getElementById('dir-id-edicion').value;
 
     // Si está editando una dirección existente -> PEDIMOS CONTRASEÑA POR SEGURIDAD
@@ -230,32 +240,92 @@ document.getElementById('form-nueva-direccion').addEventListener('submit', async
     }
 });
 
-// 4. CARGAR MIS PEDIDOS
+// ====================================================================
+// 4. GESTIÓN DE MIS PEDIDOS Y CANCELACIONES
+// ====================================================================
+
 async function cargarMisPedidos() {
     const tbody = document.getElementById('lista-mis-pedidos');
-    tbody.innerHTML = '<tr><td colspan="6">Cargando tus pedidos...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Cargando tus pedidos...</td></tr>';
+
     try {
         const res = await fetch(`http://localhost:3000/api/mis-pedidos/${usuario.id}`);
         const pedidos = await res.json();
         tbody.innerHTML = '';
+
         if (pedidos.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6">Aún no has realizado compras.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:2rem;">Aún no has realizado compras.</td></tr>';
             return;
         }
+
         pedidos.forEach(p => {
             const detalle = p.items.map(i => `${i.nombre_producto} (${i.talle}/${i.color})`).join(', ');
+
+            // Evaluamos las condiciones para ver si se puede cancelar
+            const estadoPed = (p.estado_pedido || '').toLowerCase();
+            const estadoPag = (p.estado_pago || '').toLowerCase();
+
+            const sePuedeCancelar =
+                (estadoPed !== 'despachado' && estadoPed !== 'enviado' && estadoPed !== 'cancelado') &&
+                (estadoPag === 'pendiente' || estadoPag === 'en progreso' || estadoPag === 'aceptado');
+
+            // Armamos el botón o dejamos un guión si no aplica
+            let botonAccion = '-';
+            if (sePuedeCancelar) {
+                botonAccion = `
+                    <button type="button" onclick="cancelarPedido(${p.id})"
+                        style="background: #fff0f0; border: 1px solid #ffccd0; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; color: #c53030; font-weight: bold; font-size: 0.8rem; transition: all 0.2s;"
+                        onmouseover="this.style.background='#ffe0e0'" 
+                        onmouseout="this.style.background='#fff0f0'">
+                        ❌ Cancelar
+                    </button>
+                `;
+            } else if (estadoPed === 'cancelado') {
+                botonAccion = '<span style="color: #888; font-size: 0.85rem; font-style: italic;">Cancelado</span>';
+            }
+
+            // Colores dinámicos para los estados (opcional, para darle más estilo)
+            const colorFondoPed = estadoPed === 'cancelado' ? '#ffebee' : '#e8f5e9';
+            const colorTextoPed = estadoPed === 'cancelado' ? '#c62828' : '#2e7d32';
+
+            const colorFondoPag = estadoPag === 'cancelado' ? '#ffebee' : '#e3f2fd';
+            const colorTextoPag = estadoPag === 'cancelado' ? '#c62828' : '#1565c0';
+
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td><b>#${p.id}</b></td>
                 <td>${new Date(p.fecha).toLocaleDateString()}</td>
-                <td>${detalle}</td>
+                <td style="max-width: 250px; line-height: 1.4;">${detalle}</td>
                 <td><b>$${Number(p.total).toLocaleString()}</b></td>
-                <td><span style="background:#e8f5e9; color:#2e7d32; padding:3px 8px; border-radius:4px; font-weight:bold;">${p.estado_pedido}</span></td>
-                <td><span style="background:#e3f2fd; color:#1565c0; padding:3px 8px; border-radius:4px; font-weight:bold;">${p.estado_pago}</span></td>
+                <td><span style="background:${colorFondoPed}; color:${colorTextoPed}; padding:4px 8px; border-radius:4px; font-weight:bold; font-size: 0.85rem;">${p.estado_pedido}</span></td>
+                <td><span style="background:${colorFondoPag}; color:${colorTextoPag}; padding:4px 8px; border-radius:4px; font-weight:bold; font-size: 0.85rem;">${p.estado_pago}</span></td>
+                <td style="text-align: center;">${botonAccion}</td>
             `;
             tbody.appendChild(tr);
         });
     } catch (err) {
-        tbody.innerHTML = '<tr><td colspan="6">Error cargando pedidos.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color: red;">Error cargando pedidos.</td></tr>';
+    }
+}
+
+// Función para enviar la orden de cancelación al backend
+async function cancelarPedido(idPedido) {
+    if (confirm("⚠️ ¿Estás segura de que querés cancelar esta compra? Esta acción no se puede deshacer.")) {
+        try {
+            const res = await fetch(`http://localhost:3000/api/pedidos/${idPedido}/cancelar`, {
+                method: 'PUT' // Usamos PUT porque estamos actualizando un dato existente
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                alert("¡Pedido cancelado correctamente!");
+                cargarMisPedidos(); // Refresca la tabla automáticamente
+            } else {
+                alert(`No se pudo cancelar: ${data.error}`);
+            }
+        } catch (err) {
+            alert("Error de conexión al intentar cancelar el pedido.");
+        }
     }
 }

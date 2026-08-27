@@ -4,9 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Justina Store</title>
+    <title>Mis Favoritos - Justina Store</title>
 
-    <!-- TRAEMOS ABRIL FATFACE + PLAYFAIR DISPLAY CURSIVA (ITALIC) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -14,7 +13,6 @@
         rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
-        <link rel="stylesheet" href="styleoferta.css">
 </head>
 
 <body>
@@ -97,7 +95,7 @@
             </div>
 
 
-            <!-- 3. Menú de Usuario / Admin -->
+            <!-- 1. Menú de Usuario / Admin -->
             <div class="dropdown-menu" id="contenedor-dropdown-user">
                 <!-- El JS inyecta acá adentro el ícono y el texto -->
                 <button id="btn-login-header" class="btn-header-icono btn-user"></button>
@@ -119,27 +117,20 @@
 
     </header>
 
-    <!-- Banner Principal -->
-    <section class="banner">
-
-        <div class="banner-logo">
-            <h1>justina</h1>
-            <h2>store</h2>
-        </div>
-
-        <p>More than basics</p>
-    </section>
-
-    <!-- Catálogo de Productos -->
-    <main class="contenedor">
-        <h2 id="titulo-contenedor"> ✦ Productos destacados ✦</h2>
-        <div class="grilla-productos" id="grilla-productos">
-            <!-- Los productos se generarán acá desde script.js -->
+    <!-- Contenedor Principal de Favoritos -->
+    <main class="contenedor" style="padding-top: 3rem; min-height: 60vh;">
+        <h2 id="titulo-contenedor" style="margin-bottom: 2rem;">Mis Favoritos ❤️</h2>
+        <div class="grilla-productos" id="grilla-favoritos">
+            <!-- Los favoritos se generan acá por JS -->
+            <p style="grid-column: 1/-1; text-align: center; color: #666;">Cargando tus prendas favoritas...</p>
         </div>
     </main>
 
+    <!-- =========================================================
+         VENTANAS MODALES (CARRITO Y LOGIN)
+    ========================================================= -->
 
-    <!-- Ventana Modal del Carrito -->
+    <!-- Modal del Carrito -->
     <div class="modal-overlay" id="modal-carrito">
         <div class="modal-contenido">
             <div class="modal-header">
@@ -147,12 +138,10 @@
                 <button class="btn-cerrar" id="btn-cerrar-modal">&times;</button>
             </div>
 
-            <!-- Acá se insertan los productos que agreguemos con JS -->
             <div class="modal-cuerpo" id="lista-carrito">
                 <p class="carrito-vacio">El carrito está vacío.</p>
             </div>
 
-            <!-- Pie del carrito con el total -->
             <div class="modal-footer" style="flex-direction: column; gap: 0.8rem;">
                 <div style="width: 100%; text-align: left;">
                     <label style="font-size: 0.85rem; font-weight: bold; color: #333; display: block;">
@@ -167,7 +156,6 @@
                             Perfil</a>
                     </small>
                 </div>
-
                 <div class="total-contenedor" style="width: 100%; display: flex; justify-content: space-between;">
                     <span>Total:</span>
                     <span id="total-precio">$0</span>
@@ -177,52 +165,8 @@
         </div>
     </div>
 
-    <!-- VENTANA MODAL DOBLE: INICIO DE SESIÓN / REGISTRO -->
-    <div class="modal-overlay" id="modal-login">
-        <div class="modal-contenido modal-login-box">
-            <div class="modal-header">
-                <!-- Pestañas para alternar qué formulario ver -->
-                <div class="pestanas-login" style="display: flex; gap: 1rem; font-size: 1.2rem; font-weight: bold;">
-                    <span id="tab-login"
-                        style="cursor: pointer; color: #1a1a1a; border-bottom: 2px solid #1a1a1a;">Ingresar</span>
-                    <span id="tab-registro" style="cursor: pointer; color: #888;">Crear Cuenta</span>
-                </div>
-                <button class="btn-cerrar" id="btn-cerrar-modal-login">&times;</button>
-            </div>
 
-            <!-- 1. FORMULARIO DE INICIO DE SESIÓN -->
-            <form id="form-login" class="modal-cuerpo form-login">
-                <label>Correo Electrónico</label>
-                <input type="email" id="email-user" required placeholder="tuemail@ejemplo.com">
-
-                <label>Contraseña</label>
-                <input type="password" id="password-user" required placeholder="••••••••">
-
-                <button type="submit" class="btn-comprar" style="margin-top: 1rem; ">
-                    Iniciar Sesión
-                </button>
-            </form>
-
-            <!-- 2. FORMULARIO DE REGISTRO DE CLIENTE NUEVO (Oculto por defecto) -->
-            <form id="form-registro" class="modal-cuerpo form-login" style="display: none;">
-                <label>Nombre y Apellido *</label>
-                <input type="text" id="reg-nombre" required placeholder="Ej. Camila Pérez">
-
-                <label>Correo Electrónico *</label>
-                <input type="email" id="reg-email" required placeholder="camila@ejemplo.com">
-
-                <label>Contraseña *</label>
-                <input type="password" id="reg-pass" required placeholder="Mínimo 6 caracteres" minlength="6">
-
-                <button type="submit" class="btn-comprar" style="margin-top: 1rem; ">
-                    Registrarme y Entrar
-                </button>
-
-            </form>
-        </div>
-    </div>
-
-    <!-- FOOTER -->
+    <!-- FOOTER-->
     <footer class="footer-tienda">
         <div class="footer-columnas">
 
@@ -313,8 +257,9 @@
         </svg>
     </a>
 
-
+    <!-- Acá cargamos tu script principal (para el carrito y header) y el exclusivo de favoritos -->
     <script src="script.js"></script>
+    <script src="favoritos.js"></script>
 </body>
 
 </html>

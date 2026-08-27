@@ -1,0 +1,56 @@
+/* =========================================================
+   ESTÉTICA DE OFERTAS Y PRECIOS
+========================================================= */
+/* Cartel negro con porcentaje sobre la foto */
+.badge-descuento {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: #000;
+    color: #fff;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    font-weight: 900;
+    z-index: 10;
+    letter-spacing: 1px;
+}
+
+/* Letras rojas de SALE arriba del título */
+.etiqueta-sale {
+    color: #c53030;
+    font-size: 0.75rem;
+    font-weight: bold;
+    margin-bottom: 0.2rem;
+    margin-top: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+}
+
+/* Contenedor de precios uno al lado del otro */
+.precio-oferta-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.2rem;
+}
+
+.precio-original {
+    text-decoration: line-through;
+    color: #88786b; /* Gris clarito */
+    font-size: 0.9rem;
+}
+
+.precio-final {
+    color: #3b2314;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+/* Texto de las cuotas */
+.texto-cuotas {
+    display: block;
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 0.8rem;
+}

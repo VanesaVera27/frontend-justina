@@ -39,13 +39,17 @@
         </div>
     </div>
 
-    <header class="header">
+        <header class="header">
 
-        <div  class="logo">
-            <a href="index.html" class="logo-principal">justina</a>
+        <!-- Agregar botón hamburguesa -->
+        <button id="btn-menu-mobile" class="menu-hamburguesa">☰</button>
+
+
+        <div class="logo">
+            <a href="index.html" class="logo-principal">justina store</a>
         </div>
 
-        <nav>
+        <nav id="nav-principal">
             <a href="index.html" id="nav-inicio">Inicio</a>
 
             <!-- MENÚ DESPLEGABLE DE COLECCIÓN -->
@@ -57,12 +61,18 @@
                 </div>
             </div>
 
-            <a href="index.html" id="nav-ofertas">Ofertas</a>
-
-            <a href="contacto.html" id="nav-contacto">Contacto</a>
+            <a href="ofertas.html" id="nav-ofertas">Ofertas</a>
         </nav>
+
+
+
         <!-- ZONA DE ACCIONES DEL HEADER -->
         <div class="acciones-header">
+
+            <!-- Botón del Carrito -->
+            <div class="carrito" id="boton-carrito">
+                🛒 <span id="contador-carrito">0</span>
+            </div>
 
             <!-- MENÚ DESPLEGABLE DE USUARIO / ADMIN -->
             <div class="dropdown-menu" id="contenedor-dropdown-user">
@@ -88,10 +98,6 @@
                 </div>
             </div>
 
-            <!-- Botón del Carrito -->
-            <div class="carrito" id="boton-carrito">
-                🛒 <span id="contador-carrito">0</span>
-            </div>
         </div>
     </header>
 
@@ -176,6 +182,7 @@
             <!-- COLUMNA 1: LEGALES Y AYUDA -->
             <div class="col-footer">
                 <h4>Atención al Cliente</h4>
+                <a href="contacto.html">Contacto</a>
                 <a href="ayuda.html#faq">Preguntas Frecuentes</a>
                 <a href="ayuda.html#envios">Envíos y Devoluciones</a>
                 <a href="ayuda.html#terminos">Términos y Condiciones</a>

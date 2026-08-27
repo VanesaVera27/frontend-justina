@@ -14,7 +14,7 @@
         rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
-        <link rel="stylesheet" href="styleoferta.css">
+    <link rel="stylesheet" href="styleoferta.css">
 </head>
 
 <body>
@@ -97,7 +97,7 @@
             </div>
 
 
-            <!-- 3. Menú de Usuario / Admin -->
+            <!-- 1. Menú de Usuario / Admin -->
             <div class="dropdown-menu" id="contenedor-dropdown-user">
                 <!-- El JS inyecta acá adentro el ícono y el texto -->
                 <button id="btn-login-header" class="btn-header-icono btn-user"></button>
@@ -130,16 +130,18 @@
         <p>More than basics</p>
     </section>
 
-    <!-- Catálogo de Productos -->
-    <main class="contenedor">
-        <h2 id="titulo-contenedor"> ✦ Productos destacados ✦</h2>
-        <div class="grilla-productos" id="grilla-productos">
-            <!-- Los productos se generarán acá desde script.js -->
+    <!-- Contenedor Principal de Ofertas -->
+    <main class="contenedor" style="padding-top: 3rem; min-height: 60vh;">
+        <h2 id="titulo-contenedor" style="margin-bottom: 2rem; color: #c53030;">✦ Special Sale ✦</h2>
+        
+        <!-- Le cambiamos el ID para controlarlo desde un script distinto -->
+        <div class="grilla-productos" id="grilla-ofertas">
+            <p style="grid-column: 1/-1; text-align: center; color: #666;">Buscando los mejores precios...</p>
         </div>
     </main>
 
 
-    <!-- Ventana Modal del Carrito -->
+    <!-- NUEVO: Ventana Modal del Carrito -->
     <div class="modal-overlay" id="modal-carrito">
         <div class="modal-contenido">
             <div class="modal-header">
@@ -315,6 +317,7 @@
 
 
     <script src="script.js"></script>
+    <script src="ofertas.js"></script>
 </body>
 
 </html>

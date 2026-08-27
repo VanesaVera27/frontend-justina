@@ -19,13 +19,17 @@
 </head>
 <body>
 
-<header class="header">
+    <header class="header">
+
+        <!-- Agregar botón hamburguesa -->
+        <button id="btn-menu-mobile" class="menu-hamburguesa">☰</button>
+
 
         <div class="logo">
-            <a href="index.html" class="logo-principal">justina</a>
+            <a href="index.html" class="logo-principal">justina store</a>
         </div>
 
-        <nav>
+        <nav id="nav-principal">
             <a href="index.html" id="nav-inicio">Inicio</a>
 
             <!-- MENÚ DESPLEGABLE DE COLECCIÓN -->
@@ -37,12 +41,18 @@
                 </div>
             </div>
 
-            <a href="#" id="nav-ofertas">Ofertas</a>
-
-            <a href="contacto.html" id="nav-contacto">Contacto</a>
+            <a href="ofertas.html" id="nav-ofertas">Ofertas</a>
         </nav>
+
+
+
         <!-- ZONA DE ACCIONES DEL HEADER -->
         <div class="acciones-header">
+
+            <!-- Botón del Carrito -->
+            <div class="carrito" id="boton-carrito">
+                🛒 <span id="contador-carrito">0</span>
+            </div>
 
             <!-- MENÚ DESPLEGABLE DE USUARIO / ADMIN -->
             <div class="dropdown-menu" id="contenedor-dropdown-user">
@@ -57,21 +67,13 @@
                         style="display: none;">
                         📦 Control de Pedidos
                     </a>
-
-                    <!-- Opciones generales de USUARIO LOGUEADO -->
-                    <a href="perfil.html" id="btn-perfil" class="item-dropdown user-only" style="display: none;">
-                        👤 Mi Perfil
-                    </a>
                     <a href="#" id="btn-logout-header" class="item-dropdown user-only logout" style="display: none;">
                         🚪 Cerrar Sesión
                     </a>
                 </div>
             </div>
 
-            <!-- Botón del Carrito -->
-            <div class="carrito" id="boton-carrito">
-                🛒 <span id="contador-carrito">0</span>
-            </div>
+
         </div>
     </header>
 

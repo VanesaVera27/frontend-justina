@@ -181,10 +181,41 @@
     display: block;
 }
 
+/* =========================================================
+   ÍCONO DE USUARIO 
+========================================================= */
+.btn-user {
+    display: flex;
+    align-items: center;
+    gap: 6px; /* Separación entre el ícono y el texto en PC */
+    background: transparent;
+    border: none;
+    color: #fffdfa; /* Aseguramos que tome el color crema */
+    font-family: inherit;
+    cursor: pointer;
+}
 
+.icono-user {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icono-svg-user {
+    width: 20px;
+    height: 20px;
+    stroke: #fffdfa; /* Color del trazo */
+    transition: transform 0.2s ease;
+}
+
+.btn-user:hover .icono-svg-user {
+    transform: scale(1.1); /* Efecto sutil al pasar el mouse */
+}
 /* =========================================================
    MENÚ DESPLEGABLE DE USUARIO
 ========================================================= */
+
+
 
 .dropdown-menu {
     position: relative;
@@ -235,6 +266,194 @@
     display: block;
 }
 
+
+/* =========================================================
+   ZONA DE ACCIONES DEL HEADER (FAVORITOS, USUARIO, CARRITO)
+========================================================= */
+.acciones-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1.5rem; /* Separación perfecta entre los íconos */
+}
+
+/* Estilo unificado para los 3 botones */
+.btn-header-icono {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #fffdfa;
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+    padding: 0;
+}
+
+/* Íconos vectoriales SVG */
+.icono-svg-header {
+    width: 22px;
+    height: 22px;
+    stroke: #fffdfa;
+    transition: transform 0.2s ease;
+}
+
+.btn-header-icono:hover .icono-svg-header {
+    transform: scale(1.1); /* Crecen sutilmente al pasar el mouse */
+}
+
+/* Burbuja roja de notificación para el contador del carrito */
+.badge-contador {
+    background-color: #e63946;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 2px 7px;
+    border-radius: 12px;
+    margin-left: -5px; /* Lo acerca al carrito */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Ajuste responsive: achicar el espacio en celulares */
+@media (max-width: 768px) {
+    .acciones-header {
+        gap: 1rem; 
+    }
+}
+
+
+
+/* =========================================================
+   MENÚ HAMBURGUESA (SOLO VISIBLE EN MÓVILES)
+========================================================= */
+
+/* Por defecto (en PC), el botón hamburguesa está oculto */
+.menu-hamburguesa {
+    display: none;
+    background: none;
+    border: none;
+    color: #fffdfa; /* Color crema clarito para que resalte en el fondo marrón */
+    font-size: 1.8rem;
+    cursor: pointer;
+    padding: 0;
+    margin-right: 1rem;
+}
+
+/* PARA CELULARES (Menos de 768px de ancho) */
+@media (max-width: 768px) {
+    /* 1. Mostramos el botón hamburguesa */
+    .menu-hamburguesa {
+        display: block;
+    }
+
+    /* 2. Ocultamos el menú normal y lo preparamos para ser desplegable */
+    #nav-principal {
+        display: none; /* Arranca oculto */
+        flex-direction: column;
+        position: absolute;
+        top: 100%; /* Se acomoda justo debajo del header marrón */
+        left: 0;
+        width: 100%;
+        background-color: #3b2314; /* Mismo fondo del header */
+        box-shadow: 0 10px 15px rgba(0,0,0,0.2);
+        z-index: 100;
+        padding-bottom: 1rem;
+    }
+
+    /* Esta clase se la vamos a agregar con JS cuando toquen el botón ☰ */
+    #nav-principal.activo {
+        display: flex;
+    }
+
+    /* 3. Acomodamos los links para que sean filas fáciles de tocar */
+    #nav-principal a, 
+    #nav-principal .dropdown-btn {
+        padding: 1rem 2rem;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 253, 250, 0.05); /* Linea divisoria muy sutil */
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* 4. Arreglamos el submenú de "Colección" para que no flote raro en el celular */
+    .dropdown-coleccion .dropdown-contenido {
+        position: static; /* Para que empuje los elementos hacia abajo en vez de flotar arriba de ellos */
+        width: 100%;
+        box-shadow: none;
+        background-color: #2a180e; /* Un marrón penitas más oscuro para diferenciarlo */
+    }
+    
+    .dropdown-coleccion .dropdown-contenido a {
+        padding-left: 3rem; /* Sangría para que se note que están adentro de Colección */
+    }
+
+    /* 1. Forzamos al header a ser una fila horizontal sin que se rompa */
+    .header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: nowrap;
+        padding: 0.5rem 1rem;
+    }
+
+    /* 2. Le damos más protagonismo al logo en el centro */
+    .logo {
+        flex-grow: 1;
+        text-align: center;
+    }
+
+    /* 3. Acomodamos el bloque derecho (Usuario y Carrito) en fila */
+    .acciones-header {
+        display: flex;
+        flex-direction: row !important;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 1rem; /* Separación prolija entre usuario y carrito */
+    }
+
+    /* 4. Evitamos que "Iniciar Sesión" o "Hola, Vanesa" se corte en dos líneas */
+    .btn-user {
+        white-space: nowrap !important; /* Fuerza el texto en 1 sola línea */
+        font-size: 0.85rem;             /* Achicamos apenitas la letra */
+        padding: 0;                     /* Sacamos rellenos extra */
+        margin: 0;
+    }
+
+    /* 5. Acomodamos el carrito para que quede centrado con el botón de usuario */
+    .carrito {
+        display: flex;
+        align-items: center;
+        margin: 0 !important;
+        font-size: 1.1rem;
+    }
+
+    /* Ocultamos la palabra "Iniciar Sesión" o "Hola, Vanesa" */
+    .texto-user {
+        display: none !important;
+    }
+
+    /* Hacemos que el ícono sea un poquito más grande para compensar */
+    .icono-user {
+        font-size: 1.3rem;
+    }
+
+    /* Ajustamos el botón del usuario para que sea un circulito/cuadradito limpio */
+    .btn-user {
+        background: transparent;
+        border: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .icono-svg-user {
+        width: 26px;
+        height: 26px;
+    }
+
+}
 
 /* -------------------------------------------------------------------------------------------------Banner Principal */
 .banner {
@@ -497,6 +716,36 @@
     stroke: #ffffff;
 }
 
+
+/*  CARTEL DE SIN STOCK
+
+
+/* El cartel que flota en el medio de la foto */
+.cartel-sin-stock {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 253, 250, 0.95);
+    color: #5a3d28; /* Marrón oscuro de la marca */
+    padding: 0.6rem 1.2rem;
+    font-family: inherit;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    z-index: 15;
+    border: 1px solid #d8cec4;
+    border-radius: 4px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    pointer-events: none; /* Para que los clics pasen de largo y no interfieran con el carrusel */
+}
+
+/* Efecto para que la foto se vea desaturada si no hay stock */
+.img-agotada {
+    opacity: 0.65;
+    filter: grayscale(40%);
+}
 
 /* -------------------------------------------------------------------------------ventana modal de carrito */
 .modal-overlay {

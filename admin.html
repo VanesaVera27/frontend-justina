@@ -43,11 +43,15 @@
     <!-- Header y Navegación -->
     <header class="header">
 
+        <!-- Agregar botón hamburguesa -->
+        <button id="btn-menu-mobile" class="menu-hamburguesa">☰</button>
+
+
         <div class="logo">
-            <a href="index.html" class="logo-principal">justina</a>
+            <a href="index.html" class="logo-principal">justina store</a>
         </div>
 
-        <nav>
+        <nav id="nav-principal">
             <a href="index.html" id="nav-inicio">Inicio</a>
 
             <!-- MENÚ DESPLEGABLE DE COLECCIÓN -->
@@ -59,12 +63,18 @@
                 </div>
             </div>
 
-            <a href="#" id="nav-ofertas">Ofertas</a>
-
-            <a href="contacto.html" id="nav-contacto">Contacto</a>
+            <a href="ofertas.html" id="nav-ofertas">Ofertas</a>
         </nav>
+
+
+
         <!-- ZONA DE ACCIONES DEL HEADER -->
         <div class="acciones-header">
+
+            <!-- Botón del Carrito -->
+            <div class="carrito" id="boton-carrito">
+                🛒 <span id="contador-carrito">0</span>
+            </div>
 
             <!-- MENÚ DESPLEGABLE DE USUARIO / ADMIN -->
             <div class="dropdown-menu" id="contenedor-dropdown-user">
@@ -79,21 +89,13 @@
                         style="display: none;">
                         📦 Control de Pedidos
                     </a>
-
-                    <!-- Opciones generales de USUARIO LOGUEADO -->
-                    <a href="perfil.html" id="btn-perfil" class="item-dropdown user-only" style="display: none;">
-                        👤 Mi Perfil
-                    </a>
                     <a href="#" id="btn-logout-header" class="item-dropdown user-only logout" style="display: none;">
                         🚪 Cerrar Sesión
                     </a>
                 </div>
             </div>
 
-            <!-- Botón del Carrito -->
-            <div class="carrito" id="boton-carrito">
-                🛒 <span id="contador-carrito">0</span>
-            </div>
+
         </div>
     </header>
 
@@ -165,6 +167,12 @@
                             </div>
                         </div>
                     </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display:block; font-weight:bold; color:#3b2314; margin-bottom:0.3rem;">Descripción
+                            y Cuidados:</label>
+                        <textarea id="admin-descripcion" rows="3"
+                            style="width:100%; padding:0.5rem; border: 1px solid #ccc; border-radius:4px;"></textarea>
+                    </div>
 
                     <div class="caja-variantes">
                         <label style="margin-bottom: 0.8rem; display: block; font-weight: 600;">
@@ -224,6 +232,15 @@
                             <label>Categoría</label>
                             <select id="edit-prod-categoria" required></select>
                         </div>
+
+                        <div style="margin-bottom: 1rem;">
+                            <label
+                                style="display:block; font-weight:bold; color:#3b2314; margin-bottom:0.3rem;">Descripción
+                                y Cuidados:</label>
+                            <textarea id="edit-descripcion" rows="3"
+                                style="width:100%; padding:0.5rem; border: 1px solid #ccc; border-radius:4px;"></textarea>
+                        </div>
+
                         <!-- GESTOR DE IMÁGENES ACTUALES Y NUEVAS -->
                         <div class="caja-variantes" style="margin-top: 1rem;">
                             <label style="margin-bottom: 0.8rem; display: block; font-weight: 600;">
@@ -269,6 +286,7 @@
             <!--  LEGALES Y AYUDA -->
             <div class="col-footer">
                 <h4>Atención al Cliente</h4>
+                <a href="contacto.html">Contacto</a>
                 <a href="ayuda.html#faq">Preguntas Frecuentes</a>
                 <a href="ayuda.html#envios">Envíos y Devoluciones</a>
                 <a href="ayuda.html#terminos">Términos y Condiciones</a>

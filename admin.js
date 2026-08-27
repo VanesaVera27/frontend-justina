@@ -20,7 +20,7 @@
 // ====================================================================
 // ELEMENTOS DEL DOM Y VARIABLES
 // ====================================================================
-const formAdmin = document.getElementById('form-admin'); 
+const formAdmin = document.getElementById('form-admin');
 const contVariantes = document.getElementById('contenedor-variantes');
 const btnAgregarVariante = document.getElementById('btn-agregar-variante');
 const tablaInventario = document.getElementById('tabla-inventario');
@@ -37,7 +37,7 @@ const btnCerrarEditar = document.getElementById('btn-cerrar-editar');
 const formEditar = document.getElementById('form-editar');
 
 // Variable temporal para el buscador rápido
-let listaProductosAdmin = []; 
+let listaProductosAdmin = [];
 
 
 // Variable temporal para manipular el orden de las fotos mientras editamos
@@ -105,6 +105,7 @@ if (formAdmin) {
         formData.append('nombre', document.getElementById('prod-nombre').value.trim());
         formData.append('precio', document.getElementById('prod-precio').value);
         formData.append('categoria', document.getElementById('prod-categoria').value);
+        formData.append('descripcion', document.getElementById('admin-descripcion').value.trim());
         formData.append('variantes', JSON.stringify(arrayVariantes));
 
         const archivosFotos = document.getElementById('prod-imagenes').files;
@@ -148,7 +149,7 @@ async function cargarInventarioAdmin() {
 }
 
 // ====================================================================
-// CARGAR INVENTARIO CON FOTOS Y TAGS DE STOCK
+// CARGAR INVENTARIO CON FOTOS, TAGS DE STOCK Y BOTÓN DE OFERTAS
 // ====================================================================
 
 // Imagen por defecto en formato SVG (No consume internet ni genera errores en consola)
@@ -183,13 +184,34 @@ function renderizarTablaAdmin(productos) {
             }).join('')
             : '<span class="tag-stock">Sin variantes</span>';
 
+        // 4. LÓGICA DEL BOTÓN DE OFERTA
+        const estaEnOferta = prod.en_oferta === true;
+        const colorBoton = estaEnOferta ? '#ffebee' : '#e8f5e9';
+        const colorTexto = estaEnOferta ? '#c62828' : '#2e7d32';
+
+        // Si la prenda ya está en oferta, mostramos de cuánto es el porcentaje en el botón
+        const descuentoActual = prod.descuento || 20;
+        const textoBoton = estaEnOferta ? `❌ Quitar Oferta (${descuentoActual}% OFF)` : '✨ Poner en Oferta';
+
+        // Le pasamos el prod.precio como tercer parámetro a toggleOferta
+        const botonOfertaHTML = `
+            <button onclick="toggleOferta(${prod.id}, ${estaEnOferta}, ${prod.precio})" 
+                    style="background: ${colorBoton}; color: ${colorTexto}; border: 1px solid ${colorTexto}40; padding: 5px 10px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: all 0.2s; margin-right: 0.5rem;">
+                ${textoBoton}
+            </button>
+        `;
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <!-- Columna 1: Foto desde la carpeta local /imagenes -->
             <td>
-                <img src="${rutaFoto}" alt="${prod.nombre}" class="mini-foto-admin" 
-                     onerror="this.onerror=null; this.src='${FOTO_DEFAULT}';">
+                <a href="producto.html?id=${prod.id}">
+                    <img src="${rutaFoto}" alt="${prod.nombre}" class="mini-foto-admin" 
+                        onerror="this.onerror=null; this.src='${FOTO_DEFAULT}';">
+                </a>
             </td>
+
+
 
             <!-- Columna 2: Nombre e ID -->
             <td>
@@ -207,14 +229,76 @@ function renderizarTablaAdmin(productos) {
                 </div>
             </td>
 
-            <!-- Columna 5: Botones de acción -->
+            <!-- Columna 5: Botones de acción (Ahora con la oferta incluida) -->
             <td class="td-acciones">
+                ${botonOfertaHTML}
                 <button onclick="editarProducto(${prod.id})" class="btn-accion-icon">✏️ Editar</button>
                 <button onclick="borrarProducto(${prod.id})" class="btn-accion-icon borrar">🗑️</button>
             </td>
         `;
         tablaInventario.appendChild(tr);
     });
+}
+
+// ====================================================================
+// PRENDER / APAGAR OFERTA (Con cálculo inteligente de descuentos)
+// ====================================================================
+async function toggleOferta(idProducto, estadoActualOferta, precioOriginal) {
+    let nuevoEstado = !estadoActualOferta;
+    let porcentajeDescuento = 20; // Valor base por si acaso
+
+    if (nuevoEstado === true) {
+        // Si lo estamos PRENDIENDO, le preguntamos al admin qué hacer
+        let input = prompt(
+            `El precio regular de la prenda es $${precioOriginal.toLocaleString()}.\n\n` +
+            `Opción 1: Ingresá el PORCENTAJE (ej: 20, 30, 50)\n` +
+            `Opción 2: Ingresá el PRECIO FINAL que querés cobrar (ej: 12000)`
+        );
+
+        if (input === null || input.trim() === '') return; // Si tocaste Cancelar, frenamos todo
+
+        // Limpiamos el texto por si escribiste el símbolo "$" o "%" sin querer
+        let inputLimpio = input.replace(/[^0-9]/g, '');
+        let valorIngresado = parseInt(inputLimpio);
+
+        if (isNaN(valorIngresado) || valorIngresado <= 0) {
+            alert("Por favor ingresá un número válido.");
+            return;
+        }
+
+        if (valorIngresado < 100) {
+            // Si el número es menor a 100, asumimos que escribiste un PORCENTAJE (ej: 20)
+            porcentajeDescuento = valorIngresado;
+        } else {
+            // Si el número es grande, asumimos que es el PRECIO FINAL (ej: 12000)
+            if (valorIngresado >= precioOriginal) {
+                alert("El precio de oferta tiene que ser menor al precio original.");
+                return;
+            }
+            // Matemática: Calculamos el porcentaje real
+            porcentajeDescuento = Math.round(100 - ((valorIngresado * 100) / precioOriginal));
+            alert(`¡Perfecto! Eso equivale a un descuento del ${porcentajeDescuento}% OFF.`);
+        }
+    }
+
+    try {
+        const respuesta = await fetch(`http://localhost:3000/api/productos/${idProducto}/oferta`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                en_oferta: nuevoEstado,
+                descuento: porcentajeDescuento // Mandamos el cálculo final al backend
+            })
+        });
+
+        if (respuesta.ok) {
+            window.location.reload();
+        } else {
+            alert("Error al actualizar la oferta en la base de datos.");
+        }
+    } catch (error) {
+        alert("Error de conexión con el servidor.");
+    }
 }
 
 // ====================================================================
@@ -242,6 +326,7 @@ function editarProducto(id) {
     document.getElementById('edit-prod-id').value = prod.id;
     document.getElementById('edit-prod-nombre').value = prod.nombre;
     document.getElementById('edit-prod-precio').value = prod.precio;
+    document.getElementById('edit-descripcion').value = prod.descripcion || '';
 
     const selectCatEdit = document.getElementById('edit-prod-categoria');
     const selectCatMain = document.getElementById('prod-categoria');
@@ -305,7 +390,7 @@ function renderizarFotosEdicion() {
 
         const tarjeta = document.createElement('div');
         tarjeta.className = `tarjeta-foto-edit ${esPortada ? 'es-portada' : ''}`;
-        
+
         tarjeta.innerHTML = `
             ${esPortada ? '<div class="badge-portada">Portada #1</div>' : ''}
             <img src="${srcFinal}" alt="Foto ${index + 1}" onerror="this.src='https://via.placeholder.com/80?text=Foto'">
@@ -333,7 +418,7 @@ window.borrarFotoEdicion = function (index) {
 };
 
 // ====================================================================
-// GUARDAR TODO (STOCK + FOTOS ORDENADAS + FOTOS NUEVAS)
+// GUARDAR TODO 
 // ====================================================================
 if (formEditar) {
     formEditar.addEventListener('submit', async (e) => {
@@ -355,6 +440,7 @@ if (formEditar) {
         formData.append('nombre', document.getElementById('edit-prod-nombre').value.trim());
         formData.append('precio', document.getElementById('edit-prod-precio').value);
         formData.append('categoria', document.getElementById('edit-prod-categoria').value);
+        formData.append('descripcion', document.getElementById('edit-descripcion').value.trim());
         formData.append('variantes', JSON.stringify(variantesActualizadas));
 
         // Enviamos el array con el NUEVO ORDEN de las fotos que ya existían
@@ -369,14 +455,14 @@ if (formEditar) {
         try {
             const res = await fetch(`http://localhost:3000/api/productos/${id}`, {
                 method: 'PUT',
-                body: formData 
+                body: formData
             });
 
             if (res.ok) {
                 alert("¡Prenda, orden de fotos y stock actualizados!");
                 modalEditar.classList.add('oculto');
                 formEditar.reset();
-                cargarInventarioAdmin(); 
+                cargarInventarioAdmin();
             }
         } catch (err) {
             console.error("Error actualizando prenda:", err);
