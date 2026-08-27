@@ -1,9 +1,17 @@
 // ====================================================================
 // 1. GUARDIÁN DE SEGURIDAD PARA FAVORITOS
 // ====================================================================
+
+// Validar que no sea admin en favoritos.html
 const sesionFav = localStorage.getItem('usuario_tienda');
-if (!sesionFav) {
-    alert("Debés iniciar sesión para ver tu lista de favoritos ❤️");
+if (sesionFav) {
+    const user = JSON.parse(sesionFav);
+    if (user.rol === 'admin') {
+        alert("⚠️ Los administradores no tienen acceso a la sección de favoritos.");
+        window.location.href = 'index.html';
+    }
+} if (!sesionFav){
+   alert("Debés iniciar sesión para ver tu lista de favoritos ❤️");
     window.location.href = 'index.html';
 }
 

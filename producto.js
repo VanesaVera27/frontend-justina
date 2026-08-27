@@ -128,7 +128,7 @@ function renderizarDetalles(prod) {
     }
     document.getElementById('detalle-precios').innerHTML = htmlPrecios;
 
-    // Variantes (Selectores)
+// Variantes (Selectores)
     const selectColor = document.getElementById('detalle-select-color');
     const selectTalle = document.getElementById('detalle-select-talle');
 
@@ -141,23 +141,57 @@ function renderizarDetalles(prod) {
         selectTalle.innerHTML = '<option value="Único">Único</option>';
     }
 
-    // Botón Comprar
-    const btnAgregar = document.getElementById('btn-agregar-detalle');
-    btnAgregar.onclick = () => {
-        // Aprovechamos tu función de script.js, pasándole los selects de esta pantalla
-        const productoParaCarrito = {
-            ...prod,
-            talleElegido: selectTalle.value,
-            colorElegido: selectColor.value,
-            precio: prod.en_oferta ? (precioNumerico - (precioNumerico * (porcentajeDescuento / 100))) : precioNumerico
-        };
-        carrito.push(productoParaCarrito);
-        actualizarCarrito();
+    // =======================================================
+    // CONTROL DE ROL ADMIN PARA FAVORITOS Y COMPRA EN DETALLE
+    // =======================================================
+    const sesionDetalle = localStorage.getItem('usuario_tienda');
+    let esAdminDetalle = false;
+    if (sesionDetalle) {
+        try {
+            esAdminDetalle = JSON.parse(sesionDetalle).rol === 'admin';
+        } catch(e) {}
+    }
 
-        // Efecto visual
-        btnAgregar.textContent = "¡Agregado!";
-        setTimeout(() => btnAgregar.textContent = "Agregar al carrito", 2000);
-    };
+    // 1. Manejo del botón de favoritos
+    if (esAdminDetalle) {
+        if (btnFav) btnFav.style.display = 'none'; // Se oculta si es admin
+    } else {
+        const esFavorito = typeof favoritos !== 'undefined' && favoritos.includes(prod.id);
+        btnFav.innerHTML = `<svg viewBox="0 0 24 24" class="icono-corazon"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
+        if (esFavorito) {
+            btnFav.classList.add('liked');
+        }
+        btnFav.onclick = () => {
+            toggleFavorito(prod.id, btnFav);
+        };
+    }
+
+    // 2. Manejo del Botón Comprar / Agregar al carrito
+    const btnAgregar = document.getElementById('btn-agregar-detalle');
+    if (esAdminDetalle) {
+        if (btnAgregar) {
+            btnAgregar.style.background = '#e9ecef';
+            btnAgregar.style.color = '#6c757d';
+            btnAgregar.style.cursor = 'not-allowed';
+            btnAgregar.textContent = "Modo Administrador (Compra deshabilitada)";
+            btnAgregar.onclick = (e) => e.preventDefault();
+        }
+    } else {
+        btnAgregar.onclick = () => {
+            const productoParaCarrito = {
+                ...prod,
+                talleElegido: selectTalle.value,
+                colorElegido: selectColor.value,
+                precio: prod.en_oferta ? (precioNumerico - (precioNumerico * (porcentajeDescuento / 100))) : precioNumerico
+            };
+            carrito.push(productoParaCarrito);
+            actualizarCarrito();
+
+            // Efecto visual
+            btnAgregar.textContent = "¡Agregado!";
+            setTimeout(() => btnAgregar.textContent = "Agregar al carrito", 2000);
+        };
+    }
 }
 
 function actualizarTallesDetalle() {

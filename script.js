@@ -20,6 +20,7 @@ const btnLogoutHeader = document.getElementById('btn-logout-header');
 const contenedorDropdown = document.getElementById('contenedor-dropdown-user');
 const modalLogin = document.getElementById('modal-login');
 const btnCarrito = document.getElementById('boton-carrito');
+const btnFavorito = document.getElementById('boton-favorito');
 
 //CONTROL DE LOGIN Y REGISTRO
 const tabLogin = document.getElementById('tab-login');
@@ -175,23 +176,45 @@ function mostrarProductosEnPantalla(listaProductos) {
         const precioNumerico = Number(prod.precio);
         const valorCuota = (precioNumerico / 3).toLocaleString();
 
+        // Verificamos si el usuario actual es admin
+        const sesionCheck = localStorage.getItem('usuario_tienda');
+        let esAdmin = false;
+        if (sesionCheck) {
+            try {
+                esAdmin = JSON.parse(sesionCheck).rol === 'admin';
+            } catch (e) { }
+        }
+
+        // Dependiendo si es admin, anulamos el botón de favoritos y el de comprar
+        const botonFavoritoHtml = esAdmin ? '' : `
+            <button type="button" 
+                    class="btn-favorito ${esFavorito ? 'liked' : ''}" 
+                    onclick="toggleFavorito(${prod.id}, this)" 
+                    title="${esFavorito ? 'Quitar de favoritos' : 'Agregar a favoritos'}">
+                <svg viewBox="0 0 24 24" class="icono-corazon">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+            </button>
+        `;
+
+        const botonAccionHtml = esAdmin ? `
+            <div style="background: #f8f9fa; color: #6c757d; text-align: center; padding: 0.6rem; border-radius: 4px; font-size: 0.85rem; border: 1px dashed #ced4da;">
+                🔒 Vista de Administrador
+            </div>
+        ` : `
+            <button onclick="agregarAlCarrito(${prod.id})">
+                Agregar al carrito
+            </button>
+        `;
+
         // 4. Armado de la tarjeta (Ya limpia, sin código de ofertas ni carteles de agotado porque los filtramos arriba)
+        // Luego dentro del card.innerHTML usás estas variables:
         card.innerHTML = `
             <div class="carrusel-card ${tieneMasDeUnaFoto ? '' : 'sin-flechas'}">
-                <button type="button" 
-                        class="btn-favorito ${esFavorito ? 'liked' : ''}" 
-                        onclick="toggleFavorito(${prod.id}, this)" 
-                        title="${esFavorito ? 'Quitar de favoritos' : 'Agregar a favoritos'}">
-                    <svg viewBox="0 0 24 24" class="icono-corazon">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
-                </button>
-
-            <!-- ADENTRO DEL ARMADO DE TU TARJETA EN SCRIPT.JS -->
+                ${botonFavoritoHtml}
                 <a href="producto.html?id=${prod.id}">
                     <img src="${fotos[0]}" alt="${prod.nombre}" id="img-card-${prod.id}">
                 </a>
-                
                 <button class="btn-flecha prev" onclick="cambiarImagenCard(${prod.id}, -1)" title="Anterior">◄</button>
                 <button class="btn-flecha next" onclick="cambiarImagenCard(${prod.id}, 1)" title="Siguiente">►</button>
             </div>
@@ -203,24 +226,19 @@ function mostrarProductosEnPantalla(listaProductos) {
             <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; width: 100%;">
                 <div style="flex: 1;">
                     <label style="font-size: 0.75rem; color: #666; display: block;">Talle:</label>
-                    <select class="select-talle" id="talle-${prod.id}" 
-                            onchange="actualizarColoresDisponibles(${prod.id})" 
-                            style="width: 100%; padding: 0.4rem;">
+                    <select class="select-talle" id="talle-${prod.id}" onchange="actualizarColoresDisponibles(${prod.id})" style="width: 100%; padding: 0.4rem;">
                         ${opcionesTalles}
                     </select>
                 </div>
                 <div style="flex: 1;">
                     <label style="font-size: 0.75rem; color: #666; display: block;">Color:</label>
-                    <select class="select-color" id="color-${prod.id}" 
-                            style="width: 100%; padding: 0.4rem;">
+                    <select class="select-color" id="color-${prod.id}" style="width: 100%; padding: 0.4rem;">
                         ${opcionesColores}
                     </select>
                 </div>
             </div>
 
-            <button onclick="agregarAlCarrito(${prod.id})">
-                Agregar al carrito
-            </button>
+            ${botonAccionHtml}
         `;
 
         grilla.appendChild(card);
@@ -527,7 +545,7 @@ if (modalOverlay) {
     modalOverlay.addEventListener('click', (e) => {
         if (e.target === modalOverlay) {
             modalOverlay.classList.remove('activo');
-            
+
             // 🧹 BORRAMOS EL CARTEL AMARILLO ACÁ TAMBIÉN
             const avisoStock = document.getElementById('aviso-stock-recuperado');
             if (avisoStock) avisoStock.remove();
@@ -656,31 +674,31 @@ async function verificarCarritoPendiente(usuarioId) {
                 cantidadSinStock++; // Si el stock es 0 o menor, lo contamos para borrarlo y avisar
             }
         } catch (err) {
-        itemsValidos.push(item);
-    }
-}
-
-// 2. Guardamos los ítems válidos en el carrito principal
-if (itemsValidos.length > 0) {
-    carrito = itemsValidos;
-    localStorage.setItem('carrito_justina', JSON.stringify(carrito));
-    actualizarCarrito();
-
-    localStorage.removeItem(clavePendiente);
-
-    // 3. Dejamos una orden guardada en sessionStorage para abrir el modal y mostrar el aviso post-recarga
-    sessionStorage.setItem('abrir_carrito_recuperado', 'true');
-    if (cantidadSinStock > 0) {
-        sessionStorage.setItem('aviso_stock_faltante', cantidadSinStock);
+            itemsValidos.push(item);
+        }
     }
 
-    // Recargamos la página para que la interfaz limpie el login y muestre todo fresco
-    window.location.reload();
+    // 2. Guardamos los ítems válidos en el carrito principal
+    if (itemsValidos.length > 0) {
+        carrito = itemsValidos;
+        localStorage.setItem('carrito_justina', JSON.stringify(carrito));
+        actualizarCarrito();
 
-} else {
-    localStorage.removeItem(clavePendiente);
-    alert("⚠️ Tenías productos guardados en tu carrito anterior, pero lamentablemente ya no hay stock disponible.");
-}
+        localStorage.removeItem(clavePendiente);
+
+        // 3. Dejamos una orden guardada en sessionStorage para abrir el modal y mostrar el aviso post-recarga
+        sessionStorage.setItem('abrir_carrito_recuperado', 'true');
+        if (cantidadSinStock > 0) {
+            sessionStorage.setItem('aviso_stock_faltante', cantidadSinStock);
+        }
+
+        // Recargamos la página para que la interfaz limpie el login y muestre todo fresco
+        window.location.reload();
+
+    } else {
+        localStorage.removeItem(clavePendiente);
+        alert("⚠️ Tenías productos guardados en tu carrito anterior, pero lamentablemente ya no hay stock disponible.");
+    }
 }
 
 // =========================================================
@@ -712,16 +730,19 @@ function actualizarInterfazHeader() {
             if (btnPedidosAdmin) btnPedidosAdmin.style.display = 'block';
             if (btnPerfil) btnPerfil.style.display = 'none';
             btnCarrito.style.display = 'none';
+            btnFavorito.style.display= 'none';
         } else {
             if (btnConfigAdmin) btnConfigAdmin.style.display = 'none';
             if (btnPedidosAdmin) btnPedidosAdmin.style.display = 'none';
-            if (btnPerfil) btnPerfil.style.display = 'block'; // Solo los clientes ven su perfil
-            btnCarrito.style.display = 'block'; // Aseguramos que el cliente vea su carrito
+            if (btnPerfil) btnPerfil.style.display = 'block'; 
+            btnCarrito.style.display = 'block'; 
+            btnFavorito.style.display= 'block';
         }
     } else {
         btnLoginHeader.innerHTML = `<span class="icono-user">${iconoUserSVG}</span> <span class="texto-user">Iniciar Sesión</span>`;
 
         btnCarrito.style.display = "block";
+        btnFavorito.style.display = "block";
         if (contenedorDropdown) contenedorDropdown.classList.remove('sesion-activa');
         if (btnConfigAdmin) btnConfigAdmin.style.display = 'none';
         if (btnPedidosAdmin) btnPedidosAdmin.style.display = 'none';
@@ -1015,7 +1036,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 avisoStock = document.createElement('div');
                 avisoStock.id = 'aviso-stock-recuperado';
                 avisoStock.style.cssText = "background: #fff3cd; color: #856404; padding: 0.6rem; font-size: 0.85rem; border-radius: 4px; margin-bottom: 0.8rem; border: 1px solid #ffeeba;";
-                
+
                 const cuerpoModal = document.getElementById('lista-carrito');
                 if (cuerpoModal) {
                     cuerpoModal.before(avisoStock);
