@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago - Justina Store</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .metodo-pago-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid #ccc;
+            background: #fff;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .metodo-pago-btn.activo {
+            border-color: #000;
+            background: #000;
+            color: #fff;
+        }
+        .seccion-pago {
+            display: none;
+        }
+        .seccion-pago.activo {
+            display: grid;
+            gap: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="logo">
+            <a href="index.html" class="logo-principal">justina store</a>
+        </div>
+    </header>
+
+    <main style="max-width: 900px; margin: 2rem auto; padding: 0 1rem; display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+        
+        <!-- Selección y Formularios de Pago -->
+        <section style="background: #f9f9f9; padding: 2rem; border: 1px solid #e0e0e0; border-radius: 4px;">
+            <h1 style="font-size: 1.5rem; margin-bottom: 1.2rem; font-family: 'Playfair Display', serif;">SELECCIONÁ MEDIO DE PAGO</h1>
+
+            <!-- Pestañas de Medios de Pago -->
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+                <button type="button" class="metodo-pago-btn activo" onclick="cambiarMetodo('tarjeta', this)">Tarjeta</button>
+                <button type="button" class="metodo-pago-btn" onclick="cambiarMetodo('transferencia', this)">Transferencia / QR</button>
+                <button type="button" class="metodo-pago-btn" onclick="cambiarMetodo('efectivo', this)">Efectivo (Correo)</button>
+            </div>
+
+            <form id="form-pago">
+                
+                <!-- 1. FORMULARIO TARJETA -->
+                <div id="pago-tarjeta" class="seccion-pago activo">
+                    <div>
+                        <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">Número de Tarjeta</label>
+                        <input type="text" id="input-tarjeta" placeholder="4532 •••• •••• 1234" maxlength="19" style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">Vencimiento (MM/AA)</label>
+                            <input type="text" placeholder="MM/AA" maxlength="5" style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">CVV</label>
+                            <input type="text" placeholder="123" maxlength="4" style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
+                        </div>
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">Nombre del Titular</label>
+                        <input type="text" placeholder="Como figura en la tarjeta" style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                </div>
+
+                <!-- 2. TRANSFERENCIA / QR MOCKEADO -->
+                <div id="pago-transferencia" class="seccion-pago" style="text-align: center; background: #fff; padding: 1.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                    <p style="font-size: 0.9rem; font-weight: bold; margin-bottom: 0.5rem;">Escaneá el QR con Mercado Pago o tu billetera virtual</p>
+                    <div style="background: #eee; width: 150px; height: 150px; margin: 0.5rem auto; display: flex; align-items: center; justify-content: center; font-size: 3rem; border-radius: 4px;">
+                        📱
+                    </div>
+                    <p style="font-size: 0.8rem; color: #666; margin-top: 0.5rem;">CBU / CVV Alias: <b>justina.store.mp</b></p>
+                    <p style="font-size: 0.8rem; color: #666;">Titular: Justina Store S.R.L.</p>
+                </div>
+
+                <!-- 3. EFECTIVO / PAGO FÁCIL / RAPIPAGO -->
+                <div id="pago-efectivo" class="seccion-pago" style="background: #fff; padding: 1.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                    <p style="font-size: 0.9rem; font-weight: bold; margin-bottom: 0.5rem;">Pago en Efectivo (Rapipago / Pago Fácil / Correo Argentino)</p>
+                    <p style="font-size: 0.85rem; color: #555; line-height: 1.4;">Al confirmar el pedido, te generaremos un **Código de Pago**. Podrás abonar en cualquier sucursal adherida dentro de las 48 horas hábiles para despachar tu paquete.</p>
+                </div>
+
+                <!-- Botón de Acción Común -->
+                <div style="margin-top: 1.5rem;">
+                    <button type="submit" id="btn-finalizar-pedido" style="width: 100%; background: #000; color: #fff; border: none; padding: 1rem; font-weight: bold; cursor: pointer; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px;">
+                        Pagar y Finalizar Compra
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Resumen Rápido -->
+        <aside style="background: #fff; padding: 1.5rem; border: 1px solid #e0e0e0; border-radius: 4px; height: fit-content;">
+            <h3 style="font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem;">Resumen del Pedido</h3>
+            <div id="resumen-items-pago" style="font-size: 0.9rem; color: #666; margin-bottom: 1rem; max-height: 200px; overflow-y: auto;">
+                <!-- Se llena con JS -->
+            </div>
+            <div style="font-size: 1.2rem; font-weight: bold; display: flex; justify-content: space-between; border-top: 1px solid #eee; padding-top: 1rem;">
+                <span>Total a Pagar:</span>
+                <span id="resumen-total-pago">$0</span>
+            </div>
+        </aside>
+
+    </main>
+
+    <script src="pago.js"></script>
+</body>
+</html>

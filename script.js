@@ -121,9 +121,11 @@ function mostrarProductosEnPantalla(listaProductos) {
         // 1. Calculamos el stock real restando el carrito
         if (Array.isArray(prod.variantes) && prod.variantes.length > 0) {
             const variantesConStock = prod.variantes.filter(v => {
-                const cantEnCarrito = carrito.filter(item =>
-                    item.id === prod.id && item.talleElegido === v.talle && item.colorElegido === v.color
-                ).length;
+                // ⚡ Sumamos la cantidad acumulada en lugar de contar elementos sueltos
+                const cantEnCarrito = carrito
+                    .filter(item => item.id === prod.id && item.talleElegido === v.talle && item.colorElegido === v.color)
+                    .reduce((acc, item) => acc + (item.cantidad || 1), 0);
+
                 return (Number(v.stock) - cantEnCarrito) > 0;
             });
 
@@ -142,7 +144,11 @@ function mostrarProductosEnPantalla(listaProductos) {
                 opcionesColores = `<option disabled selected>Agotado</option>`;
             }
         } else {
-            const cantEnCarrito = carrito.filter(item => item.id === prod.id).length;
+            // ⚡ Sumamos la cantidad acumulada para productos sin variantes
+            const cantEnCarrito = carrito
+                .filter(item => item.id === prod.id)
+                .reduce((acc, item) => acc + (item.cantidad || 1), 0);
+
             const stockTotal = Number(prod.stock || 0);
 
             if ((stockTotal - cantEnCarrito) > 0) {
@@ -207,11 +213,15 @@ function mostrarProductosEnPantalla(listaProductos) {
             </button>
         `;
 
-        // 4. Armado de la tarjeta (Ya limpia, sin código de ofertas ni carteles de agotado porque los filtramos arriba)
-        // Luego dentro del card.innerHTML usás estas variables:
         card.innerHTML = `
-            <div class="carrusel-card ${tieneMasDeUnaFoto ? '' : 'sin-flechas'}">
+            <div class="carrusel-card ${tieneMasDeUnaFoto ? '' : 'sin-flechas'}" style="position: relative;">
                 ${botonFavoritoHtml}
+                
+                <!-- ⚡ CARTEL FLOTANTE DE ÚLTIMA UNIDAD SOBRE LA FOTO -->
+                <div id="alerta-stock-${prod.id}" style="display: none; position: absolute; top: 10px; left: 10px; z-index: 5; background: rgba(255, 243, 205, 0.95); color: #856404; font-size: 0.7rem; font-weight: bold; padding: 0.2rem 0.5rem; border-radius: 4px; border: 1px solid #ffeeba; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    🔥 ¡Última unidad!
+                </div>
+
                 <a href="producto.html?id=${prod.id}">
                     <img src="${fotos[0]}" alt="${prod.nombre}" id="img-card-${prod.id}">
                 </a>
@@ -226,13 +236,13 @@ function mostrarProductosEnPantalla(listaProductos) {
             <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; width: 100%;">
                 <div style="flex: 1;">
                     <label style="font-size: 0.75rem; color: #666; display: block;">Talle:</label>
-                    <select class="select-talle" id="talle-${prod.id}" onchange="actualizarColoresDisponibles(${prod.id})" style="width: 100%; padding: 0.4rem;">
+                    <select class="select-talle" id="talle-${prod.id}" onchange="actualizarColoresYVerificarStock(${prod.id})" style="width: 100%; padding: 0.4rem;">
                         ${opcionesTalles}
                     </select>
                 </div>
                 <div style="flex: 1;">
                     <label style="font-size: 0.75rem; color: #666; display: block;">Color:</label>
-                    <select class="select-color" id="color-${prod.id}" style="width: 100%; padding: 0.4rem;">
+                    <select class="select-color" id="color-${prod.id}" onchange="verificarUltimaUnidad(${prod.id})" style="width: 100%; padding: 0.4rem;">
                         ${opcionesColores}
                     </select>
                 </div>
@@ -242,7 +252,62 @@ function mostrarProductosEnPantalla(listaProductos) {
         `;
 
         grilla.appendChild(card);
+        setTimeout(() => verificarUltimaUnidad(prod.id), 0);
     });
+}
+
+// Función para verificar si la variante seleccionada tiene exactamente 1 unidad restante
+function verificarUltimaUnidad(idProducto) {
+    const productoOriginal = productos.find(p => p.id === idProducto);
+    if (!productoOriginal) return;
+
+    const selectTalle = document.getElementById(`talle-${idProducto}`);
+    const selectColor = document.getElementById(`color-${idProducto}`);
+    const cartelAlerta = document.getElementById(`alerta-stock-${idProducto}`);
+
+    if (!cartelAlerta) return;
+
+    const talleSeleccionado = selectTalle ? selectTalle.value : 'Único';
+    const colorSeleccionado = selectColor ? selectColor.value : 'Único';
+
+    let stockReal = 1;
+
+    let carritoActual = JSON.parse(localStorage.getItem('carrito_justina')) || [];
+
+    if (Array.isArray(productoOriginal.variantes) && productoOriginal.variantes.length > 0) {
+        const varianteElegida = productoOriginal.variantes.find(v =>
+            v.talle === talleSeleccionado && v.color === colorSeleccionado
+        );
+        if (varianteElegida) {
+            const cantEnCarrito = carritoActual
+                .filter(item => item.id === idProducto && item.talleElegido === talleSeleccionado && item.colorElegido === colorSeleccionado)
+                .reduce((acc, item) => acc + (item.cantidad || 1), 0);
+
+            stockReal = Number(varianteElegida.stock) - cantEnCarrito;
+        }
+    } else if (productoOriginal.stock !== undefined) {
+        const cantEnCarrito = carritoActual
+            .filter(item => item.id === idProducto)
+            .reduce((acc, item) => acc + (item.cantidad || 1), 0);
+
+        stockReal = Number(productoOriginal.stock) - cantEnCarrito;
+    }
+
+    // Si queda exactamente 1 sola unidad disponible, mostramos el cartel flotante
+    if (stockReal === 1) {
+        cartelAlerta.style.display = 'block';
+    } else {
+        cartelAlerta.style.display = 'none';
+    }
+}
+
+// Función combinada para actualizar colores cuando cambia el talle y revisar el stock
+function actualizarColoresYVerificarStock(idProducto) {
+    // Si ya tenías una función para actualizar colores, llamala acá (ej: actualizarColoresDisponibles(idProducto))
+    if (typeof actualizarColoresDisponibles === 'function') {
+        actualizarColoresDisponibles(idProducto);
+    }
+    verificarUltimaUnidad(idProducto);
 }
 
 // ====================================================================
@@ -377,7 +442,7 @@ async function toggleFavorito(idProducto, btnElemento) {
 }
 
 // ====================================================================
-// FUNCION PARA AGREGAR AL CARRITO  
+// FUNCIONES GLOBALES DE CARRITO (CON SOPORTE DE CANTIDADES)
 // ====================================================================
 
 function agregarAlCarrito(idProducto) {
@@ -390,8 +455,8 @@ function agregarAlCarrito(idProducto) {
         const talleSeleccionado = selectTalle ? selectTalle.value : 'Único';
         const colorSeleccionado = selectColor ? selectColor.value : 'Único';
 
-        // 1. Calculamos el stock real disponible en la base de datos para esta combinación exacta
-        let stockDisponible = 1; // Valor por defecto en caso de no usar variantes
+        // 1. Calculamos el stock real disponible
+        let stockDisponible = 1;
         if (Array.isArray(productoOriginal.variantes) && productoOriginal.variantes.length > 0) {
             const varianteElegida = productoOriginal.variantes.find(v =>
                 v.talle === talleSeleccionado && v.color === colorSeleccionado
@@ -403,37 +468,58 @@ function agregarAlCarrito(idProducto) {
             stockDisponible = Number(productoOriginal.stock);
         }
 
-        // 2. Contamos cuántas unidades idénticas (mismo id, talle y color) ya están en el carrito
-        const cantidadEnCarrito = carrito.filter(prod =>
+        // 2. Contamos cuántas unidades de esta variante exacta ya están en el carrito
+        let indexExistente = carrito.findIndex(prod =>
             prod.id === idProducto &&
             prod.talleElegido === talleSeleccionado &&
             prod.colorElegido === colorSeleccionado
-        ).length;
+        );
 
-        // 3. Bloqueamos la acción si el cliente intenta superar el stock físico
-        if (cantidadEnCarrito >= stockDisponible) {
+        let cantidadActualEnCarrito = indexExistente !== -1 ? (carrito[indexExistente].cantidad || 1) : 0;
+
+        // 3. Validamos stock
+        if (cantidadActualEnCarrito >= stockDisponible) {
             alert(`¡Ups! Solo tenemos ${stockDisponible} unidad(es) disponible(s) en talle ${talleSeleccionado} y color ${colorSeleccionado}.`);
-            return; // Cortamos la ejecución acá para que no se guarde
+            return;
         }
 
-        // 4. Si hay stock suficiente, empaquetamos y agregamos al carrito
-        // Calculamos el precio real que va a pagar
         const precioReal = productoOriginal.en_oferta
             ? (Number(productoOriginal.precio) - (Number(productoOriginal.precio) * (Number(productoOriginal.descuento || 20) / 100)))
             : Number(productoOriginal.precio);
 
-        const productoParaCarrito = {
-            ...productoOriginal,
-            talleElegido: talleSeleccionado,
-            colorElegido: colorSeleccionado,
-            precio: precioReal // ¡Guardamos el precio ya rebajado!
-        };
+        if (indexExistente !== -1) {
+            carrito[indexExistente].cantidad = (carrito[indexExistente].cantidad || 1) + 1;
+        } else {
+            const productoParaCarrito = {
+                ...productoOriginal,
+                talleElegido: talleSeleccionado,
+                colorElegido: colorSeleccionado,
+                precio: precioReal,
+                cantidad: 1
+            };
+            carrito.push(productoParaCarrito);
+        }
 
-        carrito.push(productoParaCarrito);
         actualizarCarrito();
         mostrarProductosEnPantalla(productos);
+
+        // Abrimos el modal brevemente para mostrar que se agregó
+        const modalCarrito = document.getElementById('modal-carrito');
+        if (modalCarrito) {
+            modalCarrito.classList.add('activo');
+        }
     }
 }
+function actualizarContadorHeader() {
+    let carritoActual = JSON.parse(localStorage.getItem('carrito_justina')) || [];
+    // Sumamos las cantidades totales de todos los ítems para la burbuja del header
+    const totalItems = carritoActual.reduce((acc, item) => acc + (item.cantidad || 1), 0);
+
+    const elemContador = document.getElementById('contador-carrito');
+    if (elemContador) elemContador.textContent = totalItems;
+}
+
+
 
 // ====================================================================
 // FUNCION PARA ELIMINAR DEL CARRITO  
@@ -442,6 +528,9 @@ function agregarAlCarrito(idProducto) {
 function eliminarDelCarrito(index) {
     carrito.splice(index, 1);
     actualizarCarrito();
+    if (typeof mostrarProductosEnPantalla === 'function' && typeof productos !== 'undefined') {
+        mostrarProductosEnPantalla(productos);
+    }
 }
 
 // ====================================================================
@@ -449,10 +538,11 @@ function eliminarDelCarrito(index) {
 // ====================================================================
 
 function actualizarCarrito() {
-    // MAGIA ACÁ: Cada vez que el carrito cambia, lo guardamos fijo en el navegador
     localStorage.setItem('carrito_justina', JSON.stringify(carrito));
 
-    if (elemContador) elemContador.textContent = carrito.length;
+    const totalUnidades = carrito.reduce((acc, item) => acc + (item.cantidad || 1), 0);
+    if (elemContador) elemContador.textContent = totalUnidades;
+
     if (!listaCarrito || !elemTotal) return;
 
     listaCarrito.innerHTML = '';
@@ -463,7 +553,13 @@ function actualizarCarrito() {
         return;
     }
 
+    let sumaTotal = 0;
+
     carrito.forEach((prod, index) => {
+        const cantidad = prod.cantidad || 1;
+        const subtotalItem = Number(prod.precio) * cantidad;
+        sumaTotal += subtotalItem;
+
         const item = document.createElement('div');
         item.classList.add('item-carrito');
 
@@ -471,60 +567,25 @@ function actualizarCarrito() {
             <div class="item-info">
                 <h4>${prod.nombre}</h4>
                 <small style="color:#666; font-size:0.85rem;">
-                    Talle: <b>${prod.talleElegido}</b> | Color: <b>${prod.colorElegido}</b>
+                    Talle: <b>${prod.talleElegido}</b> | Color: <b>${prod.colorElegido}</b> | Cant: <b>${cantidad}</b>
                 </small>
-                <p style="margin: 0.2rem 0 0; font-weight: bold;">$${Number(prod.precio).toLocaleString()}</p>
+                <p style="margin: 0.2rem 0 0; font-weight: bold;">$${subtotalItem.toLocaleString()}</p>
             </div>
             <button class="btn-eliminar" onclick="eliminarDelCarrito(${index})">X</button>
         `;
         listaCarrito.appendChild(item);
     });
 
-    const sumaTotal = carrito.reduce((acum, prod) => acum + Number(prod.precio), 0);
     elemTotal.textContent = `$${sumaTotal.toLocaleString()}`;
 }
 
-// ====================================================================
-// FUNCION PARA ELEGIR UNA DIRECCION EN EL CARRITO  
-// ====================================================================
-async function cargarDireccionesEnCarrito() {
-    const selectDir = document.getElementById('select-direccion-envio');
-    if (!selectDir) return;
-
-    const sesion = localStorage.getItem('usuario_tienda');
-    if (!sesion) {
-        selectDir.innerHTML = '<option value="">Iniciá sesión para ver tus direcciones</option>';
-        return;
-    }
-
-    const usuario = JSON.parse(sesion);
-    try {
-        const res = await fetch(`http://localhost:3000/api/direcciones/${usuario.id}`);
-        const direcciones = await res.json();
-        selectDir.innerHTML = '';
-
-        if (direcciones.length === 0) {
-            selectDir.innerHTML = '<option value="">Sin direcciones. Cargá una en Mi Perfil</option>';
-        } else {
-            direcciones.forEach(d => {
-                const opt = document.createElement('option');
-                opt.value = `${d.calle_numero}, ${d.localidad}, ${d.provincia} (CP: ${d.codigo_postal})`;
-                opt.textContent = `${d.calle_numero} - ${d.localidad}`;
-                selectDir.appendChild(opt);
-            });
-        }
-    } catch (err) {
-        selectDir.innerHTML = '<option value="">Error al cargar direcciones</option>';
-    }
-}
 
 // ====================================================================
 // EVENTO DEL MODAL CARRITO, ABRIR Y CERRAR
 // ====================================================================
-if (botonAbrirCarrito && modalCarrito) {
+if (botonAbrirCarrito) {
     botonAbrirCarrito.addEventListener('click', () => {
-        modalCarrito.classList.add('activo');
-        cargarDireccionesEnCarrito();
+        window.location.href = 'carrito.html';
     });
 }
 
@@ -564,84 +625,8 @@ window.addEventListener('click', (e) => {
 // =========================================================
 
 if (btnFinalizarCompra) {
-    btnFinalizarCompra.addEventListener('click', async () => {
-        if (carrito.length === 0) {
-            alert("Tu carrito está vacío. ¡Agregá prendas antes de finalizar!");
-            return;
-        }
-
-        const sesionGuardada = localStorage.getItem('usuario_tienda');
-        if (!sesionGuardada) {
-            if (modalCarrito) modalCarrito.classList.remove('activo');
-            alert("¡Ya casi es tuyo! Para finalizar la compra necesitás iniciar sesión o crear una cuenta.");
-            if (modalLogin) {
-                modalLogin.classList.add('activo');
-                document.getElementById('tab-login')?.click();
-            }
-            return;
-        }
-
-        const usuario = JSON.parse(sesionGuardada);
-
-        // VALIDACIÓN OBLIGATORIA DE DNI Y TELÉFONO
-        if (!usuario.dni || !usuario.telefono || usuario.dni.trim() === '' || usuario.telefono.trim() === '') {
-            if (modalCarrito) modalCarrito.classList.remove('activo');
-            alert("⚠️ Por favor, completá tu DNI y Teléfono en tu perfil antes de finalizar la compra.");
-            window.location.href = 'perfil.html'; // Te manda directo a completarlo
-            return;
-        }
-
-        // Validamos que hayan ingresado su domicilio
-        const selectDir = document.getElementById('select-direccion-envio');
-        const domicilio = selectDir ? selectDir.value : '';
-
-        if (!domicilio) {
-            alert("Por favor elegí una dirección o cargá una nueva en 'Mi Perfil' para el envío.");
-            return;
-        }
-
-        const totalCompra = carrito.reduce((acum, p) => acum + Number(p.precio), 0);
-
-        // Armamos el paquete del pedido enviando también DNI y teléfono
-        const nuevoPedido = {
-            usuario_id: usuario.id || null,
-            nombre: usuario.nombre,
-            email: usuario.email,
-            dni: usuario.dni,
-            telefono: usuario.telefono,
-            domicilio: domicilio,
-            total: totalCompra,
-            items: carrito
-        };
-
-        try {
-            // Enviamos el pedido a PostgreSQL
-            const respuesta = await fetch('http://localhost:3000/api/pedidos', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(nuevoPedido)
-            });
-
-            const datos = await respuesta.json();
-
-            if (respuesta.ok) {
-                // 1. Mostramos el éxito PRIMERO
-                alert(`¡Gracias por tu compra, ${usuario.nombre}! 📦\nTu pedido #${datos.pedido_id} fue registrado con éxito.`);
-
-                // 2. Limpiamos el carrito local
-                carrito = [];
-                localStorage.removeItem('carrito_justina');
-
-                // 3. Recargamos la página completa. 
-                window.location.reload();
-
-            } else {
-                alert(`No se pudo completar el pedido: ${datos.error}`);
-            }
-        } catch (error) {
-            alert("El pedido se procesó, pero ocurrió un error en la pantalla: " + error.message);
-            console.error("Detalle técnico del error:", error);
-        }
+    btnFinalizarCompra.addEventListener('click', () => {
+        window.location.href = 'carrito.html';
     });
 }
 
@@ -730,13 +715,13 @@ function actualizarInterfazHeader() {
             if (btnPedidosAdmin) btnPedidosAdmin.style.display = 'block';
             if (btnPerfil) btnPerfil.style.display = 'none';
             btnCarrito.style.display = 'none';
-            btnFavorito.style.display= 'none';
+            btnFavorito.style.display = 'none';
         } else {
             if (btnConfigAdmin) btnConfigAdmin.style.display = 'none';
             if (btnPedidosAdmin) btnPedidosAdmin.style.display = 'none';
-            if (btnPerfil) btnPerfil.style.display = 'block'; 
-            btnCarrito.style.display = 'block'; 
-            btnFavorito.style.display= 'block';
+            if (btnPerfil) btnPerfil.style.display = 'block';
+            btnCarrito.style.display = 'block';
+            btnFavorito.style.display = 'block';
         }
     } else {
         btnLoginHeader.innerHTML = `<span class="icono-user">${iconoUserSVG}</span> <span class="texto-user">Iniciar Sesión</span>`;
@@ -1003,6 +988,7 @@ cargarFavoritosDesdeBD();
 // Apenas carga index.html, revisamos si la URL trae una categoría seleccionada
 document.addEventListener('DOMContentLoaded', async () => {
     actualizarCarrito();
+    actualizarContadorHeader();
 
     const parametrosUrl = new URLSearchParams(window.location.search);
     const categoriaUrl = parametrosUrl.get('categoria');
@@ -1013,6 +999,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         filtrarPorCategoria(categoriaUrl);
     }
 });
+
 
 // Apenas carga cualquier página, revisamos si hay que abrir el carrito recuperado
 document.addEventListener('DOMContentLoaded', () => {
