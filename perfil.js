@@ -1,10 +1,20 @@
-// 1. Verificar sesión
+// ==========================================================
+// 1. VERIFICACIÓN Y CARGA DE SESIÓN
+// ==========================================================
 const sesion = localStorage.getItem('usuario_tienda');
 if (!sesion) {
     alert("Debés iniciar sesión para acceder a tu perfil.");
     window.location.href = 'index.html';
 }
-const usuario = JSON.parse(sesion);
+
+// Definimos la variable global 'usuario' para que todo el script la reconozca
+let usuario = JSON.parse(sesion);
+
+// Rellenamos los inputs de inmediato con los datos que ya tenemos en sesión
+document.getElementById('perfil-nombre').value = usuario.nombre || '';
+document.getElementById('perfil-email').value = usuario.email || '';
+document.getElementById('perfil-dni').value = usuario.dni || '';
+document.getElementById('perfil-telefono').value = usuario.telefono || ''; 
 
 // Alternar entre pestañas
 function cambiarTab(pestaña) {

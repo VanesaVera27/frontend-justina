@@ -5,13 +5,24 @@
     font-family: Arial, sans-serif;
 }
 
+:root{
+    --color-principal: #3b2314;
+    --color-secundario: #f5f0e8;
+    --color-logobanner: #3b2314;
+    --color-logo: #ffffff;
+    --color-textoheader: #ffffff;
+    --color-fondo: white;
+    --color-fondoCard: white;
+    --color-texto: black;
+}
+
 /* ----------------------------------------------------------------------------------cinta de anuncios */
 
 .cinta-promos {
     width: 100%;
-    background-color: #f5f0e8; /* Tono crema elegante como en tu imagen */
-    color: #3b2314;            /* Marrón oscuro editorial */
-    overflow: hidden;          /* Oculta el texto que se va por los costados */
+    background-color: var(--color-secundario); 
+    color: var(--color-principal);            
+    overflow: hidden;          
     padding: 0.5rem 0;
     border-bottom: 1px solid #e8e1d5;
     user-select: none;
@@ -24,7 +35,7 @@
 .cinta-track {
     display: flex;
     width: max-content;
-    animation: moverCinta 25s linear infinite; /* 25s es la velocidad (menos seg = más rápido) */
+    animation: moverCinta 25s linear infinite; 
 }
 
 /* AL PASAR EL MOUSE POR LA CINTA, LA ANIMACIÓN SE PAUSA SUTILMENTE */
@@ -34,18 +45,17 @@
 
 .cinta-texto {
     display: flex;
-    gap: 3rem;                 /* Espacio entre cada frase */
-    padding-right: 3rem;       /* Espacio al final del primer bloque antes de que enganche el segundo */
+    gap: 3rem;                 
+    padding-right: 3rem;       
 }
 
 .cinta-texto span {
     font-size: 0.8rem;
     font-weight: 600;
     letter-spacing: 1px;
-    white-space: nowrap;       /* Evita que el texto se rompa en varias líneas */
+    white-space: nowrap;       
 }
 
-/* ANIMACIÓN KEYFRAMES: Mueve exactamente el 50% de su ancho y vuelve al inicio sin salto visual */
 @keyframes moverCinta {
     0% {
         transform: translateX(0%);
@@ -61,8 +71,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem 5%;
-    background-color: #3b2314;
-    color: white;
+    background-color: var(--color-principal);
+    color: var(--color-textoheader);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -83,25 +93,25 @@
     font-size: 1.3rem;
     font-weight: 400;
     letter-spacing: -1px;
-    color: #3b2314;
+    color: var(--color-logobanner);
     text-transform: lowercase;
 }
 
 .logo a {
-    color: #ffffff;
-    text-decoration: none !important; /* Quita el subrayado del link */
+    color: var(--color-logo);
+    text-decoration: none !important; 
     font-family: 'Abril Fatface', serif;
-    font-size: 1.8rem;               /* O el tamaño editorial que ya le tengas puesto */
+    font-size: 1.8rem;               
     cursor: pointer;
     transition: opacity 0.2s ease;
 }
 
 .logo:hover {
-    opacity: 0.85;                   /* Leve efecto visual al pasar el mouse */
+    opacity: 0.85;                   
 }
 
 .header nav a {
-    color: white;
+    color: var(--color-textoheader);
     text-decoration: none;
     margin: 0 1rem;
 }
@@ -117,8 +127,8 @@
 #btn-login-header {
     background: transparent !important;
     border: none !important;
-    color: #ffffff !important;         /* Blanco limpio igual que los otros links */
-    font-family: inherit;              /* Usa la misma tipografía limpia de la navegación */
+    color: #ffffff !important;         
+    font-family: inherit;              
     font-size: 1rem;
     font-weight: 400;
     letter-spacing: 0.5px;
@@ -128,11 +138,10 @@
     align-items: center;
     gap: 0.3rem;
     transition: opacity 0.2s ease, color 0.2s ease;
-    box-shadow: none !important;       /* Borra cualquier sombreado 3D residual */
+    box-shadow: none !important;       
     outline: none;
 }
 
-/* Efecto suave al pasar el mouse, igual que en "Colección" */
 #btn-login-header:hover {
     opacity: 0.8;
     text-decoration: underline;
@@ -154,7 +163,7 @@
     position: absolute;
     top: 100%;
     left: 0;
-    background-color: #f8f8ec;
+    background-color: var(--color-secundario);
     min-width: 170px;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
     border-radius: 6px;
@@ -164,7 +173,7 @@
 }
 
 .dropdown-coleccion .dropdown-contenido a {
-    color: #3b2314 !important;
+    color: var(--color-principal) !important;
     padding: 10px 16px;
     text-decoration: none;
     display: block;
@@ -176,7 +185,6 @@
     background-color: #f7f5f0;
 }
 
-/* Aparece suavemente al pasar el mouse sobre el botón "Colección" */
 .dropdown-coleccion:hover .dropdown-contenido {
     display: block;
 }
@@ -187,10 +195,10 @@
 .btn-user {
     display: flex;
     align-items: center;
-    gap: 6px; /* Separación entre el ícono y el texto en PC */
+    gap: 6px; 
     background: transparent;
     border: none;
-    color: #fffdfa; /* Aseguramos que tome el color crema */
+    color: #fffdfa; 
     font-family: inherit;
     cursor: pointer;
 }
@@ -204,18 +212,16 @@
 .icono-svg-user {
     width: 20px;
     height: 20px;
-    stroke: #fffdfa; /* Color del trazo */
+    stroke: #fffdfa; 
     transition: transform 0.2s ease;
 }
 
 .btn-user:hover .icono-svg-user {
-    transform: scale(1.1); /* Efecto sutil al pasar el mouse */
+    transform: scale(1.1); 
 }
 /* =========================================================
    MENÚ DESPLEGABLE DE USUARIO
 ========================================================= */
-
-
 
 .dropdown-menu {
     position: relative;
@@ -227,7 +233,7 @@
     position: absolute;
     top: 100%;
     right: 0;
-    background-color: white;
+    background-color: var(--color-secundario);
     min-width: 200px;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
     border-radius: 6px;
@@ -329,12 +335,11 @@
    MENÚ HAMBURGUESA (SOLO VISIBLE EN MÓVILES)
 ========================================================= */
 
-/* Por defecto (en PC), el botón hamburguesa está oculto */
 .menu-hamburguesa {
     display: none;
     background: none;
     border: none;
-    color: #fffdfa; /* Color crema clarito para que resalte en el fondo marrón */
+    color: var(--color-secundario); 
     font-size: 1.8rem;
     cursor: pointer;
     padding: 0;
@@ -343,53 +348,47 @@
 
 /* PARA CELULARES (Menos de 768px de ancho) */
 @media (max-width: 768px) {
-    /* 1. Mostramos el botón hamburguesa */
     .menu-hamburguesa {
         display: block;
     }
 
-    /* 2. Ocultamos el menú normal y lo preparamos para ser desplegable */
     #nav-principal {
-        display: none; /* Arranca oculto */
+        display: none;
         flex-direction: column;
         position: absolute;
-        top: 100%; /* Se acomoda justo debajo del header marrón */
+        top: 100%; 
         left: 0;
         width: 100%;
-        background-color: #3b2314; /* Mismo fondo del header */
+        background-color: var(--color-principal);
         box-shadow: 0 10px 15px rgba(0,0,0,0.2);
         z-index: 100;
         padding-bottom: 1rem;
     }
 
-    /* Esta clase se la vamos a agregar con JS cuando toquen el botón ☰ */
     #nav-principal.activo {
         display: flex;
     }
 
-    /* 3. Acomodamos los links para que sean filas fáciles de tocar */
     #nav-principal a, 
     #nav-principal .dropdown-btn {
         padding: 1rem 2rem;
         text-align: left;
-        border-bottom: 1px solid rgba(255, 253, 250, 0.05); /* Linea divisoria muy sutil */
+        border-bottom: 1px solid rgba(255, 253, 250, 0.05);
         width: 100%;
         box-sizing: border-box;
     }
 
-    /* 4. Arreglamos el submenú de "Colección" para que no flote raro en el celular */
     .dropdown-coleccion .dropdown-contenido {
-        position: static; /* Para que empuje los elementos hacia abajo en vez de flotar arriba de ellos */
+        position: static; 
         width: 100%;
         box-shadow: none;
-        background-color: #2a180e; /* Un marrón penitas más oscuro para diferenciarlo */
+        background-color: #2a180e;
     }
     
     .dropdown-coleccion .dropdown-contenido a {
-        padding-left: 3rem; /* Sangría para que se note que están adentro de Colección */
+        padding-left: 3rem; 
     }
 
-    /* 1. Forzamos al header a ser una fila horizontal sin que se rompa */
     .header {
         display: flex;
         flex-direction: row;
@@ -399,30 +398,26 @@
         padding: 0.5rem 1rem;
     }
 
-    /* 2. Le damos más protagonismo al logo en el centro */
     .logo {
         flex-grow: 1;
         text-align: center;
     }
-
-    /* 3. Acomodamos el bloque derecho (Usuario y Carrito) en fila */
     .acciones-header {
         display: flex;
         flex-direction: row !important;
         align-items: center;
         justify-content: flex-end;
-        gap: 1rem; /* Separación prolija entre usuario y carrito */
+        gap: 1rem;
     }
 
-    /* 4. Evitamos que "Iniciar Sesión" o "Hola, Vanesa" se corte en dos líneas */
+
     .btn-user {
-        white-space: nowrap !important; /* Fuerza el texto en 1 sola línea */
-        font-size: 0.85rem;             /* Achicamos apenitas la letra */
-        padding: 0;                     /* Sacamos rellenos extra */
+        white-space: nowrap !important; 
+        font-size: 0.85rem;             
+        padding: 0;                     
         margin: 0;
     }
 
-    /* 5. Acomodamos el carrito para que quede centrado con el botón de usuario */
     .carrito {
         display: flex;
         align-items: center;
@@ -430,17 +425,14 @@
         font-size: 1.1rem;
     }
 
-    /* Ocultamos la palabra "Iniciar Sesión" o "Hola, Vanesa" */
     .texto-user {
         display: none !important;
     }
 
-    /* Hacemos que el ícono sea un poquito más grande para compensar */
     .icono-user {
         font-size: 1.3rem;
     }
 
-    /* Ajustamos el botón del usuario para que sea un circulito/cuadradito limpio */
     .btn-user {
         background: transparent;
         border: none;
@@ -462,41 +454,36 @@
     align-items: center;
     text-align: center;
     padding: 3rem 1rem;
-    background: linear-gradient(#fffedf, white);
+    background: linear-gradient(var(--color-secundario), var(--color-fondo));
  
 }
-
 
 .banner-logo {
     display: inline-flex;
     flex-direction: column;
     align-items: flex-end;
-    /* Empuja "store" al borde derecho de "justina" */
     margin-bottom: 0.8rem;
 }
 
 .banner h1 {
     font-family: 'Abril Fatface', serif;
     font-size: 5rem;
-    /* Podés agrandarlo un poco para que destaque más */
     font-weight: 400;
-    color: #3b2314;
+    color: var(--color-principal);
     text-transform: lowercase;
     letter-spacing: -2px;
     line-height: 0.8;
-    /* Saca el espacio invisible arriba y abajo de las letras */
     margin: 0;
 }
 
 .banner h2 {
     font-family: 'Abril Fatface', serif;
     font-size: 1.1rem;
-    color: #3b2314;
+    color: var(--color-principal);
     text-transform: lowercase;
     letter-spacing: 3px;
     margin: 0;
     margin-top: 4px;
-    /* Define qué tan pegado queda de "justina" */
 }
 
 .banner p {
@@ -504,12 +491,12 @@
     font-style: italic;
     font-size: 1.5rem;
     font-weight: 400;
-    color: #5a3d28;
+    color: var(--color-principal);
     letter-spacing: 1px;
     margin: 0;
 }
 
-/* ----------------------------------------------------------------------------------------------------Contenedor /Grilla de productos */
+/* ----------------------------------------------------------------------------------------------------Grilla de productos */
 .contenedor {
     max-width: 1100px;
     margin: 0 auto;
@@ -519,12 +506,11 @@
 .contenedor h2 {
     text-align: center;
     margin-bottom: 1.5rem;
-    background-color: #fffedf;
+    background-color: var(--color-secundario);
 }
 
 .grilla-productos {
     display: grid;
-    /* Crea columnas automáticas que se adaptan al tamaño de la pantalla */
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 2rem;
     margin-bottom: 3rem;
@@ -537,7 +523,7 @@
     overflow: hidden;
     text-align: center;
     transition: transform 0.2s;
-    background: white;
+    background: var(--color-fondoCard);
 }
 
 .card-producto:hover {
@@ -558,7 +544,7 @@
 }
 
 .card-producto .precio {
-    color: #e67e22;
+    color: var(--color-texto);
     font-weight: bold;
     font-size: 1.2rem;
     margin-bottom: 1rem;
@@ -631,14 +617,12 @@
 }
 
 .btn-flecha:hover {
-    background-color: rgb(255, 88, 88);
     transform: translateY(-50%) scale(1.08);
 }
 
 .btn-flecha.prev {
     left: 8px;
-    /* Pega la flecha al borde izquierdo */
-    background-color: rgba(156, 115, 91, 0.75);
+    background-color: transparent;
     width: 24px;
     height: 24px;
     border-radius: 50%;
@@ -646,14 +630,12 @@
 
 .btn-flecha.next {
     right: 8px;
-    /* Pega la flecha al borde derecho */
-    background-color: rgba(156, 115, 91, 0.75);
+    background-color: transparent;
     width: 24px;
     height: 24px;
     border-radius: 50%;
 }
 
-/* Opcional: Si querés que sean transparentes hasta que pases el mouse */
 .carrusel-card .btn-flecha {
     opacity: 0;
 }
@@ -662,12 +644,12 @@
     opacity: 1;
 }
 
-/* Ocultamos las flechas si la prenda tiene solo 1 foto */
+
 .carrusel-card.sin-flechas .btn-flecha {
     display: none;
 }
 
-/* Botón favoritos */
+/* -----------------------------------------------------Botón favoritos */
 .carrusel-card {
     position: relative !important;
 }
@@ -679,7 +661,7 @@
     right: 12px;
     width: 36px;
     height: 36px;
-    background: rgba(255, 255, 255, 0.85); /* Fondo blanco semitransparente sutil */
+    background-color: rgba(0, 0, 0, 0.164);
     border: none;
     border-radius: 50%;
     display: flex;
@@ -694,30 +676,29 @@
 
 .card-producto .btn-favorito:hover {
     transform: scale(1.1);
+    background-color: var(--color-secundario);
 }
 
-/* Estilo por defecto: Corazón VACÍO (Solo contorno negro/oscuro) */
 .card-producto .icono-corazon {
-    width: 20px;
-    height: 20px;
-    fill: none;               /* Interior vacío */
-    stroke: #222222;          /* Contorno negro minimalista */
+    width: 25px;
+    height: 25px;
+    fill: none;               
+    stroke: white;          
     stroke-width: 1;
     transition: fill 0.25s ease, stroke 0.25s ease;
 }
 
-/* CUANDO ESTÁ SELECCIONADO (LIKED): Fondo y corazón rojos */
 .card-producto .btn-favorito.liked {
-    background: #e63946;      /* Fondo rojo moderno */
+    background:  rgba(0, 0, 0, 0.164);    
 }
 
 .card-producto .btn-favorito.liked .icono-corazon {
-    fill: #ffffff;            /* Corazón relleno blanco sobre fondo rojo */
-    stroke: #ffffff;
+    fill: rgb(194, 0, 0);            
+    stroke: rgb(194, 0, 0);
 }
 
 
-/*  CARTEL DE SIN STOCK
+/*  ----------------------------------------------------------------------CARTEL DE SIN STOCK
 
 
 /* El cartel que flota en el medio de la foto */
@@ -738,10 +719,9 @@
     border: 1px solid #d8cec4;
     border-radius: 4px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    pointer-events: none; /* Para que los clics pasen de largo y no interfieran con el carrusel */
+    pointer-events: none; 
 }
 
-/* Efecto para que la foto se vea desaturada si no hay stock */
 .img-agotada {
     opacity: 0.65;
     filter: grayscale(40%);
@@ -759,7 +739,6 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    /* Por defecto ocultamos la ventana */
     visibility: hidden;
     opacity: 0;
     transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -771,7 +750,7 @@
 }
 
 .modal-contenido {
-    background: white;
+    background: var(--color-secundario);
     width: 90%;
     max-width: 500px;
     border-radius: 10px;
@@ -824,7 +803,7 @@
 }
 
 .item-info p {
-    color: #e67e22;
+    color: var(--color-texto);
     font-weight: bold;
     font-size: 0.9rem;
     margin: 0;
@@ -842,7 +821,7 @@
 
 .modal-footer {
     padding: 1rem 1.5rem;
-    background-color: #f9f9f9;
+    background-color: var(--color-secundario);
     border-top: 1px solid #eee;
 }
 
@@ -856,8 +835,8 @@
 
 .btn-comprar {
     width: 100%;
-    background-color: #3b2314;
-    color: white;
+    background-color: var(--color-principal);
+    color: var(--color-textoheader);
     border: none;
     padding: 0.8rem;
     font-size: 1rem;
@@ -876,7 +855,7 @@
 
 /* Caja principal del modal */
 .modal-login-box {
-    background: #fffdfa !important; /* Unificamos todo en crema editorial */
+    background: var(--color-secundario) !important; 
     border: 1px solid #d8cec4;
     border-radius: 12px;
     width: 90% !important;
@@ -938,7 +917,7 @@
 }
 
 .form-login input:focus {
-    border-color: #3b2314;
+    border-color: var(--color-principal);
     box-shadow: 0 0 0 3px rgba(59, 35, 20, 0.08);
 }
 
@@ -951,7 +930,6 @@
     letter-spacing: 0.5px;
 }
 
-/* AJUSTES RESPONSIVE PARA CELULARES */
 @media (max-width: 480px) {
     .modal-login-box {
         padding: 1.5rem 1.2rem !important;
@@ -962,8 +940,6 @@
         gap: 1rem;
     }
 }
-
-
 
 
 /*----------------------------------------------------------------------------- footer*/
@@ -979,10 +955,8 @@ main, .contenedor, .contenedor-perfil {
 }
 
 .footer-tienda {
-    background-color: #3b2314;
-    /* Tono marrón editorial */
-    color: #f7f5f0;
-    /* Color crema para buen contraste */
+    background-color:var(--color-principal);
+    color: var(--color-secundario);
     padding: 3rem 2rem 1rem;
     margin-top: 4rem;
 }
@@ -1009,7 +983,7 @@ main, .contenedor, .contenedor-perfil {
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 0.5rem;
-    color: #ffffff;
+    color: var(--color-textoheader);
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     padding-bottom: 0.4rem;
 }
@@ -1022,7 +996,7 @@ main, .contenedor, .contenedor-perfil {
 }
 
 .col-footer a:hover {
-    color: #ffffff;
+    color: var(--color-textoheader);
     text-decoration: underline;
 }
 
@@ -1042,14 +1016,14 @@ main, .contenedor, .contenedor-perfil {
 .logo-footer .logo-principal  {
     font-family: 'Abril Fatface', serif;
     font-size: 2.8rem;
-    color: #ffffff;
+    color: var(--color-logo);
     letter-spacing: -1px;
 }
 
 .logo-footer .logo-sub {
     font-family: 'Abril Fatface', serif;
     font-size: 0.8rem;
-    color: #d8cec4;
+    color: var(--color-logo);
     letter-spacing: 2px;
     margin-top: 3px;
 }
@@ -1058,7 +1032,7 @@ main, .contenedor, .contenedor-perfil {
     font-family: 'Playfair Display', serif;
     font-style: italic;
     font-size: 1.1rem;
-    color: #d8cec4;
+    color: var(--color-logo);
     margin-top: 0.6rem;
     letter-spacing: 1px;
 }
@@ -1081,7 +1055,7 @@ main, .contenedor, .contenedor-perfil {
     display: inline-flex;
     align-items: center;
     gap: 0.65rem;
-    color: #d8cec4;            /* Tono crema suave que contrasta hermoso con el marrón */
+    color: var(--color-textoheader);            
     text-decoration: none;
     font-size: 0.9rem;
     font-weight: 400;
@@ -1089,24 +1063,24 @@ main, .contenedor, .contenedor-perfil {
     padding: 0.15rem 0;
 }
 
-/* Efecto al pasar el cursor por cada red social o contacto */
+
 .link-app-footer:hover {
-    color: #ffffff;            /* Se ilumina en blanco puro */
+    color: #ffffff;            
     text-decoration: underline;
     text-underline-offset: 4px;
-    transform: translateX(3px); /* Se desliza suavemente 3px hacia la derecha */
+    transform: translateX(3px); 
 }
 
 .icono-footer {
     width: 18px;
     height: 18px;
-    color: inherit;            /* Hereda el color crema y cambia a blanco en el hover */
+    color: inherit;           
     flex-shrink: 0;
     transition: transform 0.2s ease;
 }
 
 .link-app-footer:hover .icono-footer {
-    transform: scale(1.15);    /* El ícono de la app hace un pequeño zoom */
+    transform: scale(1.15);   
 }
 
 /* =========================================================
@@ -1128,7 +1102,6 @@ main, .contenedor, .contenedor-perfil {
     justify-content: center;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.25);
     z-index: 1500;
-    /* Se asegura de estar siempre arriba de todo */
     text-decoration: none;
     transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
 }
@@ -1136,7 +1109,6 @@ main, .contenedor, .contenedor-perfil {
 .btn-whatsapp-flotante:hover {
     background-color: #20ba5a;
     transform: scale(1.08);
-    /* Crece suavemente al acercar el cursor */
     box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.35);
 }
 
@@ -1144,150 +1116,4 @@ main, .contenedor, .contenedor-perfil {
     width: 32px;
     height: 32px;
     fill: currentColor;
-    /* Hereda el blanco del texto del botón */
 }
-
-
-/* =========================================================
-   PÁGINA DE CONTACTO 
-========================================================= */
-
-.banner-contacto {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 3rem 1rem;
-    background: linear-gradient(#fffedf, white);
- 
-}
-
-
-.contenedor-contacto {
-    max-width: 600px;
-    margin: 1.5rem auto;
-    padding: 0 1.5rem;
-    color: #3b2314;
-    
-}
-
-.encabezado-contacto {
-    text-align: center;
-    margin-bottom: 2.5rem;
-}
-
-.encabezado-contacto h1 {
-    font-family: 'Abril Fatface', serif;
-    font-size: 2.8rem;
-    font-weight: 400;
-    margin-bottom: 1.5rem;
-    color: #3b2314;
-}
-
-.info-contacto-directo {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: #5a3d28;
-    margin-top: 2rem;
-}
-
-.formulario-editorial {
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
-}
-
-.campo-form {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    text-align: left;
-}
-
-.campo-form label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #5a3d28;
-}
-
-.campo-form input,
-.campo-form textarea {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    border: 1px solid #d8cec4;
-    background-color: #fffdfa;
-    border-radius: 4px;
-    font-family: inherit;
-    font-size: 0.95rem;
-    color: #3b2314;
-    outline: none;
-    transition: border-color 0.2s;
-}
-
-.campo-form input:focus,
-.campo-form textarea:focus {
-    border-color: #3b2314;
-    background-color: #ffffff;
-}
-
-.btn-enviar-contacto {
-    margin-top: 1rem;
-    width: 100%;
-    padding: 0.9rem;
-    font-size: 1rem;
-    background-color: #5a4a3e; /* Tono marrón que mostrás en el botón */
-    border-radius: 2px;
-}
-
-.btn-enviar-contacto:hover {
-    background-color: #3b2314;
-}
-
-/* =========================================================
-   ENLACES INTERACTIVOS DE CONTACTO (MINIMALISTAS)
-========================================================= */
-
-.info-contacto-directo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.8rem;
-}
-
-.link-contacto {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.6rem;
-    color: #694a32;            /* Marrón medio suave */
-    text-decoration: none;
-    font-size: 0.95rem;
-    font-weight: 500;
-    transition: color 0.2s ease, transform 0.2s ease;
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
-}
-
-/* Efecto al pasar el cursor por encima */
-.link-contacto:hover {
-    color: #3b2314;            /* Se oscurece al marrón editorial principal */
-    text-decoration: underline;
-    text-underline-offset: 4px;
-    transform: translateY(-1px); /* Mueve el link 1px hacia arriba de forma elegante */
-}
-
-.icono-mini {
-    width: 18px;
-    height: 18px;
-    color: inherit;            /* El ícono hereda automáticamente el cambio de color en hover */
-    flex-shrink: 0;
-    transition: transform 0.2s ease;
-}
-
-.link-contacto:hover .icono-mini {
-    transform: scale(1.1);     /* El ícono hace un pequeño zoom al pasar el mouse */
-}
-

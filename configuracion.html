@@ -4,17 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tu Carrito - Justina Store</title>
+    <title>Configuración Web - Admin Justina Store</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Playfair+Display:ital,wght@1,400;1,500&display=swap"
         rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="stylecarrito.css">
 </head>
 
-<body>
+<body style="background: #f4f4f4; margin: 0; font-family: sans-serif;">
 
     <body>
 
@@ -88,6 +88,8 @@
                             style="display: none;">⚙️ Control de Stock</a>
                         <a href="pedidos-admin.html" id="btn-pedidos-admin" class="item-dropdown admin-only"
                             style="display: none;">📦 Control de Pedidos</a>
+                        <a href="configuracion.html" id="btn-configw-admin" class="item-dropdown admin-only"
+                            style="display: none;">⚙️ Configuración Web</a>
                         <a href="perfil.html" id="btn-perfil" class="item-dropdown user-only" style="display: none;">👤
                             Mi
                             Perfil</a>
@@ -102,100 +104,138 @@
 
         </header>
 
-        <main class="contenedor-carrito-pagina" style="max-width: 1200px; margin: 2rem auto; padding: 0 1rem;">
-            <h1 id="titulo-carrito-pagina">TU CARRITO (0 productos)</h1>
+        <main
+            style="max-width: 800px; margin: 2rem auto; background: #fff; padding: 2.5rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+            <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem; font-family: 'Playfair Display', serif;">⚙️
+                Personalización del Sitio</h2>
+            <p style="color: #666; font-size: 0.9rem; margin-bottom: 2rem;">Modificá los datos de contacto, textos
+                legales y diseño general que se reflejan de forma automática en toda la tienda.</p>
 
-            <div class="carrito-layout-principal"
-                style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; align-items: start;">
+            <form id="form-config-web" style="display: grid; gap: 1.5rem;">
 
-                <!-- Columna Izquierda: Listado de Artículos -->
-                <div class="carrito-items-container">
-                    <div id="lista-carrito-pagina">
-                        <!-- El JS inyectará los productos acá -->
-                    </div>
-                </div>
+                <!-- SECCIÓN 1: CONTACTO Y REDES -->
+                <fieldset
+                    style="border: 1px solid #e0e0e0; padding: 1.5rem; border-radius: 4px; display: grid; gap: 1rem;">
+                    <legend style="font-weight: bold; padding: 0 0.5rem; color: #3b2314;">1. Información de Contacto y
+                        Redes</legend>
 
-                <!-- Columna Derecha: Resumen de Compra -->
-                <div class="carrito-resumen-card"
-                    style="background: #f9f9f9; padding: 1.5rem; border: 1px solid #e0e0e0; border-radius: 4px;">
-                    <h3
-                        style="font-size: 1.2rem; margin-bottom: 1rem; border-bottom: 1px solid #ccc; padding-bottom: 0.5rem;">
-                        RESUMEN DE COMPRA</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">Número de
+                                WhatsApp</label>
+                            <input type="text" id="cfg-whatsapp"
+                                style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">Email de
+                                Contacto</label>
+                            <input type="email" id="cfg-email"
+                                style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
+                        </div>
 
-                    <div
-                        style="display: flex; justify-content: space-between; margin-bottom: 0.8rem; font-size: 0.95rem;">
-                        <span>Subtotal</span>
-                        <span id="resumen-subtotal">$0</span>
-                    </div>
-                    <div
-                        style="display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 0.95rem; color: #666;">
-                        <span>Impuestos nacionales</span>
-                        <span id="resumen-impuestos">$0</span>
-                    </div>
-                    <div
-                        style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; font-size: 1.2rem; font-weight: bold; border-top: 1px solid #ccc; padding-top: 0.8rem;">
-                        <span>TOTAL</span>
-                        <span id="resumen-total">$0</span>
                     </div>
 
-                    <button id="btn-iniciar-compra"
-                        style="width: 100%; background: #000; color: #fff; border: none; padding: 0.9rem; font-weight: bold; cursor: pointer; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px;">
-                        Iniciar Compra
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">Instagram
+                                (@usuario)</label>
+                            <input type="text" id="cfg-instagram"
+                                style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">TikTok
+                                (@usuario)</label>
+                            <input type="text" id="cfg-tiktok"
+                                style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">Ubicación / Ciudad</label>
+                        <input type="text" id="cfg-ubicacion" placeholder="Ej: Los Polvorines, Buenos Aires"
+                            style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                </fieldset>
+
+                <!-- SECCIÓN 2: APARIENCIA Y PROMOCIONES -->
+                <fieldset
+                    style="border: 1px solid #e0e0e0; padding: 1.5rem; border-radius: 4px; display: grid; gap: 1rem;">
+                    <legend style="font-weight: bold; padding: 0 0.5rem; color: #3b2314;">2. Apariencia y Promociones
+                    </legend>
+
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem; font-weight: bold;">Textos
+                            de la Cinta de Promociones (Superior)</label>
+                        <p style="font-size: 0.75rem; color: #666; margin-bottom: 0.8rem;">Completá los casilleros que
+                            quieras mostrar en la barra superior. Los que queden vacíos no aparecerán.</p>
+
+                        <div style="display: grid; gap: 0.5rem;">
+                            <input type="text" id="cfg-promo-1" placeholder="Promoción 1 (Ej: 15% OFF en efectivo)"
+                                style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                            <input type="text" id="cfg-promo-2" placeholder="Promoción 2 (Ej: 3 cuotas sin interés)"
+                                style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                            <input type="text" id="cfg-promo-3" placeholder="Promoción 3 (Ej: Envíos a todo el país)"
+                                style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                            <input type="text" id="cfg-promo-4" placeholder="Promoción 4 (Opcional)"
+                                style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">Color Principal de la
+                            Tienda</label>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <input type="color" id="cfg-color"
+                                style="width: 60px; height: 35px; border: 1px solid #ccc; border-radius: 4px; padding: 0; cursor: pointer;">
+                            <span style="font-size: 0.85rem; color: #666;">Seleccioná el tono institucional del footer y
+                                botones.</span>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- SECCIÓN 3: TEXTOS LEGALES E INSTITUCIONALES -->
+                <fieldset
+                    style="border: 1px solid #e0e0e0; padding: 1.5rem; border-radius: 4px; display: grid; gap: 1rem;">
+                    <legend style="font-weight: bold; padding: 0 0.5rem; color: #3b2314;">3. Textos Institucionales
+                        (Footer)</legend>
+
+                    <div>
+                        <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">Preguntas
+                            Frecuentes</label>
+                        <textarea id="cfg-faqs" rows="3"
+                            style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">Envíos y
+                            Devoluciones</label>
+                        <textarea id="cfg-envios" rows="3"
+                            style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">Términos y
+                            Condiciones</label>
+                        <textarea id="cfg-terminos" rows="3"
+                            style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">Avisos Legales</label>
+                        <textarea id="cfg-avisos" rows="3"
+                            style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+                    </div>
+                </fieldset>
+
+                <div style="text-align: right; margin-top: 1rem;">
+                    <button type="submit" id="btn-guardar-config"
+                        style="background: #000; color: #fff; border: none; padding: 0.9rem 2rem; font-weight: bold; cursor: pointer; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px;">
+                        Guardar Cambios
                     </button>
-
-                    <div style="margin-top: 1rem; text-align: center;">
-                        <a href="index.html" style="color: #333; font-size: 0.85rem; text-decoration: underline;">Seguir
-                            comprando</a>
-                    </div>
                 </div>
-
-            </div>
+            </form>
         </main>
-
-        <!-- VENTANA MODAL DOBLE: INICIO DE SESIÓN / REGISTRO -->
-        <div class="modal-overlay" id="modal-login">
-            <div class="modal-contenido modal-login-box">
-                <div class="modal-header">
-                    <!-- Pestañas para alternar qué formulario ver -->
-                    <div class="pestanas-login" style="display: flex; gap: 1rem; font-size: 1.2rem; font-weight: bold;">
-                        <span id="tab-login"
-                            style="cursor: pointer; color: #1a1a1a; border-bottom: 2px solid #1a1a1a;">Ingresar</span>
-                        <span id="tab-registro" style="cursor: pointer; color: #888;">Crear Cuenta</span>
-                    </div>
-                    <button class="btn-cerrar" id="btn-cerrar-modal-login">&times;</button>
-                </div>
-
-                <!-- 1. FORMULARIO DE INICIO DE SESIÓN -->
-                <form id="form-login" class="modal-cuerpo form-login">
-                    <label>Correo Electrónico</label>
-                    <input type="email" id="email-user" required placeholder="tuemail@ejemplo.com">
-
-                    <label>Contraseña</label>
-                    <input type="password" id="password-user" required placeholder="••••••••">
-
-                    <button type="submit" class="btn-comprar" style="margin-top: 1rem; ">
-                        Iniciar Sesión
-                    </button>
-                </form>
-
-                <!-- 2. FORMULARIO DE REGISTRO DE CLIENTE NUEVO (Oculto por defecto) -->
-                <form id="form-registro" class="modal-cuerpo form-login" style="display: none;">
-                    <label>Nombre y Apellido *</label>
-                    <input type="text" id="reg-nombre" required placeholder="Ej. Camila Pérez">
-
-                    <label>Correo Electrónico *</label>
-                    <input type="email" id="reg-email" required placeholder="camila@ejemplo.com">
-
-                    <label>Contraseña *</label>
-                    <input type="password" id="reg-pass" required placeholder="Mínimo 6 caracteres" minlength="6">
-
-                    <button type="submit" class="btn-comprar" style="margin-top: 1rem; ">
-                        Registrarme y Entrar
-                    </button>
-
-                </form>
-            </div>
-        </div>
 
         <!-- FOOTER -->
         <footer class="footer-tienda">
@@ -276,8 +316,6 @@
             </div>
         </footer>
 
-
-
         <!-- =========================================================
      BOTÓN FLOTANTE DE WHATSAPP
     ========================================================= -->
@@ -291,8 +329,8 @@
         </a>
 
 
+        <script src="configuracion.js"></script>
         <script src="script.js"></script>
-        <script src="carrito.js"></script>
     </body>
 
 </html>

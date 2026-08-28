@@ -15,6 +15,7 @@ const formLogin = document.getElementById('form-login');
 const btnLoginHeader = document.getElementById('btn-login-header');
 const btnConfigAdmin = document.getElementById('btn-config-admin');
 const btnPedidosAdmin = document.getElementById('btn-pedidos-admin');
+const btnConfigWAdmin = document.getElementById('btn-configw-admin');
 const btnPerfil = document.getElementById('btn-perfil');
 const btnLogoutHeader = document.getElementById('btn-logout-header');
 const contenedorDropdown = document.getElementById('contenedor-dropdown-user');
@@ -49,8 +50,6 @@ const indiceImagenActual = {};
 let favoritos = [];
 
 
-
-
 // ====================================================================
 // CARGAR BASE DE DATOS 
 // ====================================================================
@@ -78,7 +77,6 @@ No se pudieron cargar los productos. Asegurate de que tu terminal con <b>node se
         }
     }
 }
-
 
 // ====================================================================
 // FUNCIÓN PARA CAMBIAR LAS IMAGENES DEL CARRETE
@@ -519,8 +517,6 @@ function actualizarContadorHeader() {
     if (elemContador) elemContador.textContent = totalItems;
 }
 
-
-
 // ====================================================================
 // FUNCION PARA ELIMINAR DEL CARRITO  
 // ====================================================================
@@ -534,7 +530,7 @@ function eliminarDelCarrito(index) {
 }
 
 // ====================================================================
-// FUNCION PARA ACTUALIZAR EL CARRITO (VISUALMENTE) 
+// FUNCION PARA ACTUALIZAR EL CARRITO  
 // ====================================================================
 
 function actualizarCarrito() {
@@ -579,7 +575,6 @@ function actualizarCarrito() {
     elemTotal.textContent = `$${sumaTotal.toLocaleString()}`;
 }
 
-
 // ====================================================================
 // EVENTO DEL MODAL CARRITO, ABRIR Y CERRAR
 // ====================================================================
@@ -600,7 +595,7 @@ if (botonCerrarModal && modalCarrito) {
     });
 }
 
-// Y hacé lo mismo si hacés clic en el fondo oscuro (overlay) para cerrar:
+// Y hacé lo mismo si hacés clic en el fondo  para cerrar:
 const modalOverlay = document.getElementById('modal-carrito');
 if (modalOverlay) {
     modalOverlay.addEventListener('click', (e) => {
@@ -713,12 +708,14 @@ function actualizarInterfazHeader() {
         if (usuario.rol === 'admin') {
             if (btnConfigAdmin) btnConfigAdmin.style.display = 'block';
             if (btnPedidosAdmin) btnPedidosAdmin.style.display = 'block';
+            if (btnConfigWAdmin) btnConfigWAdmin.style.display = 'block';
             if (btnPerfil) btnPerfil.style.display = 'none';
             btnCarrito.style.display = 'none';
             btnFavorito.style.display = 'none';
         } else {
             if (btnConfigAdmin) btnConfigAdmin.style.display = 'none';
             if (btnPedidosAdmin) btnPedidosAdmin.style.display = 'none';
+            if (btnConfigWAdmin) btnConfigWAdmin.style.display = 'none';
             if (btnPerfil) btnPerfil.style.display = 'block';
             btnCarrito.style.display = 'block';
             btnFavorito.style.display = 'block';
@@ -730,6 +727,7 @@ function actualizarInterfazHeader() {
         btnFavorito.style.display = "block";
         if (contenedorDropdown) contenedorDropdown.classList.remove('sesion-activa');
         if (btnConfigAdmin) btnConfigAdmin.style.display = 'none';
+        if (btnConfigWAdmin) btnConfigWAdmin.style.display = 'none';
         if (btnPedidosAdmin) btnPedidosAdmin.style.display = 'none';
         if (btnPerfil) btnPerfil.style.display = 'none';
         if (btnLogoutHeader) btnLogoutHeader.style.display = 'none';
@@ -1011,7 +1009,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const modalCarrito = document.getElementById('modal-carrito');
         if (modalCarrito) {
             modalCarrito.classList.add('activo');
-            cargarDireccionesEnCarrito();
         }
 
         const cantSinStock = sessionStorage.getItem('aviso_stock_faltante');
@@ -1031,5 +1028,121 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             avisoStock.innerHTML = `⚠️ ${cantSinStock} producto(s) de tu carrito anterior fueron eliminados automáticamente por falta de stock.`;
         }
+    }
+});
+
+//PARA LA CONFIGURACION WEB DE ADMIN
+
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const res = await fetch('http://localhost:3000/api/configuracion');
+        if (res.ok) {
+            const config = await res.json();
+
+            // 1. WhatsApp (Footer y Botón Flotante)
+            if (config.whatsapp) {
+                const footerWsp = document.getElementById('footer-wsp');
+                const linkWsp = document.getElementById('link-footer-wsp');
+                const btnWspFlotante = document.getElementById('btn-whatsapp-flotante');
+                
+                if (footerWsp) footerWsp.textContent = config.whatsapp;
+                const numeroLimpio = config.whatsapp.replace(/\D/g, '');
+                const urlWsp = `https://wa.me/${numeroLimpio}?text=%C2%A1Hola!%20Quer%C3%ADa%20hacer%20una%20consulta%20sobre%20las%20prendas%20de%20la%20tienda...`;
+
+                if (linkWsp) linkWsp.href = `https://wa.me/${numeroLimpio}`;
+                if (btnWspFlotante) btnWspFlotante.href = urlWsp;
+            }
+
+            // 2. Email de Contacto
+            if (config.email_contacto) {
+                const footerEmail = document.getElementById('footer-email');
+                const linkEmail = document.getElementById('link-footer-email');
+                if (footerEmail) footerEmail.textContent = config.email_contacto;
+                if (linkEmail) linkEmail.href = `mailto:${config.email_contacto}`;
+            }
+
+            // 3. Instagram
+            if (config.instagram) {
+                const footerIg = document.getElementById('footer-ig');
+                const linkIg = document.getElementById('link-footer-ig');
+                if (footerIg) footerIg.textContent = config.instagram;
+                const usuarioIg = config.instagram.replace('@', '').trim();
+                if (linkIg) linkIg.href = `https://instagram.com/${usuarioIg}`;
+            }
+
+            // 4. TikTok
+            if (config.tiktok) {
+                const footerTk = document.getElementById('footer-tk');
+                const linkTk = document.getElementById('link-footer-tk');
+                if (footerTk) footerTk.textContent = config.tiktok;
+                const usuarioTk = config.tiktok.replace('@', '').trim();
+                if (linkTk) linkTk.href = `https://tiktok.com/@${usuarioTk}`;
+            }
+
+            // 5. Color principal de la tienda
+            if (config.color_principal) {
+                document.documentElement.style.setProperty('--color-principal', config.color_principal);
+            }
+
+            // 6. Cinta de Promociones Superior
+            if (config.texto_promocion) {
+                const cintaTrack = document.getElementById('cinta-promos-track');
+                if (cintaTrack) {
+                    let arrayPromos = [];
+                    try {
+                        arrayPromos = JSON.parse(config.texto_promocion);
+                    } catch (e) {
+                        arrayPromos = [config.texto_promocion];
+                    }
+
+                    if (arrayPromos.length > 0) {
+                        const spansHtml = arrayPromos.map(texto => `<span>${texto}</span>`).join(' ');
+                        cintaTrack.innerHTML = `
+                            <div class="cinta-texto">${spansHtml} &nbsp;&nbsp;&nbsp;&nbsp; ${spansHtml}</div>
+                            <div class="cinta-texto">${spansHtml} &nbsp;&nbsp;&nbsp;&nbsp; ${spansHtml}</div>
+                        `;
+                    }
+                }
+            }
+
+            // 7. Actualizar datos en la página de Contacto 
+            if (config.whatsapp) {
+                const contactoWspText = document.getElementById('contacto-wsp-text');
+                const contactoWspLink = document.getElementById('contacto-wsp-link');
+                const contactoTelText = document.getElementById('contacto-tel-text');
+                const contactoTelLink = document.getElementById('contacto-tel-link');
+
+                const numeroLimpio = config.whatsapp.replace(/\D/g, '');
+
+                if (contactoWspText) contactoWspText.textContent = config.whatsapp;
+                if (contactoWspLink) contactoWspLink.href = `https://wa.me/${numeroLimpio}?text=%C2%A1Hola!%20Quer%C3%ADa%20hacer%20una%20consulta...`;
+
+                if (contactoTelText) contactoTelText.textContent = config.whatsapp; 
+                if (contactoTelLink) contactoTelLink.href = `tel:+${numeroLimpio}`;
+            }
+
+            if (config.email_contacto) {
+                const contactoEmailText = document.getElementById('contacto-email-text');
+                const contactoEmailLink = document.getElementById('contacto-email-link');
+
+                if (contactoEmailText) contactoEmailText.textContent = config.email_contacto;
+                if (contactoEmailLink) contactoEmailLink.href = `mailto:${config.email_contacto}`;
+            }
+
+            // 8. Actualizar Ubicación y enlace de Google Maps en la página de Contacto
+            if (config.ubicacion) {
+                const ubicacionText = document.getElementById('contacto-ubicacion-text');
+                const mapaLink = document.getElementById('contacto-mapa-link');
+
+                if (ubicacionText) ubicacionText.textContent = config.ubicacion;
+                if (mapaLink) {
+                    // Genera automáticamente la búsqueda en Google Maps basada en el texto ingresado
+                    const queryMap = encodeURIComponent(config.ubicacion);
+                    mapaLink.href = `https://maps.google.com/?q=${queryMap}`;
+                }
+            }
+        }
+    } catch (err) {
+        console.error("Error al cargar la configuración global:", err);
     }
 });

@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finalizar Compra - Justina Store</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Playfair+Display:ital,wght@1,400;1,500&display=swap"
+        rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <header class="header">
@@ -15,90 +23,211 @@
     </header>
 
     <main style="max-width: 900px; margin: 2rem auto; padding: 0 1rem;">
-        <h1 style="font-size: 1.8rem; margin-bottom: 1.5rem; font-family: 'Playfair Display', serif;">DATOS DE ENVÍO Y FACTURACIÓN</h1>
+        <h1 style="font-size: 1.8rem; margin-bottom: 1.5rem; font-family: 'Playfair Display', serif;">DATOS DE ENVÍO Y
+            FACTURACIÓN</h1>
 
-        <form id="form-checkout" style="background: #f9f9f9; padding: 2rem; border: 1px solid #e0e0e0; border-radius: 4px; display: grid; gap: 1rem;">
-            
-            <h3 style="font-size: 1.1rem; border-bottom: 1px solid #ccc; padding-bottom: 0.5rem; margin-bottom: 0.5rem;">1. Datos de Contacto y Facturación</h3>
-            
+        <form id="form-checkout"
+            style="background: #f9f9f9; padding: 2rem; border: 1px solid #e0e0e0; border-radius: 4px; display: grid; gap: 1rem;">
+
+            <h3
+                style="font-size: 1.1rem; border-bottom: 1px solid #ccc; padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+                1. Datos de Contacto y Facturación</h3>
+
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                 <div>
                     <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">Nombre y Apellido</label>
-                    <input type="text" id="checkout-nombre" required readonly style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px; background: #eee; cursor: not-allowed;">
+                    <input type="text" id="checkout-nombre" required readonly
+                        style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px; background: #eee; cursor: not-allowed;">
                 </div>
                 <div>
                     <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">Email</label>
-                    <input type="email" id="checkout-email" required readonly style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px; background: #eee; cursor: not-allowed;">
+                    <input type="email" id="checkout-email" required readonly
+                        style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px; background: #eee; cursor: not-allowed;">
                 </div>
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                 <div>
                     <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">DNI</label>
-                    <input type="text" id="checkout-dni" required readonly style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px; background: #eee; cursor: not-allowed;">
+                    <input type="text" id="checkout-dni" required readonly
+                        style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px; background: #eee; cursor: not-allowed;">
                 </div>
                 <div>
                     <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">Teléfono / Celular</label>
-                    <input type="text" id="checkout-telefono" required placeholder="Ej: 1112345678" style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
+                    <input type="text" id="checkout-telefono" required placeholder="Ej: 1112345678"
+                        style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
                 </div>
             </div>
 
-            <h3 style="font-size: 1.1rem; border-bottom: 1px solid #ccc; padding-bottom: 0.5rem; margin: 1rem 0 0.5rem 0;">2. Datos de Envío</h3>
+            <h3
+                style="font-size: 1.1rem; border-bottom: 1px solid #ccc; padding-bottom: 0.5rem; margin: 1rem 0 0.5rem 0;">
+                2. Datos de Envío</h3>
 
             <!-- Opción para elegir direcciones guardadas -->
             <div id="seccion-direcciones-guardadas">
-                <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">Seleccioná una dirección guardada</label>
-                <select id="select-direccion-guardada" style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 0.5rem;">
+                <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">Seleccioná una dirección
+                    guardada</label>
+                <select id="select-direccion-guardada"
+                    style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 0.5rem;">
                     <!-- Se llena con JS -->
                 </select>
-                <button type="button" id="btn-mostrar-nueva-dir" style="background: none; border: none; color: #3b2314; text-decoration: underline; cursor: pointer; font-size: 0.85rem; padding: 0;">+ Agregar una nueva dirección</button>
+                <button type="button" id="btn-mostrar-nueva-dir"
+                    style="background: none; border: none; color: #3b2314; text-decoration: underline; cursor: pointer; font-size: 0.85rem; padding: 0;">+
+                    Agregar una nueva dirección</button>
             </div>
 
             <!-- Formulario para nueva dirección (oculto por defecto si ya tiene guardadas) -->
-            <div id="seccion-nueva-direccion" style="display: none; background: #fff; padding: 1rem; border: 1px dashed #ccc; border-radius: 4px; margin-top: 0.5rem;">
+            <div id="seccion-nueva-direccion"
+                style="display: none; background: #fff; padding: 1rem; border: 1px dashed #ccc; border-radius: 4px; margin-top: 0.5rem;">
                 <p style="font-weight: bold; font-size: 0.9rem; margin-bottom: 0.8rem;">Nueva Dirección de Envío</p>
                 <div style="display: grid; gap: 0.8rem;">
                     <div>
-                        <label style="display: block; font-size: 0.8rem; margin-bottom: 0.2rem;">Calle y Número *</label>
-                        <input type="text" id="nueva-calle" placeholder="Ej: Av. Santa Fe 1234, Piso 2A" style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                        <label style="display: block; font-size: 0.8rem; margin-bottom: 0.2rem;">Calle y Número
+                            *</label>
+                        <input type="text" id="nueva-calle" placeholder="Ej: Av. Santa Fe 1234, Piso 2A"
+                            style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
                         <div>
-                            <label style="display: block; font-size: 0.8rem; margin-bottom: 0.2rem;">Código Postal *</label>
-                            <input type="text" id="nuevo-cp" placeholder="Ej: 1615" style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                            <label style="display: block; font-size: 0.8rem; margin-bottom: 0.2rem;">Código Postal
+                                *</label>
+                            <input type="text" id="nuevo-cp" placeholder="Ej: 1615"
+                                style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
                         </div>
                         <div>
                             <label style="display: block; font-size: 0.8rem; margin-bottom: 0.2rem;">Localidad *</label>
-                            <input type="text" id="nueva-localidad" placeholder="Ej: Grand Bourg" style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                            <input type="text" id="nueva-localidad" placeholder="Ej: Grand Bourg"
+                                style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
                         </div>
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
                         <div>
                             <label style="display: block; font-size: 0.8rem; margin-bottom: 0.2rem;">Provincia *</label>
-                            <input type="text" id="nueva-provincia" placeholder="Ej: Buenos Aires" style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                            <input type="text" id="nueva-provincia" placeholder="Ej: Buenos Aires"
+                                style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
                         </div>
                         <div>
                             <label style="display: block; font-size: 0.8rem; margin-bottom: 0.2rem;">País *</label>
-                            <input type="text" id="nuevo-pais" value="Argentina" style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                            <input type="text" id="nuevo-pais" value="Argentina"
+                                style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
                         </div>
                     </div>
-                    <button type="button" id="btn-cancelar-nueva-dir" style="background: none; border: none; color: #666; text-decoration: underline; cursor: pointer; font-size: 0.8rem; width: fit-content; padding: 0;">&larr; Volver a mis direcciones guardadas</button>
+                    <button type="button" id="btn-cancelar-nueva-dir"
+                        style="background: none; border: none; color: #666; text-decoration: underline; cursor: pointer; font-size: 0.8rem; width: fit-content; padding: 0;">&larr;
+                        Volver a mis direcciones guardadas</button>
                 </div>
             </div>
 
             <div style="margin-top: 1rem;">
-                <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">Persona que recibe (Opcional)</label>
-                <input type="text" id="checkout-recibe" placeholder="Dejar en blanco si recibís vos" style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
+                <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">Persona que recibe
+                    (Opcional)</label>
+                <input type="text" id="checkout-recibe" placeholder="Dejar en blanco si recibís vos"
+                    style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
             </div>
 
             <div style="margin-top: 1.5rem; text-align: right;">
-                <button type="submit" style="background: #000; color: #fff; border: none; padding: 0.9rem 2rem; font-weight: bold; cursor: pointer; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px;">
+                <button type="submit"
+                    style="background: #000; color: #fff; border: none; padding: 0.9rem 2rem; font-weight: bold; cursor: pointer; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px;">
                     Continuar al Pago &rarr;
                 </button>
             </div>
         </form>
     </main>
 
+
+    <!-- FOOTER -->
+    <footer class="footer-tienda">
+        <div class="footer-columnas">
+
+            <!-- COLUMNA 1: LEGALES Y AYUDA -->
+            <div class="col-footer">
+                <h4>Atención al Cliente</h4>
+                <a href="contacto.html">Contacto</a>
+                <a href="ayuda.html#faq">Preguntas Frecuentes</a>
+                <a href="ayuda.html#envios">Envíos y Devoluciones</a>
+                <a href="ayuda.html#terminos">Términos y Condiciones</a>
+                <a href="ayuda.html#legales">Avisos Legales</a>
+
+            </div>
+
+            <!-- COLUMNA 2: MARCA CENTRAL -->
+            <div class="col-footer col-marca">
+                <div class="logo-footer">
+                    <span class="logo-principal">justina</span>
+                    <span class="logo-sub">store</span>
+                </div>
+                <p class="slogan-footer">More than basics</p>
+            </div>
+
+            <!-- COLUMNA 3: CONTACTO Y REDES -->
+            <div class="col-footer">
+                <h4>Conectá con nosotros</h4>
+
+                <!-- WhatsApp -->
+                <a href="https://wa.me/5491125250523" target="_blank" class="link-app-footer" id="link-footer-wsp">
+                    <svg viewBox="0 0 24 24" class="icono-footer" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                    </svg>
+                    <span id="footer-wsp">+54 9 11 2525-0523</span>
+                </a>
+
+                <!-- Gmail / Correo -->
+                <a href="mailto:justinastore2036@gmail.com" class="link-app-footer" id="link-footer-email">
+                    <svg viewBox="0 0 24 24" class="icono-footer" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" />
+                    </svg>
+                    <span id="footer-email">justinastore2036@gmail.com</span>
+                </a>
+
+                <!-- Instagram -->
+                <a href="https://instagram.com/_justinastore" target="_blank" class="link-app-footer"
+                    id="link-footer-ig">
+                    <svg viewBox="0 0 24 24" class="icono-footer" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                    </svg>
+                    <span id="footer-ig">@_justinastore</span>
+                </a>
+
+                <!-- TikTok -->
+                <a href="https://tiktok.com/@_justinastore" target="_blank" class="link-app-footer" id="link-footer-tk">
+                    <svg viewBox="0 0 24 24" class="icono-footer" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M16.5 7.5A4.5 4.5 0 0 0 21 8V4.5a8 8 0 0 1-4.5-1.5V14a5 5 0 1 1-5-5v3.5a1.5 1.5 0 1 0 1.5 1.5V7.5z" />
+                    </svg>
+                    <span id="footer-tk">@_justinastore</span>
+                </a>
+            </div>
+
+        </div>
+        <!-- BARRA INFERIOR DE COPYRIGHT -->
+        <div class="footer-bottom">
+            <p>&copy; 2026 Justina Store. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+
+
+    <!-- =========================================================
+     BOTÓN FLOTANTE DE WHATSAPP
+    ========================================================= -->
+    <a href="https://wa.me/5491125250523" class="btn-whatsapp-flotante" id="btn-whatsapp-flotante" target="_blank"
+        title="Chateá con nosotros">
+        <svg viewBox="0 0 32 32" class="icono-wa">
+            <path
+                d="M16 0c-8.837 0-16 7.163-16 16 0 2.825 0.737 5.607 2.137 8.048l-2.137 7.952 8.188-2.113c2.35 1.3 5.013 2.113 7.812 2.113 8.837 0 16-7.163 16-16s-7.163-16-16-16zM16 29.467c-2.482 0-4.908-0.686-7.010-1.986l-0.504-0.31-5.18 1.336 1.386-5.050-0.33-0.537c-1.428-2.308-2.182-4.965-2.182-7.72 0-7.418 6.048-13.467 13.467-13.467 7.418 0 13.467 6.048 13.467 13.467s-6.048 13.467-13.467 13.467zM23.388 20.25c-0.404-0.203-2.389-1.179-2.759-1.314-0.37-0.135-0.64-0.203-0.91 0.203s-1.045 1.314-1.281 1.584c-0.236 0.27-0.472 0.304-0.876 0.101-0.404-0.203-1.704-0.628-3.245-2s-2.113-2.226-2.349-2.63c-0.236-0.404-0.025-0.623 0.177-0.825 0.182-0.182 0.404-0.472 0.607-0.708 0.203-0.236 0.27-0.404 0.404-0.674 0.135-0.27 0.068-0.506-0.034-0.708s-0.91-2.193-1.247-3.003c-0.329-0.788-0.664-0.681-0.91-0.693-0.236-0.011-0.506-0.014-0.776-0.014s-0.708 0.101-1.078 0.506c-0.37 0.404-1.415 1.382-1.415 3.371s1.449 3.911 1.651 4.181c0.203 0.27 2.854 4.358 6.915 6.113 0.966 0.418 1.72 0.668 2.308 0.855 0.971 0.309 1.855 0.265 2.553 0.161 0.781-0.117 2.389-0.977 2.726-1.921 0.337-0.944 0.337-1.753 0.236-1.921-0.101-0.169-0.37-0.27-0.776-0.472z">
+            </path>
+        </svg>
+    </a>
+
     <script src="checkout.js"></script>
 </body>
+
 </html>

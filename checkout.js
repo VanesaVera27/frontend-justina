@@ -7,11 +7,28 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const usuario = JSON.parse(sesionGuardada);
 
-    // 1. Campos fijos protegidos (Nombre, Email y DNI no se pueden modificar si ya están)
+    // 2. Llenamos los inputs de Facturación
     document.getElementById('checkout-nombre').value = usuario.nombre || '';
     document.getElementById('checkout-email').value = usuario.email || '';
-    document.getElementById('checkout-dni').value = usuario.dni || '';
-    document.getElementById('checkout-telefono').value = usuario.telefono || '';
+    
+    const inputDni = document.getElementById('checkout-dni');
+    const telefonoInput = document.getElementById('checkout-telefono');
+
+    inputDni.value = usuario.dni || '';
+    telefonoInput.value = usuario.telefono || '';
+
+    // Si NO tiene DNI guardado, permitimos que lo escriba por primera vez.
+    if (!usuario.dni || usuario.dni.trim() === '') {
+        inputDni.removeAttribute('readonly');
+        inputDni.style.background = '#fff';
+        inputDni.style.cursor = 'text';
+        inputDni.placeholder = 'Ingresá tu DNI (Obligatorio)';
+    } else {
+        // Si ya lo tiene, queda bloqueado por seguridad
+        inputDni.setAttribute('readonly', true);
+        inputDni.style.background = '#eee';
+        inputDni.style.cursor = 'not-allowed';
+    }
 
     // 2. Cargamos las direcciones guardadas del usuario usando tu ruta correcta con el ID en la URL
     let direccionesUsuario = [];
@@ -59,45 +76,76 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Envío del formulario
+// Envío del formulario
     const formCheckout = document.getElementById('form-checkout');
     formCheckout.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        const dniIngresado = inputDni.value.trim();
+        const telefonoActualizado = telefonoInput.value.trim();
+
+        if (!dniIngresado) {
+            alert("El DNI es obligatorio para finalizar la compra.");
+            return;
+        }
+
+        // Si el usuario no tenía DNI guardado y lo acaba de tipear, lo actualizamos en la BD
+        if (!usuario.dni || usuario.dni !== dniIngresado) {
+            try {
+                await fetch(`http://localhost:3000/api/usuarios/${usuario.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        nombre: usuario.nombre,
+                        dni: dniIngresado,
+                        telefono: telefonoActualizado
+                    })
+                });
+                
+                usuario.dni = dniIngresado;
+                usuario.telefono = telefonoActualizado;
+                localStorage.setItem('usuario_tienda', JSON.stringify(usuario));
+            } catch (err) {
+                console.error("No se pudo actualizar el DNI en la BD:", err);
+            }
+        }
 
         let domicilioFinal = '';
 
         if (!usandoNuevaDireccion && direccionesUsuario.length > 0) {
             domicilioFinal = selectDireccion.value;
         } else {
-            const calle = document.getElementById('nueva-calle').value.trim();
+            const calleNumero = document.getElementById('nueva-calle').value.trim();
             const cp = document.getElementById('nuevo-cp').value.trim();
             const localidad = document.getElementById('nueva-localidad').value.trim();
             const provincia = document.getElementById('nueva-provincia').value.trim();
             const pais = document.getElementById('nuevo-pais').value.trim();
 
-            if (!calle || !cp || !localidad || !provincia) {
+            if (!calleNumero || !cp || !localidad || !provincia) {
                 alert("Por favor completa todos los campos obligatorios de la nueva dirección.");
                 return;
             }
 
-            domicilioFinal = `${calle}, ${localidad}, ${provincia} - CP: ${cp} (${pais})`;
+            domicilioFinal = `${calleNumero}, ${localidad}, ${provincia} - CP: ${cp} (${pais})`;
 
-            // Opcional: Si querés guardar esta nueva dirección en la base de datos del usuario automáticamente
+            // ⚡ GUARDAMOS LA NUEVA DIRECCIÓN USANDO LOS CAMPOS QUE ESPERA TU ENDPOINT
             try {
                 await fetch('http://localhost:3000/api/direcciones', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         usuario_id: usuario.id,
-                        calle, codigo_postal: cp, localidad, provincia, pais
+                        calle_numero: calleNumero, // Coincide exactamente con tu backend
+                        codigo_postal: cp,
+                        localidad: localidad,
+                        provincia: provincia,
+                        pais: pais || 'Argentina'
                     })
                 });
             } catch (err) {
                 console.error("No se pudo guardar la dirección en BD:", err);
             }
         }
-
-        const telefonoActualizado = document.getElementById('checkout-telefono').value;
 
         // Actualizamos el teléfono en el localStorage del usuario por si lo cambió
         usuario.telefono = telefonoActualizado;
@@ -107,7 +155,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const datosEnvio = {
             nombre: usuario.nombre,
             email: usuario.email,
-            dni: usuario.dni,
+            dni: dniIngresado,
             telefono: telefonoActualizado,
             domicilio: domicilioFinal,
             quienRecibe: document.getElementById('checkout-recibe').value.trim() || usuario.nombre

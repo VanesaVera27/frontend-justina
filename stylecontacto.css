@@ -1,0 +1,152 @@
+
+:root{
+    --color-principal: #3b2314;
+    --color-secundario: #f5f0e8;
+    --color-logobanner: #3b2314;
+    --color-logo: #ffffff;
+    --color-textoheader: #ffffff;
+    --color-fondo: white;
+    --color-fondoCard: white;
+    --color-texto: black;
+    --color-principalhover: #3b2314d7;
+}
+
+.banner-contacto {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 3rem 1rem;
+    background: linear-gradient(var(--color-secundario), var(--color-fondo));
+ 
+}
+
+
+.contenedor-contacto {
+    max-width: 600px;
+    margin: 1.5rem auto;
+    padding: 0 1.5rem;
+    color: var(--color-principal);
+    
+}
+
+.encabezado-contacto {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.encabezado-contacto h1 {
+    font-family: 'Abril Fatface', serif;
+    font-size: 2.8rem;
+    font-weight: 400;
+    margin-bottom: 1.5rem;
+    color: var(--color-principal);
+}
+
+.info-contacto-directo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #5a3d28;
+    margin-top: 2rem;
+}
+
+.formulario-editorial {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.campo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    text-align: left;
+}
+
+.campo-form label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #5a3d28;
+}
+
+.campo-form input,
+.campo-form textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #d8cec4;
+    background-color: #fffdfa;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--color-texto);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.campo-form input:focus,
+.campo-form textarea:focus {
+    border-color: var(--color-texto);
+    background-color: var(--color-fondo);
+}
+
+.btn-enviar-contacto {
+    margin-top: 1rem;
+    width: 100%;
+    padding: 0.9rem;
+    font-size: 1rem;
+    background-color: var(--color-principal);
+    border-radius: 2px;
+}
+
+.btn-enviar-contacto:hover {
+    background-color: var(--color-principalhover);
+}
+
+/* =========================================================
+   ENLACES INTERACTIVOS DE CONTACTO 
+========================================================= */
+
+.info-contacto-directo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.link-contacto {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    color: #694a32;            
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color 0.2s ease, transform 0.2s ease;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+
+
+.link-contacto:hover {
+    color:var(--color-principal);            
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transform: translateY(-1px); 
+}
+
+.icono-mini {
+    width: 18px;
+    height: 18px;
+    color: inherit;          
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+.link-contacto:hover .icono-mini {
+    transform: scale(1.1);    
+}
+

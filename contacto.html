@@ -11,35 +11,19 @@
         rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="stylecontacto.css">
 </head>
 
 <body>
 
     <!-- CINTA DE ANUNCIOS INFINITA -->
     <div class="cinta-promos">
-        <div class="cinta-track">
-            <!-- BLOQUE 1 -->
-            <div class="cinta-texto">
-                <span>✦ 15% OFF EFECTIVO / TRANSFERENCIA</span>
-                <span>✦ 3 CUOTAS SIN INTERÉS</span>
-                <span>✦ ENVÍOS A TODO EL PAÍS</span>
-                <span>✦ 15% OFF EFECTIVO / TRANSFERENCIA</span>
-                <span>✦ 3 CUOTAS SIN INTERÉS</span>
-                <span>✦ ENVÍOS A TODO EL PAÍS</span>
-            </div>
-            <!-- BLOQUE 2 (IDÉNTICO AL BLOQUE 1 PARA EL BUCLE CONTINUO) -->
-            <div class="cinta-texto">
-                <span>✦ 15% OFF EFECTIVO / TRANSFERENCIA</span>
-                <span>✦ 3 CUOTAS SIN INTERÉS</span>
-                <span>✦ ENVÍOS A TODO EL PAÍS</span>
-                <span>✦ 15% OFF EFECTIVO / TRANSFERENCIA</span>
-                <span>✦ 3 CUOTAS SIN INTERÉS</span>
-                <span>✦ ENVÍOS A TODO EL PAÍS</span>
-            </div>
+        <div class="cinta-track" id="cinta-promos-track">
+            <!-- El contenido se inyecta dinámicamente con JS -->
         </div>
     </div>
 
-        <header class="header">
+    <header class="header">
 
         <!-- Agregar botón hamburguesa -->
         <button id="btn-menu-mobile" class="menu-hamburguesa">☰</button>
@@ -66,11 +50,11 @@
 
 
 
-       <!-- ZONA DE ACCIONES DEL HEADER -->
+        <!-- ZONA DE ACCIONES DEL HEADER -->
         <div class="acciones-header">
 
             <!-- 1. Botón de Favoritos (NUEVO) -->
-            <a href="favoritos.html" class="btn-header-icono" title="Mis Favoritos" id ='boton-favorito'>
+            <a href="favoritos.html" class="btn-header-icono" title="Mis Favoritos" id='boton-favorito'>
                 <svg viewBox="0 0 24 24" class="icono-svg-header" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
                     <path
@@ -101,6 +85,8 @@
                         style="display: none;">⚙️ Control de Stock</a>
                     <a href="pedidos-admin.html" id="btn-pedidos-admin" class="item-dropdown admin-only"
                         style="display: none;">📦 Control de Pedidos</a>
+                    <a href="configuracion.html" id="btn-configw-admin" class="item-dropdown admin-only"
+                        style="display: none;">⚙️ Configuración Web</a>
                     <a href="perfil.html" id="btn-perfil" class="item-dropdown user-only" style="display: none;">👤 Mi
                         Perfil</a>
                     <a href="#" id="btn-logout-header" class="item-dropdown user-only logout" style="display: none;">🚪
@@ -110,55 +96,53 @@
 
 
         </div>
-        
+
     </header>
 
     <div class="banner-contacto">
-        <h1>Contacto </h1>
+        <h1>Contacto</h1>
         <div class="info-contacto-directo">
+
             <!-- WhatsApp -->
-            <a href="https://wa.me/5491125250523?text=%C2%A1Hola!%20Quer%C3%ADa%20hacer%20una%20consulta..."
-                target="_blank" class="link-contacto">
+            <a href="#" target="_blank" class="link-contacto" id="contacto-wsp-link">
                 <svg viewBox="0 0 24 24" class="icono-mini" fill="none" stroke="currentColor" stroke-width="1.8"
                     stroke-linecap="round" stroke-linejoin="round">
                     <path
                         d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
                 </svg>
-                +54 9 11 2525-0523
+                <span id="contacto-wsp-text">+54 9 11 2525-0523</span>
             </a>
 
-            <!-- Teléfono (Abre llamada directa en celular) -->
-            <a href="tel:+5491125250523" class="link-contacto">
+            <!-- Teléfono -->
+            <a href="#" class="link-contacto" id="contacto-tel-link">
                 <svg viewBox="0 0 24 24" class="icono-mini" fill="none" stroke="currentColor" stroke-width="1.8"
                     stroke-linecap="round" stroke-linejoin="round">
                     <path
                         d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                 </svg>
-                11 2525-0523
+                <span id="contacto-tel-text">11 2525-0523</span>
             </a>
 
-            <!-- Email (Abre Gmail o gestor de correo) -->
-            <a href="mailto:justinastore2036@gmail.com" class="link-contacto">
+            <!-- Email -->
+            <a href="#" class="link-contacto" id="contacto-email-link">
                 <svg viewBox="0 0 24 24" class="icono-mini" fill="none" stroke="currentColor" stroke-width="1.8"
                     stroke-linecap="round" stroke-linejoin="round">
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                     <polyline points="22,6 12,13 2,6" />
                 </svg>
-                justinastore2036@gmail.com
+                <span id="contacto-email-text">justinastore2036@gmail.com</span>
             </a>
 
-            <!-- Ubicación (Abre Google Maps con la zona) -->
-            <a href="https://maps.google.com/?q=Los+Polvorines,+Malvinas+Argentinas" target="_blank"
-                class="link-contacto">
+            <!-- Ubicación -->
+            <a href="#" target="_blank" class="link-contacto" id="contacto-mapa-link">
                 <svg viewBox="0 0 24 24" class="icono-mini" fill="none" stroke="currentColor" stroke-width="1.8"
                     stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                     <circle cx="12" cy="10" r="3" />
                 </svg>
-                Los Polvorines, Malvinas Argentinas
+                <span id="contacto-ubicacion-text">Los Polvorines, Malvinas Argentinas</span>
             </a>
         </div>
-
     </div>
 
     <main class="contenedor-contacto">
@@ -187,7 +171,7 @@
         </form>
     </main>
 
-    <!-- FOOTER MODERNO EN COLUMNAS -->
+    <!-- FOOTER -->
     <footer class="footer-tienda">
         <div class="footer-columnas">
 
@@ -199,6 +183,7 @@
                 <a href="ayuda.html#envios">Envíos y Devoluciones</a>
                 <a href="ayuda.html#terminos">Términos y Condiciones</a>
                 <a href="ayuda.html#legales">Avisos Legales</a>
+
             </div>
 
             <!-- COLUMNA 2: MARCA CENTRAL -->
@@ -213,40 +198,47 @@
             <!-- COLUMNA 3: CONTACTO Y REDES -->
             <div class="col-footer">
                 <h4>Conectá con nosotros</h4>
-                
+
                 <!-- WhatsApp -->
-                <a href="https://wa.me/5491125250523" target="_blank" class="link-app-footer">
-                    <svg viewBox="0 0 24 24" class="icono-footer" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                <a href="https://wa.me/5491125250523" target="_blank" class="link-app-footer" id="link-footer-wsp">
+                    <svg viewBox="0 0 24 24" class="icono-footer" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
                     </svg>
-                    <span>+54 9 11 2525-0523</span>
+                    <span id="footer-wsp">+54 9 11 2525-0523</span>
                 </a>
 
                 <!-- Gmail / Correo -->
-                <a href="mailto:justinastore2036@gmail.com" class="link-app-footer">
-                    <svg viewBox="0 0 24 24" class="icono-footer" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                        <polyline points="22,6 12,13 2,6"/>
+                <a href="mailto:justinastore2036@gmail.com" class="link-app-footer" id="link-footer-email">
+                    <svg viewBox="0 0 24 24" class="icono-footer" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" />
                     </svg>
-                    <span>justinastore2036@gmail.com</span>
+                    <span id="footer-email">justinastore2036@gmail.com</span>
                 </a>
 
                 <!-- Instagram -->
-                <a href="https://instagram.com/_justinastore" target="_blank" class="link-app-footer">
-                    <svg viewBox="0 0 24 24" class="icono-footer" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                <a href="https://instagram.com/_justinastore" target="_blank" class="link-app-footer"
+                    id="link-footer-ig">
+                    <svg viewBox="0 0 24 24" class="icono-footer" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
                     </svg>
-                    <span>@_justinastore</span>
+                    <span id="footer-ig">@_justinastore</span>
                 </a>
 
                 <!-- TikTok -->
-                <a href="https://tiktok.com/@_justinastore" target="_blank" class="link-app-footer">
-                    <svg viewBox="0 0 24 24" class="icono-footer" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M16.5 7.5A4.5 4.5 0 0 0 21 8V4.5a8 8 0 0 1-4.5-1.5V14a5 5 0 1 1-5-5v3.5a1.5 1.5 0 1 0 1.5 1.5V7.5z"/>
+                <a href="https://tiktok.com/@_justinastore" target="_blank" class="link-app-footer" id="link-footer-tk">
+                    <svg viewBox="0 0 24 24" class="icono-footer" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M16.5 7.5A4.5 4.5 0 0 0 21 8V4.5a8 8 0 0 1-4.5-1.5V14a5 5 0 1 1-5-5v3.5a1.5 1.5 0 1 0 1.5 1.5V7.5z" />
                     </svg>
-                    <span>@_justinastore</span>
+                    <span id="footer-tk">@_justinastore</span>
                 </a>
             </div>
 
@@ -258,17 +250,19 @@
     </footer>
 
 
-        <!-- =========================================================
+
+    <!-- =========================================================
      BOTÓN FLOTANTE DE WHATSAPP
     ========================================================= -->
-    <a href="https://wa.me/5491125250523?text=%C2%A1Hola!%20Quer%C3%ADa%20hacer%20una%20consulta%20sobre%20las%20prendas%20de%20la%20tienda..."
-        class="btn-whatsapp-flotante" target="_blank" title="Chateá con nosotros">
+    <a href="https://wa.me/5491125250523" class="btn-whatsapp-flotante" id="btn-whatsapp-flotante" target="_blank"
+        title="Chateá con nosotros">
         <svg viewBox="0 0 32 32" class="icono-wa">
             <path
                 d="M16 0c-8.837 0-16 7.163-16 16 0 2.825 0.737 5.607 2.137 8.048l-2.137 7.952 8.188-2.113c2.35 1.3 5.013 2.113 7.812 2.113 8.837 0 16-7.163 16-16s-7.163-16-16-16zM16 29.467c-2.482 0-4.908-0.686-7.010-1.986l-0.504-0.31-5.18 1.336 1.386-5.050-0.33-0.537c-1.428-2.308-2.182-4.965-2.182-7.72 0-7.418 6.048-13.467 13.467-13.467 7.418 0 13.467 6.048 13.467 13.467s-6.048 13.467-13.467 13.467zM23.388 20.25c-0.404-0.203-2.389-1.179-2.759-1.314-0.37-0.135-0.64-0.203-0.91 0.203s-1.045 1.314-1.281 1.584c-0.236 0.27-0.472 0.304-0.876 0.101-0.404-0.203-1.704-0.628-3.245-2s-2.113-2.226-2.349-2.63c-0.236-0.404-0.025-0.623 0.177-0.825 0.182-0.182 0.404-0.472 0.607-0.708 0.203-0.236 0.27-0.404 0.404-0.674 0.135-0.27 0.068-0.506-0.034-0.708s-0.91-2.193-1.247-3.003c-0.329-0.788-0.664-0.681-0.91-0.693-0.236-0.011-0.506-0.014-0.776-0.014s-0.708 0.101-1.078 0.506c-0.37 0.404-1.415 1.382-1.415 3.371s1.449 3.911 1.651 4.181c0.203 0.27 2.854 4.358 6.915 6.113 0.966 0.418 1.72 0.668 2.308 0.855 0.971 0.309 1.855 0.265 2.553 0.161 0.781-0.117 2.389-0.977 2.726-1.921 0.337-0.944 0.337-1.753 0.236-1.921-0.101-0.169-0.37-0.27-0.776-0.472z">
             </path>
         </svg>
     </a>
+
 
     <script src="script.js"></script>
 </body>
