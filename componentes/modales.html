@@ -1,0 +1,46 @@
+<div class="modal-overlay" id="modal-carrito">
+    <div class="modal-contenido">
+        <div class="modal-header">
+            <h2>Tu Carrito</h2>
+            <button class="btn-cerrar" id="btn-cerrar-modal">&times;</button>
+        </div>
+        <div class="modal-cuerpo" id="lista-carrito">
+            <p class="carrito-vacio">El carrito está vacío.</p>
+        </div>
+        <div class="modal-footer" style="flex-direction: column; gap: 0.8rem;">
+            <div class="total-contenedor" style="width: 100%; display: flex; justify-content: space-between;">
+                <span>Total:</span>
+                <span id="total-precio">$0</span>
+            </div>
+            <button class="btn-comprar" id="btn-finalizar-compra" style="width: 100%;">Finalizar compra</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-login">
+    <div class="modal-contenido modal-login-box">
+        <div class="modal-header">
+            <div class="pestanas-login" style="display: flex; gap: 1rem; font-size: 1.2rem; font-weight: bold;">
+                <span id="tab-login" style="cursor: pointer; color: #1a1a1a; border-bottom: 2px solid #1a1a1a;">Ingresar</span>
+                <span id="tab-registro" style="cursor: pointer; color: #888;">Crear Cuenta</span>
+            </div>
+            <button class="btn-cerrar" id="btn-cerrar-modal-login">&times;</button>
+        </div>
+        <form id="form-login" class="modal-cuerpo form-login">
+            <label>Correo Electrónico</label>
+            <input type="email" id="email-user" required placeholder="tuemail@ejemplo.com">
+            <label>Contraseña</label>
+            <input type="password" id="password-user" required placeholder="••••••••">
+            <button type="submit" class="btn-comprar" style="margin-top: 1rem;">Iniciar Sesión</button>
+        </form>
+        <form id="form-registro" class="modal-cuerpo form-login" style="display: none;">
+            <label>Nombre y Apellido *</label>
+            <input type="text" id="reg-nombre" required placeholder="Ej. Camila Pérez">
+            <label>Correo Electrónico *</label>
+            <input type="email" id="reg-email" required placeholder="camila@ejemplo.com">
+            <label>Contraseña *</label>
+            <input type="password" id="reg-pass" required placeholder="Mínimo 6 caracteres" minlength="6">
+            <button type="submit" class="btn-comprar" style="margin-top: 1rem;">Registrarme y Entrar</button>
+        </form>
+    </div>
+</div>

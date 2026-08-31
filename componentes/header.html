@@ -1,0 +1,53 @@
+<div class="cinta-promos">
+    <div class="cinta-track" id="cinta-promos-track"></div>
+</div>
+<header class="header">
+    <button id="btn-menu-mobile" class="menu-hamburguesa">☰</button>
+    <div class="logo">
+        <a href="index.html" class="logo-principal">justina store</a>
+    </div>
+    <nav id="nav-principal">
+        <a href="index.html" id="nav-inicio" title="Volver al inicio">Inicio</a>
+        <div class="dropdown-coleccion">
+            <a href="#" id="nav-coleccion" class="dropdown-btn">Colección ▾</a>
+            <div class="dropdown-contenido" id="menu-categorias">
+                <a href="#" onclick="filtrarPorCategoria('Todos')">Ver Todo</a>
+            </div>
+        </div>
+        <a href="ofertas.html" id="nav-ofertas">Ofertas</a>
+    </nav>
+    <div class="acciones-header">
+
+
+        <div class="carrito btn-header-icono" id="boton-carrito" title="Carrito">
+            <svg viewBox="0 0 24 24" class="icono-svg-header" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+            <span id="contador-carrito" class="badge-contador">0</span>
+        </div>
+
+        <div class="dropdown-menu" id="contenedor-dropdown-user">
+            <button id="btn-login-header" class="btn-header-icono btn-user">
+                <span class="texto-user">Iniciar Sesión</span>
+            </button>
+            <div class="dropdown-opciones" id="menu-opciones">
+                <a href="admin.html" id="btn-config-admin" class="item-dropdown admin-only" style="display: none;">⚙️
+                    Control de Stock</a>
+                <a href="pedidos-admin.html" id="btn-pedidos-admin" class="item-dropdown admin-only"
+                    style="display: none;">📦 Control de Pedidos</a>
+                <a href="configuracion.html" id="btn-configw-admin" class="item-dropdown admin-only"
+                    style="display: none;">⚙️ Configuración Web</a>
+                <a href="perfil.html" id="btn-perfil" class="item-dropdown user-only" style="display: none;">👤 Mi
+                    Perfil</a>
+                <a href="favoritos.html"id="boton-favorito" class="item-dropdown user-only" style="display: none;">
+                    Mis Favoritos
+                </a>
+                <a href="#" id="btn-logout-header" class="item-dropdown user-only logout" style="display: none;">🚪
+                    Cerrar Sesión</a>
+            </div>
+        </div>
+    </div>
+</header>

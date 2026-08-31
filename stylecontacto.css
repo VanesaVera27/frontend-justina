@@ -121,7 +121,7 @@
     align-items: center;
     justify-content: center;
     gap: 0.6rem;
-    color: #694a32;            
+    color: var(--color-principalhover);            
     text-decoration: none;
     font-size: 0.95rem;
     font-weight: 500;

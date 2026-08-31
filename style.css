@@ -168,7 +168,6 @@
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
     border-radius: 6px;
     z-index: 1000;
-    overflow: hidden;
     padding: 0.4rem 0;
 }
 
@@ -220,12 +219,13 @@
     transform: scale(1.1); 
 }
 /* =========================================================
-   MENÚ DESPLEGABLE DE USUARIO
+   MENÚ DESPLEGABLE DE USUARIO (FUNCIONAMIENTO PERFECTO)
 ========================================================= */
-
+/* Forzar que el menú desplegable flote por encima de todo */
 .dropdown-menu {
     position: relative;
     display: inline-block;
+    overflow: visible !important;
 }
 
 .dropdown-opciones {
@@ -233,19 +233,24 @@
     position: absolute;
     top: 100%;
     right: 0;
-    background-color: var(--color-secundario);
-    min-width: 200px;
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
+    background-color: var(--color-secundario, #ffffff);
+    min-width: 220px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
     border-radius: 6px;
-    z-index: 1000;
-    overflow: hidden;
+    z-index: 9999 !important; /* Super alto para que nada lo tape */
     padding: 0.4rem 0;
-    border: 1px solid #eee;
+    border: 1px solid #ddd;
+}
+
+/* Mostrar el menú al hacer hover o si tiene la clase activa */
+.dropdown-menu.sesion-activa:hover .dropdown-opciones,
+.dropdown-menu.sesion-activa .dropdown-opciones:hover {
+    display: block !important;
 }
 
 .item-dropdown {
     color: #3b2314 !important;
-    padding: 10px 16px;
+    padding: 12px 18px; /* Un poquito más de espacio cómodo para hacer clic */
     text-decoration: none;
     display: block;
     font-size: 0.9rem;
@@ -266,21 +271,17 @@
 .item-dropdown.logout:hover {
     background-color: #fff5f5;
 }
-
-/* Solo mostramos el dropdown en hover si hay una sesión activa (.sesion-activa) */
-.dropdown-menu.sesion-activa:hover .dropdown-opciones {
-    display: block;
-}
-
-
 /* =========================================================
    ZONA DE ACCIONES DEL HEADER (FAVORITOS, USUARIO, CARRITO)
 ========================================================= */
+
 .acciones-header {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    gap: 1.5rem; /* Separación perfecta entre los íconos */
+    gap: 1rem;
+    position: relative;
+    overflow: visible !important;
+    flex-shrink: 0; 
 }
 
 /* Estilo unificado para los 3 botones */
@@ -320,6 +321,14 @@
     border-radius: 12px;
     margin-left: -5px; /* Lo acerca al carrito */
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+
+#boton-favorito svg {
+    display: inline-block;
+    width: 22px !important;
+    height: 22px !important;
+    min-width: 22px;
 }
 
 /* Ajuste responsive: achicar el espacio en celulares */

@@ -67,7 +67,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             instagram: document.getElementById('cfg-instagram').value.trim(),
             tiktok: document.getElementById('cfg-tiktok').value.trim(),
             ubicacion: document.getElementById('cfg-ubicacion').value.trim(),
-            // Guardamos el array convertido a texto JSON en la misma clave de la BD
             texto_promocion: JSON.stringify(arrayPromos),
             color_principal: document.getElementById('cfg-color').value,
             preguntas_frecuentes: document.getElementById('cfg-faqs').value.trim(),
@@ -85,6 +84,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             if (respuesta.ok) {
                 alert("¡Configuración web actualizada con éxito! 🚀");
+                
             } else {
                 alert("No se pudo actualizar la configuración.");
             }
@@ -92,5 +92,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error("Error de conexión:", err);
             alert("Error de conexión con el servidor.");
         }
+        window.location.reload();
     });
 });

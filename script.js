@@ -12,16 +12,7 @@ const btnFinalizarCompra = document.getElementById('btn-finalizar-compra');
 
 //CONTROL DEL HEADER SEGÚN ROL
 const formLogin = document.getElementById('form-login');
-const btnLoginHeader = document.getElementById('btn-login-header');
-const btnConfigAdmin = document.getElementById('btn-config-admin');
-const btnPedidosAdmin = document.getElementById('btn-pedidos-admin');
-const btnConfigWAdmin = document.getElementById('btn-configw-admin');
-const btnPerfil = document.getElementById('btn-perfil');
-const btnLogoutHeader = document.getElementById('btn-logout-header');
-const contenedorDropdown = document.getElementById('contenedor-dropdown-user');
 const modalLogin = document.getElementById('modal-login');
-const btnCarrito = document.getElementById('boton-carrito');
-const btnFavorito = document.getElementById('boton-favorito');
 
 //CONTROL DE LOGIN Y REGISTRO
 const tabLogin = document.getElementById('tab-login');
@@ -30,7 +21,6 @@ const formRegistro = document.getElementById('form-registro');
 const btnCerrarModalLogin = document.getElementById('btn-cerrar-modal-login');
 
 //NAVEGACION DE HEADER
-const menuCategorias = document.getElementById('menu-categorias');
 const navInicio = document.getElementById('nav-inicio');
 const logoLink = document.getElementById('logo-link');
 
@@ -39,14 +29,9 @@ const btnMenuMobile = document.getElementById('btn-menu-mobile');
 const navPrincipal = document.getElementById('nav-principal');
 
 //VARIABLES
-
-//Arreglo de productos
 let productos = [];
-// Arreglo vacío donde se irán guardando los productos elegidos
 let carrito = JSON.parse(localStorage.getItem('carrito_justina')) || [];
-// Objeto en memoria para saber qué índice de foto está mirando el cliente en cada tarjeta
 const indiceImagenActual = {};
-// Arreglo que carga los IDs de productos favoritos desde el navegador
 let favoritos = [];
 
 
@@ -55,28 +40,25 @@ let favoritos = [];
 // ====================================================================
 async function cargarBaseDeDatos() {
     try {
-        // Consultamos al servidor en el puerto 3000
         const respuesta = await fetch('http://localhost:3000/api/productos');
 
         if (!respuesta.ok) {
             throw new Error('No se pudo obtener la respuesta del servidor');
         }
 
-        // Recibimos las filas de la tabla "productos" desde SQLite
         productos = await respuesta.json();
-
-        // Dibujamos las tarjetas en la página
         mostrarProductosEnPantalla(productos);
     } catch (error) {
         console.error("Error al conectar con el backend:", error);
         if (grilla) {
             grilla.innerHTML = `
- <p style="text-align:center; width:100%; color:red;">
-No se pudieron cargar los productos. Asegurate de que tu terminal con <b>node server.js</b> esté corriendo.
- </p>`;
+            <p style="text-align:center; width:100%; color:red;">
+            No se pudieron cargar los productos. Asegurate de que tu terminal con <b>node server.js</b> esté corriendo.
+            </p>`;
         }
     }
 }
+
 
 // ====================================================================
 // FUNCIÓN PARA CAMBIAR LAS IMAGENES DEL CARRETE
@@ -85,7 +67,6 @@ function cambiarImagenCard(idProducto, direccion) {
     const producto = productos.find(p => p.id === idProducto);
     if (!producto || !producto.imagenes || producto.imagenes.length <= 1) return;
 
-    // Si aún no se tocó, empieza en el índice 0
     if (indiceImagenActual[idProducto] === undefined) {
         indiceImagenActual[idProducto] = 0;
     }
@@ -103,10 +84,10 @@ function cambiarImagenCard(idProducto, direccion) {
     }
 }
 
+
 // ====================================================================
 // FUNCIÓN PARA MOSTRAR LOS PRODUCTOS 
 // ====================================================================
-
 function mostrarProductosEnPantalla(listaProductos) {
     if (!grilla) return;
     grilla.innerHTML = '';
@@ -116,10 +97,8 @@ function mostrarProductosEnPantalla(listaProductos) {
         let opcionesColores = '';
         let sinStock = false;
 
-        // 1. Calculamos el stock real restando el carrito
         if (Array.isArray(prod.variantes) && prod.variantes.length > 0) {
             const variantesConStock = prod.variantes.filter(v => {
-                // ⚡ Sumamos la cantidad acumulada en lugar de contar elementos sueltos
                 const cantEnCarrito = carrito
                     .filter(item => item.id === prod.id && item.talleElegido === v.talle && item.colorElegido === v.color)
                     .reduce((acc, item) => acc + (item.cantidad || 1), 0);
@@ -142,7 +121,6 @@ function mostrarProductosEnPantalla(listaProductos) {
                 opcionesColores = `<option disabled selected>Agotado</option>`;
             }
         } else {
-            // ⚡ Sumamos la cantidad acumulada para productos sin variantes
             const cantEnCarrito = carrito
                 .filter(item => item.id === prod.id)
                 .reduce((acc, item) => acc + (item.cantidad || 1), 0);
@@ -160,27 +138,20 @@ function mostrarProductosEnPantalla(listaProductos) {
             }
         }
 
-        // =======================================================
-        // 2. FILTRO DE INICIO: DESCARTAR SIN STOCK Y OFERTAS
-        // =======================================================
-        // Si el producto está en oferta o si nos quedamos sin stock, 
-        // usamos 'return' para saltar a la siguiente prenda sin dibujarla.
         if (prod.en_oferta || sinStock) {
             return;
         }
 
-        // 3. Preparamos los datos visuales
         const card = document.createElement('div');
         card.classList.add('card-producto');
 
         const fotos = (prod.imagenes && prod.imagenes.length > 0) ? prod.imagenes : [prod.imagen];
-        const tieneMasDeUnaFoto = fotos.length > 1;
+        const tieneMasDeUneFoto = fotos.length > 1; // <--- Acá está el error (tiene 'e')
         const esFavorito = favoritos.includes(prod.id);
 
         const precioNumerico = Number(prod.precio);
         const valorCuota = (precioNumerico / 3).toLocaleString();
 
-        // Verificamos si el usuario actual es admin
         const sesionCheck = localStorage.getItem('usuario_tienda');
         let esAdmin = false;
         if (sesionCheck) {
@@ -189,7 +160,6 @@ function mostrarProductosEnPantalla(listaProductos) {
             } catch (e) { }
         }
 
-        // Dependiendo si es admin, anulamos el botón de favoritos y el de comprar
         const botonFavoritoHtml = esAdmin ? '' : `
             <button type="button" 
                     class="btn-favorito ${esFavorito ? 'liked' : ''}" 
@@ -212,10 +182,9 @@ function mostrarProductosEnPantalla(listaProductos) {
         `;
 
         card.innerHTML = `
-            <div class="carrusel-card ${tieneMasDeUnaFoto ? '' : 'sin-flechas'}" style="position: relative;">
+            <div class="carrusel-card ${tieneMasDeUneFoto ? '' : 'sin-flechas'}" style="position: relative;">
                 ${botonFavoritoHtml}
                 
-                <!-- ⚡ CARTEL FLOTANTE DE ÚLTIMA UNIDAD SOBRE LA FOTO -->
                 <div id="alerta-stock-${prod.id}" style="display: none; position: absolute; top: 10px; left: 10px; z-index: 5; background: rgba(255, 243, 205, 0.95); color: #856404; font-size: 0.7rem; font-weight: bold; padding: 0.2rem 0.5rem; border-radius: 4px; border: 1px solid #ffeeba; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                     🔥 ¡Última unidad!
                 </div>
@@ -254,7 +223,7 @@ function mostrarProductosEnPantalla(listaProductos) {
     });
 }
 
-// Función para verificar si la variante seleccionada tiene exactamente 1 unidad restante
+
 function verificarUltimaUnidad(idProducto) {
     const productoOriginal = productos.find(p => p.id === idProducto);
     if (!productoOriginal) return;
@@ -269,7 +238,6 @@ function verificarUltimaUnidad(idProducto) {
     const colorSeleccionado = selectColor ? selectColor.value : 'Único';
 
     let stockReal = 1;
-
     let carritoActual = JSON.parse(localStorage.getItem('carrito_justina')) || [];
 
     if (Array.isArray(productoOriginal.variantes) && productoOriginal.variantes.length > 0) {
@@ -291,7 +259,6 @@ function verificarUltimaUnidad(idProducto) {
         stockReal = Number(productoOriginal.stock) - cantEnCarrito;
     }
 
-    // Si queda exactamente 1 sola unidad disponible, mostramos el cartel flotante
     if (stockReal === 1) {
         cartelAlerta.style.display = 'block';
     } else {
@@ -299,14 +266,14 @@ function verificarUltimaUnidad(idProducto) {
     }
 }
 
-// Función combinada para actualizar colores cuando cambia el talle y revisar el stock
+
 function actualizarColoresYVerificarStock(idProducto) {
-    // Si ya tenías una función para actualizar colores, llamala acá (ej: actualizarColoresDisponibles(idProducto))
     if (typeof actualizarColoresDisponibles === 'function') {
         actualizarColoresDisponibles(idProducto);
     }
     verificarUltimaUnidad(idProducto);
 }
+
 
 // ====================================================================
 // CARGAR FAVORITOS DEL USUARIO DESDE POSTGRESQL
@@ -323,7 +290,6 @@ async function cargarFavoritosDesdeBD() {
         const res = await fetch(`http://localhost:3000/api/favoritos/${usuario.id}`);
         if (res.ok) {
             favoritos = await res.json();
-            // Si las tarjetas ya estaban dibujadas en pantalla, actualizamos qué corazones están rojos
             actualizarCorazonesEnPantalla();
         }
     } catch (err) {
@@ -331,7 +297,7 @@ async function cargarFavoritosDesdeBD() {
     }
 }
 
-// Función auxiliar que repinta los corazones sin tener que recargar toda la página
+
 function actualizarCorazonesEnPantalla() {
     productos.forEach(prod => {
         const btnFav = document.querySelector(`.card-producto #img-card-${prod.id}`)
@@ -351,9 +317,6 @@ function actualizarCorazonesEnPantalla() {
     });
 }
 
-// ====================================================================
-// FUNCION PARA ACTUALIZAR LOS COLORES SEGUN EL TALLE ELEGIDO
-// ====================================================================
 
 function actualizarColoresDisponibles(idProducto) {
     const producto = productos.find(p => p.id === idProducto);
@@ -365,7 +328,6 @@ function actualizarColoresDisponibles(idProducto) {
 
     const talleElegido = selectTalle.value;
 
-    // Buscamos colores disponibles descontando lo que ya hay en el carrito
     const coloresDisponibles = [...new Set(
         producto.variantes
             .filter(v => {
@@ -389,13 +351,13 @@ function actualizarColoresDisponibles(idProducto) {
     }
 }
 
+
 // ====================================================================
 // FUNCIÓN PARA AGREGAR / QUITAR DE FAVORITOS 
 // ====================================================================
 async function toggleFavorito(idProducto, btnElemento) {
     const sesion = localStorage.getItem('usuario_tienda');
 
-    // 1. SI NO INICIÓ SESIÓN: Le avisamos de forma profesional que ingrese
     if (!sesion) {
         alert("Iniciá sesión o creá una cuenta gratis para guardar productos en tu lista de favoritos ❤️");
         if (modalLogin) {
@@ -410,7 +372,6 @@ async function toggleFavorito(idProducto, btnElemento) {
 
     try {
         if (!yaEraFavorito) {
-            // A. AGREGAR A LA BASE DE DATOS
             const res = await fetch('http://localhost:3000/api/favoritos', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -423,7 +384,6 @@ async function toggleFavorito(idProducto, btnElemento) {
                 btnElemento.title = "Quitar de favoritos";
             }
         } else {
-            // B. BORRAR DE LA BASE DE DATOS
             const res = await fetch(`http://localhost:3000/api/favoritos/${usuario.id}/${idProducto}`, {
                 method: 'DELETE'
             });
@@ -439,10 +399,10 @@ async function toggleFavorito(idProducto, btnElemento) {
     }
 }
 
-// ====================================================================
-// FUNCIONES GLOBALES DE CARRITO (CON SOPORTE DE CANTIDADES)
-// ====================================================================
 
+// ====================================================================
+// FUNCIONES GLOBALES DE CARRITO
+// ====================================================================
 function agregarAlCarrito(idProducto) {
     const productoOriginal = productos.find(p => p.id === idProducto);
 
@@ -453,7 +413,6 @@ function agregarAlCarrito(idProducto) {
         const talleSeleccionado = selectTalle ? selectTalle.value : 'Único';
         const colorSeleccionado = selectColor ? selectColor.value : 'Único';
 
-        // 1. Calculamos el stock real disponible
         let stockDisponible = 1;
         if (Array.isArray(productoOriginal.variantes) && productoOriginal.variantes.length > 0) {
             const varianteElegida = productoOriginal.variantes.find(v =>
@@ -466,7 +425,6 @@ function agregarAlCarrito(idProducto) {
             stockDisponible = Number(productoOriginal.stock);
         }
 
-        // 2. Contamos cuántas unidades de esta variante exacta ya están en el carrito
         let indexExistente = carrito.findIndex(prod =>
             prod.id === idProducto &&
             prod.talleElegido === talleSeleccionado &&
@@ -475,7 +433,6 @@ function agregarAlCarrito(idProducto) {
 
         let cantidadActualEnCarrito = indexExistente !== -1 ? (carrito[indexExistente].cantidad || 1) : 0;
 
-        // 3. Validamos stock
         if (cantidadActualEnCarrito >= stockDisponible) {
             alert(`¡Ups! Solo tenemos ${stockDisponible} unidad(es) disponible(s) en talle ${talleSeleccionado} y color ${colorSeleccionado}.`);
             return;
@@ -501,25 +458,21 @@ function agregarAlCarrito(idProducto) {
         actualizarCarrito();
         mostrarProductosEnPantalla(productos);
 
-        // Abrimos el modal brevemente para mostrar que se agregó
-        const modalCarrito = document.getElementById('modal-carrito');
         if (modalCarrito) {
             modalCarrito.classList.add('activo');
         }
     }
 }
+
+
 function actualizarContadorHeader() {
     let carritoActual = JSON.parse(localStorage.getItem('carrito_justina')) || [];
-    // Sumamos las cantidades totales de todos los ítems para la burbuja del header
     const totalItems = carritoActual.reduce((acc, item) => acc + (item.cantidad || 1), 0);
 
     const elemContador = document.getElementById('contador-carrito');
     if (elemContador) elemContador.textContent = totalItems;
 }
 
-// ====================================================================
-// FUNCION PARA ELIMINAR DEL CARRITO  
-// ====================================================================
 
 function eliminarDelCarrito(index) {
     carrito.splice(index, 1);
@@ -529,9 +482,6 @@ function eliminarDelCarrito(index) {
     }
 }
 
-// ====================================================================
-// FUNCION PARA ACTUALIZAR EL CARRITO  
-// ====================================================================
 
 function actualizarCarrito() {
     localStorage.setItem('carrito_justina', JSON.stringify(carrito));
@@ -575,8 +525,9 @@ function actualizarCarrito() {
     elemTotal.textContent = `$${sumaTotal.toLocaleString()}`;
 }
 
+
 // ====================================================================
-// EVENTO DEL MODAL CARRITO, ABRIR Y CERRAR
+// EVENTOS DEL MODAL CARRITO
 // ====================================================================
 if (botonAbrirCarrito) {
     botonAbrirCarrito.addEventListener('click', () => {
@@ -586,38 +537,21 @@ if (botonAbrirCarrito) {
 
 if (botonCerrarModal && modalCarrito) {
     botonCerrarModal.addEventListener('click', () => {
-        const modalCarrito = document.getElementById('modal-carrito');
-        if (modalCarrito) modalCarrito.classList.remove('activo');
-
-        // 🧹 BORRAMOS EL CARTEL AMARILLO PARA QUE NO VUELVA A APARECER
+        modalCarrito.classList.remove('activo');
         const avisoStock = document.getElementById('aviso-stock-recuperado');
         if (avisoStock) avisoStock.remove();
     });
 }
 
-// Y hacé lo mismo si hacés clic en el fondo  para cerrar:
-const modalOverlay = document.getElementById('modal-carrito');
-if (modalOverlay) {
-    modalOverlay.addEventListener('click', (e) => {
-        if (e.target === modalOverlay) {
-            modalOverlay.classList.remove('activo');
-
-            // 🧹 BORRAMOS EL CARTEL AMARILLO ACÁ TAMBIÉN
+if (modalCarrito) {
+    modalCarrito.addEventListener('click', (e) => {
+        if (e.target === modalCarrito) {
+            modalCarrito.classList.remove('activo');
             const avisoStock = document.getElementById('aviso-stock-recuperado');
             if (avisoStock) avisoStock.remove();
         }
     });
 }
-
-window.addEventListener('click', (e) => {
-    if (modalCarrito && e.target === modalCarrito) {
-        modalCarrito.classList.remove('activo');
-    }
-});
-
-// =========================================================
-// FUNCION PARA BOTON FINALIZAR COMPRA DEL CARRITO
-// =========================================================
 
 if (btnFinalizarCompra) {
     btnFinalizarCompra.addEventListener('click', () => {
@@ -625,8 +559,9 @@ if (btnFinalizarCompra) {
     });
 }
 
+
 // =========================================================
-// FUNCIÓN PARA VERIFICAR CARRITO PENDIENTE AL LOGUEARSE
+// VERIFICAR CARRITO PENDIENTE AL LOGUEARSE
 // =========================================================
 async function verificarCarritoPendiente(usuarioId) {
     const clavePendiente = `carrito_pendiente_${usuarioId}`;
@@ -640,182 +575,190 @@ async function verificarCarritoPendiente(usuarioId) {
     let itemsValidos = [];
     let cantidadSinStock = 0;
 
-    // 1. Chequeamos el stock real en la base de datos
     for (const item of itemsAntiguos) {
         try {
-            // Modificá el fetch dentro del for de verificarCarritoPendiente para que quede así:
             const res = await fetch(`http://localhost:3000/api/variantes/stock?producto_id=${item.id}&talle=${item.talleElegido}&color=${item.colorElegido}`);
             const data = await res.json();
 
-            // Verificamos si hay stock disponible real en la base de datos
             if (data.stock !== undefined && data.stock > 0) {
                 itemsValidos.push(item);
             } else {
-                cantidadSinStock++; // Si el stock es 0 o menor, lo contamos para borrarlo y avisar
+                cantidadSinStock++;
             }
         } catch (err) {
             itemsValidos.push(item);
         }
     }
 
-    // 2. Guardamos los ítems válidos en el carrito principal
     if (itemsValidos.length > 0) {
         carrito = itemsValidos;
         localStorage.setItem('carrito_justina', JSON.stringify(carrito));
         actualizarCarrito();
-
         localStorage.removeItem(clavePendiente);
 
-        // 3. Dejamos una orden guardada en sessionStorage para abrir el modal y mostrar el aviso post-recarga
         sessionStorage.setItem('abrir_carrito_recuperado', 'true');
         if (cantidadSinStock > 0) {
             sessionStorage.setItem('aviso_stock_faltante', cantidadSinStock);
         }
 
-        // Recargamos la página para que la interfaz limpie el login y muestre todo fresco
         window.location.reload();
-
     } else {
         localStorage.removeItem(clavePendiente);
         alert("⚠️ Tenías productos guardados en tu carrito anterior, pero lamentablemente ya no hay stock disponible.");
     }
 }
 
+
 // =========================================================
-// CONTROL DEL HEADER SEGUN ROL
+// CONTROL DEL HEADER SEGUN ROL 
 // =========================================================
-function actualizarInterfazHeader() {
-    const sesionGuardada = localStorage.getItem('usuario_tienda');
+async function inicializarHeader() {
+    try {
+        const respuesta = await fetch('./componentes/header.html');
+        if (!respuesta.ok) throw new Error('No se pudo cargar el header');
 
-    // 1. Definimos el ícono SVG minimalista (trazo fino, sin relleno)
-    const iconoUserSVG = `
-        <svg viewBox="0 0 24 24" class="icono-svg-user" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
-        </svg>
-    `;
+        const htmlHeader = await respuesta.text();
 
-    if (sesionGuardada) {
-        const usuario = JSON.parse(sesionGuardada);
-        const primerNombre = usuario.nombre.split(' ')[0];
+        const parser = new DOMParser();
+        const docHeader = parser.parseFromString(htmlHeader, 'text/html');
 
-        btnLoginHeader.innerHTML = `<span class="icono-user">${iconoUserSVG}</span> <span class="texto-user">Hola, ${primerNombre} ▾</span>`;
-
-        if (contenedorDropdown) contenedorDropdown.classList.add('sesion-activa');
-        if (btnLogoutHeader) btnLogoutHeader.style.display = 'block'; // El logout lo ven todos
-
-        // 2. Separamos la lógica según el ROL
-        if (usuario.rol === 'admin') {
-            if (btnConfigAdmin) btnConfigAdmin.style.display = 'block';
-            if (btnPedidosAdmin) btnPedidosAdmin.style.display = 'block';
-            if (btnConfigWAdmin) btnConfigWAdmin.style.display = 'block';
-            if (btnPerfil) btnPerfil.style.display = 'none';
-            btnCarrito.style.display = 'none';
-            btnFavorito.style.display = 'none';
-        } else {
-            if (btnConfigAdmin) btnConfigAdmin.style.display = 'none';
-            if (btnPedidosAdmin) btnPedidosAdmin.style.display = 'none';
-            if (btnConfigWAdmin) btnConfigWAdmin.style.display = 'none';
-            if (btnPerfil) btnPerfil.style.display = 'block';
-            btnCarrito.style.display = 'block';
-            btnFavorito.style.display = 'block';
+        const testBtn = docHeader.getElementById('btn-login-header');
+        // Inyectamos el contenido en el contenedor de la página principal
+        const contenedorHeader = document.getElementById('header-container');
+        if (contenedorHeader) {
+            contenedorHeader.innerHTML = htmlHeader;
         }
-    } else {
-        btnLoginHeader.innerHTML = `<span class="icono-user">${iconoUserSVG}</span> <span class="texto-user">Iniciar Sesión</span>`;
 
-        btnCarrito.style.display = "block";
-        btnFavorito.style.display = "block";
-        if (contenedorDropdown) contenedorDropdown.classList.remove('sesion-activa');
-        if (btnConfigAdmin) btnConfigAdmin.style.display = 'none';
-        if (btnConfigWAdmin) btnConfigWAdmin.style.display = 'none';
-        if (btnPedidosAdmin) btnPedidosAdmin.style.display = 'none';
-        if (btnPerfil) btnPerfil.style.display = 'none';
-        if (btnLogoutHeader) btnLogoutHeader.style.display = 'none';
+        // Seleccionamos los elementos directamente del DOM ya actualizado
+        const btnLoginHeader = document.getElementById('btn-login-header');
+        const btnConfigAdmin = document.getElementById('btn-config-admin');
+        const btnPedidosAdmin = document.getElementById('btn-pedidos-admin');
+        const btnConfigWAdmin = document.getElementById('btn-configw-admin');
+        const btnPerfil = document.getElementById('btn-perfil');
+        const btnLogoutHeader = document.getElementById('btn-logout-header');
+        const contenedorDropdown = document.getElementById('contenedor-dropdown-user');
+        const btnCarrito = document.getElementById('boton-carrito');
+        const btnFavorito = document.getElementById('boton-favorito');
+
+        const sesionGuardada = localStorage.getItem('usuario_tienda');
+        const iconoUserSVG = `
+            <svg viewBox="0 0 24 24" class="icono-svg-user" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+        `;
+
+        if (sesionGuardada) {
+            const usuario = JSON.parse(sesionGuardada);
+            const primerNombre = usuario.nombre.split(' ')[0];
+
+            if (btnLoginHeader) {
+                const spanTexto = btnLoginHeader.querySelector('.texto-user');
+                if (spanTexto) {
+                    spanTexto.textContent = `Hola, ${primerNombre} ▾`;
+                } else {
+                    btnLoginHeader.innerHTML = `<span class="icono-user">${iconoUserSVG}</span> <span class="texto-user">Hola, ${primerNombre} ▾</span>`;
+                }
+            }
+
+            if (contenedorDropdown) contenedorDropdown.classList.add('sesion-activa');
+            if (btnLogoutHeader) btnLogoutHeader.style.display = 'block';
+
+            if (usuario.rol === 'admin') {
+                if (btnConfigAdmin) btnConfigAdmin.style.display = 'block';
+                if (btnPedidosAdmin) btnPedidosAdmin.style.display = 'block';
+                if (btnConfigWAdmin) btnConfigWAdmin.style.display = 'block';
+                if (btnPerfil) btnPerfil.style.display = 'none';
+                if (btnCarrito) btnCarrito.style.display = 'none';
+                if (btnFavorito) btnFavorito.style.display = 'none';
+            } else {
+                if (btnConfigAdmin) btnConfigAdmin.style.display = 'none';
+                if (btnPedidosAdmin) btnPedidosAdmin.style.display = 'none';
+                if (btnConfigWAdmin) btnConfigWAdmin.style.display = 'none';
+                if (btnPerfil) btnPerfil.style.display = 'block';
+                if (btnCarrito) btnCarrito.style.display = 'block';
+                if (btnFavorito) btnFavorito.style.display = 'block';
+            }
+        } else {
+            if (btnLoginHeader) {
+                btnLoginHeader.innerHTML = `<span class="icono-user">${iconoUserSVG}</span> <span class="texto-user">Iniciar Sesión</span>`;
+            }
+            if (btnCarrito) btnCarrito.style.display = "block";
+            if (btnFavorito) btnFavorito.style.display = "block";
+            if (contenedorDropdown) contenedorDropdown.classList.remove('sesion-activa');
+            if (btnConfigAdmin) btnConfigAdmin.style.display = 'none';
+            if (btnConfigWAdmin) btnConfigWAdmin.style.display = 'none';
+            if (btnPedidosAdmin) btnPedidosAdmin.style.display = 'none';
+            if (btnPerfil) btnPerfil.style.display = 'none';
+            if (btnLogoutHeader) btnLogoutHeader.style.display = 'none';
+        }
+
+        if (btnLoginHeader) {
+            btnLoginHeader.addEventListener('click', (e) => {
+                const sesion = localStorage.getItem('usuario_tienda');
+                if (!sesion) {
+                    if (modalLogin) modalLogin.classList.add('activo');
+                } else {
+                    e.stopPropagation();
+                    if (contenedorDropdown) {
+                        contenedorDropdown.classList.toggle('activo-click');
+                    }
+                }
+            });
+        }
+
+        document.addEventListener('click', () => {
+            const dropdownUser = document.getElementById('contenedor-dropdown-user');
+            if (dropdownUser) {
+                dropdownUser.classList.remove('activo-click');
+            }
+        });
+
+        if (btnLogoutHeader) {
+            btnLogoutHeader.addEventListener('click', (e) => {
+                e.preventDefault();
+                const sesionActual = localStorage.getItem('usuario_tienda');
+                if (sesionActual && typeof carrito !== 'undefined' && carrito.length > 0) {
+                    const usuario = JSON.parse(sesionActual);
+                    localStorage.setItem(`carrito_pendiente_${usuario.id}`, JSON.stringify(carrito));
+                }
+
+                localStorage.removeItem('usuario_tienda');
+                localStorage.removeItem('carrito_justina');
+                carrito = [];
+                window.location.href = 'index.html';
+            });
+        }
+
+        cargarCategoriasEnHeader();
+
+    } catch (error) {
+        console.error("Hubo un error al cargar el header:", error);
     }
 }
 
-// 2. Comportamiento al hacer clic en "👤 Iniciar Sesión" o el nombre
-if (btnLoginHeader) {
-    btnLoginHeader.addEventListener('click', () => {
-        const sesionGuardada = localStorage.getItem('usuario_tienda');
+// Cerrar el menú si se hace clic afuera
+document.addEventListener('click', () => {
+    const menuOpciones = document.getElementById('menu-opciones');
+    if (menuOpciones) {
+        menuOpciones.style.display = 'none';
+    }
+});
 
-        // Si NO inició sesión, abrimos el modal de login
-        if (!sesionGuardada) {
-            if (modalLogin) modalLogin.classList.add('activo');
-        }
-        // Si YA inició sesión, no hace falta hacer nada porque al pasar el mouse ya se abre el menú
-    });
-}
+document.addEventListener("DOMContentLoaded", () => {
+    inicializarHeader();
+});
 
-// 3. Comportamiento de "Cerrar Sesión" desde el menú desplegable
-if (btnLogoutHeader) {
-    btnLogoutHeader.addEventListener('click', (e) => {
-        e.preventDefault();
-
-        // 1. Si hay una sesión activa y productos en el carrito, los guardamos a su nombre
-        const sesionActual = localStorage.getItem('usuario_tienda');
-        if (sesionActual && typeof carrito !== 'undefined' && carrito.length > 0) {
-            const usuario = JSON.parse(sesionActual);
-            localStorage.setItem(`carrito_pendiente_${usuario.id}`, JSON.stringify(carrito));
-        }
-
-        // 2. Limpiamos la sesión general y el carrito visual actual
-        localStorage.removeItem('usuario_tienda');
-        localStorage.removeItem('carrito_justina');
-        carrito = [];
-
-        // 3. Actualizamos la interfaz del header y recargamos o mandamos al inicio
-        actualizarInterfazHeader();
-        window.location.href = 'index.html';
-    });
-}
-
-
-// 3. Procesar el formulario del Modal de Login
-if (formLogin) {
-    formLogin.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const email = document.getElementById('email-user').value.trim();
-        const password = document.getElementById('password-user')?.value.trim();
-
-        try {
-            const respuesta = await fetch('http://localhost:3000/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-
-            const datos = await respuesta.json();
-
-            if (respuesta.ok) {
-                localStorage.setItem('usuario_tienda', JSON.stringify(datos.usuario));
-                actualizarInterfazHeader();
-                await verificarCarritoPendiente(datos.usuario.id);
-                if (modalLogin) modalLogin.classList.remove('activo');
-                window.location.reload();
-                alert(`¡Bienvenida/o, ${datos.usuario.nombre}!`);
-            } else {
-                alert(`Error: ${datos.error}`);
-            }
-        } catch (error) {
-            alert("No se pudo conectar con el servidor backend en puerto 3000.");
-        }
-    });
-}
 
 // =========================================================
 // CONTROL DE MODAL DE LOGIN Y REGISTRO
 // =========================================================
-
-// 1. Cerrar modal
 if (btnCerrarModalLogin) {
     btnCerrarModalLogin.addEventListener('click', () => {
         if (modalLogin) modalLogin.classList.remove('activo');
     });
 }
 
-// 2. Alternar visualmente entre "Ingresar" y "Crear Cuenta"
 if (tabLogin && tabRegistro) {
     tabLogin.addEventListener('click', () => {
         formLogin.style.display = 'flex';
@@ -836,17 +779,44 @@ if (tabLogin && tabRegistro) {
     });
 }
 
-// 3. Procesar el formulario de Registro de un cliente nuevo
+if (formLogin) {
+    formLogin.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email-user').value.trim();
+        const password = document.getElementById('password-user')?.value.trim();
+
+        try {
+            const respuesta = await fetch('http://localhost:3000/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            const datos = await respuesta.json();
+
+            if (respuesta.ok) {
+                localStorage.setItem('usuario_tienda', JSON.stringify(datos.usuario));
+                await verificarCarritoPendiente(datos.usuario.id);
+                if (modalLogin) modalLogin.classList.remove('activo');
+                alert(`¡Bienvenida/o, ${datos.usuario.nombre}!`);
+                window.location.reload();
+            } else {
+                alert(`Error: ${datos.error}`);
+            }
+        } catch (error) {
+            alert("No se pudo conectar con el servidor backend en puerto 3000.");
+        }
+    });
+}
+
 if (formRegistro) {
     formRegistro.addEventListener('submit', async (e) => {
         e.preventDefault();
-
         const nombre = document.getElementById('reg-nombre').value.trim();
         const email = document.getElementById('reg-email').value.trim();
         const password = document.getElementById('reg-pass').value.trim();
 
         try {
-            // Llamamos a tu ruta POST de registro en el backend
             const respuesta = await fetch('http://localhost:3000/api/usuarios/registro', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -856,7 +826,6 @@ if (formRegistro) {
             const datos = await respuesta.json();
 
             if (respuesta.ok) {
-                // Al crearse la cuenta en tu tabla, por defecto recibe rol: 'cliente'
                 const nuevoUsuario = {
                     id: datos.idUsuario,
                     nombre: nombre,
@@ -864,14 +833,13 @@ if (formRegistro) {
                     rol: 'cliente'
                 };
 
-                // Guardamos la sesión local e iniciamos su cuenta automáticamente
                 localStorage.setItem('usuario_tienda', JSON.stringify(nuevoUsuario));
-                actualizarInterfazHeader();
                 cargarFavoritosDesdeBD();
 
                 formRegistro.reset();
                 if (modalLogin) modalLogin.classList.remove('activo');
                 alert(`¡Cuenta creada con éxito! Bienvenida/o, ${nombre}.`);
+                window.location.reload();
             } else {
                 alert(`No se pudo registrar: ${datos.error}`);
             }
@@ -881,11 +849,10 @@ if (formRegistro) {
     });
 }
 
-// =========================================================
-//  NAVEGACIÓN DE HEADER
-// =========================================================
 
-// CARGAR CATEGORÍAS DESDE POSTGRESQL AL MENÚ DESPLEGABLE
+// =========================================================
+// NAVEGACIÓN DE HEADER Y CATEGORÍAS
+// =========================================================
 async function cargarCategoriasEnHeader() {
     const contenedorMenu = document.getElementById('menu-categorias');
     if (!contenedorMenu) return;
@@ -910,15 +877,13 @@ async function cargarCategoriasEnHeader() {
     }
 }
 
-// FUNCIÓN PARA FILTRAR PRODUCTOS POR CATEGORÍA
+
 function filtrarPorCategoria(categoriaSeleccionada) {
     if (!grilla) return;
 
     if (categoriaSeleccionada === 'Todos') {
-        // Si elige "Ver Todo", mostramos el array completo original
         mostrarProductosEnPantalla(productos);
     } else {
-        // Filtramos el array global "productos" buscando coincidencia en .categoria
         const productosFiltrados = productos.filter(
             prod => prod.categoria && prod.categoria.toLowerCase() === categoriaSeleccionada.toLowerCase()
         );
@@ -938,82 +903,57 @@ function filtrarPorCategoria(categoriaSeleccionada) {
     }
 }
 
-// COMPORTAMIENTO DEL BOTÓN "INICIO" O LOGO 
 
 function irAlInicio(e) {
     const paginaActual = window.location.pathname;
     const estamosEnIndex = paginaActual.endsWith('index.html') || paginaActual === '/' || paginaActual.endsWith('/');
 
     if (estamosEnIndex) {
-        // SI YA ESTAMOS EN EL HOME: Refresh suave sin recargar
         e.preventDefault();
-
         if (typeof mostrarProductosEnPantalla === 'function' && typeof productos !== 'undefined') {
             mostrarProductosEnPantalla(productos);
         }
-        if (typeof cargarBaseDeDatos === 'function') {
-            cargarBaseDeDatos();
-        }
-
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 }
 if (navInicio) navInicio.addEventListener('click', irAlInicio);
 if (logoLink) logoLink.addEventListener('click', irAlInicio);
 
-
-// CONTROL DEL MENÚ EN MÓVILES
 if (btnMenuMobile && navPrincipal) {
     btnMenuMobile.addEventListener('click', () => {
-        // Toggle: Si no tiene la clase 'activo' se la pone, si la tiene se la saca
         navPrincipal.classList.toggle('activo');
     });
 }
 
 
-// ¡INICIO DE LA APP!
-cargarBaseDeDatos();
-
-// ¡Llamamos a cargar las categorías del menú apenas inicia la tienda!
-cargarCategoriasEnHeader();
-
-// ¡Apenas carga index.html, revisamos quién está conectado para dibujar el header correcto!
-actualizarInterfazHeader();
-
-cargarFavoritosDesdeBD();
-
-
-// Apenas carga index.html, revisamos si la URL trae una categoría seleccionada
+// ====================================================================
+// CONFIGURACIÓN WEB DE ADMIN Y CARGA GLOBAL AL INICIAR
+// ====================================================================
 document.addEventListener('DOMContentLoaded', async () => {
+    await inicializarHeader();
+    await cargarBaseDeDatos();
     actualizarCarrito();
     actualizarContadorHeader();
+    await cargarFavoritosDesdeBD();
 
+    // Filtro por categoría desde URL si aplica
     const parametrosUrl = new URLSearchParams(window.location.search);
     const categoriaUrl = parametrosUrl.get('categoria');
-
     if (categoriaUrl) {
-        // Esperamos a que los productos se carguen de la base de datos y filtramos
-        await cargarBaseDeDatos();
         filtrarPorCategoria(categoriaUrl);
     }
-});
 
-
-// Apenas carga cualquier página, revisamos si hay que abrir el carrito recuperado
-document.addEventListener('DOMContentLoaded', () => {
-    actualizarCarrito();
-
+    // Modal de carrito recuperado
     if (sessionStorage.getItem('abrir_carrito_recuperado') === 'true') {
-        sessionStorage.removeItem('abrir_carrito_recuperado'); // Se limpia de inmediato
+        sessionStorage.removeItem('abrir_carrito_recuperado');
 
-        const modalCarrito = document.getElementById('modal-carrito');
         if (modalCarrito) {
             modalCarrito.classList.add('activo');
         }
 
         const cantSinStock = sessionStorage.getItem('aviso_stock_faltante');
         if (cantSinStock) {
-            sessionStorage.removeItem('aviso_stock_faltante'); // Se limpia para que no se repita
+            sessionStorage.removeItem('aviso_stock_faltante');
 
             let avisoStock = document.getElementById('aviso-stock-recuperado');
             if (!avisoStock) {
@@ -1029,39 +969,48 @@ document.addEventListener('DOMContentLoaded', () => {
             avisoStock.innerHTML = `⚠️ ${cantSinStock} producto(s) de tu carrito anterior fueron eliminados automáticamente por falta de stock.`;
         }
     }
-});
 
-//PARA LA CONFIGURACION WEB DE ADMIN
-
-document.addEventListener('DOMContentLoaded', async () => {
+    // Petición de configuración web global
     try {
         const res = await fetch('http://localhost:3000/api/configuracion');
         if (res.ok) {
             const config = await res.json();
 
-            // 1. WhatsApp (Footer y Botón Flotante)
             if (config.whatsapp) {
                 const footerWsp = document.getElementById('footer-wsp');
                 const linkWsp = document.getElementById('link-footer-wsp');
                 const btnWspFlotante = document.getElementById('btn-whatsapp-flotante');
-                
+
                 if (footerWsp) footerWsp.textContent = config.whatsapp;
                 const numeroLimpio = config.whatsapp.replace(/\D/g, '');
                 const urlWsp = `https://wa.me/${numeroLimpio}?text=%C2%A1Hola!%20Quer%C3%ADa%20hacer%20una%20consulta%20sobre%20las%20prendas%20de%20la%20tienda...`;
 
                 if (linkWsp) linkWsp.href = `https://wa.me/${numeroLimpio}`;
                 if (btnWspFlotante) btnWspFlotante.href = urlWsp;
+
+                const contactoWspText = document.getElementById('contacto-wsp-text');
+                const contactoWspLink = document.getElementById('contacto-wsp-link');
+                const contactoTelText = document.getElementById('contacto-tel-text');
+                const contactoTelLink = document.getElementById('contacto-tel-link');
+
+                if (contactoWspText) contactoWspText.textContent = config.whatsapp;
+                if (contactoWspLink) contactoWspLink.href = `https://wa.me/${numeroLimpio}?text=%C2%A1Hola!%20Quer%C3%ADa%20hacer%20una%20consulta...`;
+                if (contactoTelText) contactoTelText.textContent = config.whatsapp;
+                if (contactoTelLink) contactoTelLink.href = `tel:+${numeroLimpio}`;
             }
 
-            // 2. Email de Contacto
             if (config.email_contacto) {
                 const footerEmail = document.getElementById('footer-email');
                 const linkEmail = document.getElementById('link-footer-email');
                 if (footerEmail) footerEmail.textContent = config.email_contacto;
                 if (linkEmail) linkEmail.href = `mailto:${config.email_contacto}`;
+
+                const contactoEmailText = document.getElementById('contacto-email-text');
+                const contactoEmailLink = document.getElementById('contacto-email-link');
+                if (contactoEmailText) contactoEmailText.textContent = config.email_contacto;
+                if (contactoEmailLink) contactoEmailLink.href = `mailto:${config.email_contacto}`;
             }
 
-            // 3. Instagram
             if (config.instagram) {
                 const footerIg = document.getElementById('footer-ig');
                 const linkIg = document.getElementById('link-footer-ig');
@@ -1070,7 +1019,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (linkIg) linkIg.href = `https://instagram.com/${usuarioIg}`;
             }
 
-            // 4. TikTok
             if (config.tiktok) {
                 const footerTk = document.getElementById('footer-tk');
                 const linkTk = document.getElementById('link-footer-tk');
@@ -1079,12 +1027,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (linkTk) linkTk.href = `https://tiktok.com/@${usuarioTk}`;
             }
 
-            // 5. Color principal de la tienda
             if (config.color_principal) {
                 document.documentElement.style.setProperty('--color-principal', config.color_principal);
             }
 
-            // 6. Cinta de Promociones Superior
             if (config.texto_promocion) {
                 const cintaTrack = document.getElementById('cinta-promos-track');
                 if (cintaTrack) {
@@ -1098,47 +1044,21 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if (arrayPromos.length > 0) {
                         const spansHtml = arrayPromos.map(texto => `<span>${texto}</span>`).join(' ');
                         cintaTrack.innerHTML = `
-                            <div class="cinta-texto">${spansHtml} &nbsp;&nbsp;&nbsp;&nbsp; ${spansHtml}</div>
-                            <div class="cinta-texto">${spansHtml} &nbsp;&nbsp;&nbsp;&nbsp; ${spansHtml}</div>
+                            <div class="cinta-texto">${spansHtml}     ${spansHtml}</div>
+                            <div class="cinta-texto">${spansHtml}     ${spansHtml}</div>
                         `;
                     }
                 }
             }
 
-            // 7. Actualizar datos en la página de Contacto 
-            if (config.whatsapp) {
-                const contactoWspText = document.getElementById('contacto-wsp-text');
-                const contactoWspLink = document.getElementById('contacto-wsp-link');
-                const contactoTelText = document.getElementById('contacto-tel-text');
-                const contactoTelLink = document.getElementById('contacto-tel-link');
-
-                const numeroLimpio = config.whatsapp.replace(/\D/g, '');
-
-                if (contactoWspText) contactoWspText.textContent = config.whatsapp;
-                if (contactoWspLink) contactoWspLink.href = `https://wa.me/${numeroLimpio}?text=%C2%A1Hola!%20Quer%C3%ADa%20hacer%20una%20consulta...`;
-
-                if (contactoTelText) contactoTelText.textContent = config.whatsapp; 
-                if (contactoTelLink) contactoTelLink.href = `tel:+${numeroLimpio}`;
-            }
-
-            if (config.email_contacto) {
-                const contactoEmailText = document.getElementById('contacto-email-text');
-                const contactoEmailLink = document.getElementById('contacto-email-link');
-
-                if (contactoEmailText) contactoEmailText.textContent = config.email_contacto;
-                if (contactoEmailLink) contactoEmailLink.href = `mailto:${config.email_contacto}`;
-            }
-
-            // 8. Actualizar Ubicación y enlace de Google Maps en la página de Contacto
             if (config.ubicacion) {
                 const ubicacionText = document.getElementById('contacto-ubicacion-text');
                 const mapaLink = document.getElementById('contacto-mapa-link');
 
                 if (ubicacionText) ubicacionText.textContent = config.ubicacion;
                 if (mapaLink) {
-                    // Genera automáticamente la búsqueda en Google Maps basada en el texto ingresado
                     const queryMap = encodeURIComponent(config.ubicacion);
-                    mapaLink.href = `https://maps.google.com/?q=${queryMap}`;
+                    mapaLink.href = `https://www.google.com/maps/search/?api=1&query=${queryMap}`;
                 }
             }
         }

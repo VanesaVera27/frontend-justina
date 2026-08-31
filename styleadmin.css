@@ -1,7 +1,18 @@
-/* =========================================================
-   PANEL DE CONTROL DE STOCK (ADMIN)
-========================================================= */
 
+:root{
+    --color-principal: #3b2314;
+    --color-secundario: #f5f0e8;
+    --color-logobanner: #3b2314;
+    --color-logo: #ffffff;
+    --color-textoheader: #ffffff;
+    --color-fondo: white;
+    --color-fondoCard: white;
+    --color-texto: black;
+    --color-principalhover: #3b2314d7;
+    --color-secundario2: #efe8de;
+    --color-secundario3: #f7f4ee;
+    --color-fondooscuro: rgba(30, 18, 10, 0.65);
+}
 .admin-container {
     max-width: 1200px;
     margin: 2rem auto;
@@ -12,7 +23,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid #e8e1d5;
+    border-bottom: 2px solid var(--color-secundario);
     padding-bottom: 1.5rem;
     margin-bottom: 2rem;
     flex-wrap: wrap;
@@ -22,20 +33,20 @@
 .admin-top-bar h1 {
     font-family: 'Abril Fatface', serif;
     font-size: 2.4rem;
-    color: #3b2314;
+    color: var(--color-principal);
     margin: 0;
 }
 
 .subtitulo-admin {
-    color: #694a32;
+    color: var(--color-principalhover);
     font-size: 0.95rem;
     margin-top: 0.3rem;
 }
 
 
 .btn-nueva-prenda {
-    background-color: #3b2314;
-    color: #ffffff;
+    background-color: var(--color-principal);
+    color: var(--color-textoheader);
     padding: 0.8rem 1.4rem;
     font-weight: 600;
     font-size: 0.95rem;
@@ -46,14 +57,14 @@
 }
 
 .btn-nueva-prenda:hover {
-    background-color: #5a3d28;
+    background-color: var(--color-principalhover);
     transform: translateY(-1px);
 }
 
 
 .panel-formulario {
-    background: #fffdfa;
-    border: 1px solid #d8cec4;
+    background: var(--color-fondo);
+    border: 1px solid var(--color-secundario);
     border-radius: 8px;
     padding: 2rem;
     margin-bottom: 3rem;
@@ -82,7 +93,7 @@
 .form-editorial-admin label {
     font-size: 0.85rem;
     font-weight: 600;
-    color: #5a3d28;
+    color: var(--color-principal);
 }
 
 .form-editorial-admin input[type="text"],
@@ -90,20 +101,20 @@
 .form-editorial-admin select {
     width: 100%;
     padding: 0.75rem;
-    border: 1px solid #d8cec4;
-    background-color: #ffffff;
+    border: 1px solid var(--color-secundario);
+    background-color: var(--color-fondo);
     border-radius: 4px;
     font-family: inherit;
     font-size: 0.95rem;
-    color: #3b2314;
+    color: var(--color-principal);
     box-sizing: border-box;
 }
 
 
 .btn-secundario {
-    background-color: #efe8de !important;
-    color: #3b2314 !important;
-    border: 1px solid #d8cec4 !important;
+    background-color: var(--color-secundario2) !important;
+    color: var(--color-principal)!important;
+    border: 1px solid var(--color-secundario3) !important;
     padding: 0.6rem 1rem;
     border-radius: 4px;
     font-size: 0.85rem;
@@ -113,15 +124,15 @@
 }
 
 .btn-secundario:hover {
-    background-color: #e2d7c8 !important;
+    background-color: var(--color-secundario2) !important;
 }
 
 
 .caja-variantes {
-    background: #f7f4ee;
+    background: var(--color-secundario3);
     padding: 1.2rem;
     border-radius: 6px;
-    border: 1px solid #e8e1d5;
+    border: 1px solid var(--color-secundario2);
 }
 
 .fila-variante {
@@ -132,8 +143,8 @@
 
 
 .btn-guardar-admin {
-    background-color: #3b2314;
-    color: white;
+    background-color: var(--color-principal);
+    color: var(--color-textoheader);
     padding: 0.9rem;
     font-size: 1rem;
     font-weight: bold;
@@ -144,7 +155,7 @@
 }
 
 .btn-guardar-admin:hover {
-    background-color: #2a180e;
+    background-color: var(--color-principalhover);
 }
 
 .oculto {
@@ -156,13 +167,13 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
-    border-bottom: 1px solid #e8e1d5;
+    border-bottom: 1px solid var(--color-secundario2);
     padding-bottom: 0.8rem;
 }
 
 .panel-header h3 {
     font-family: 'Abril Fatface', serif;
-    color: #3b2314;
+    color: var(--color-principal);
     font-size: 1.5rem;
     margin: 0;
 }
@@ -181,12 +192,12 @@
 }
 
 .btn-cerrar-panel:hover {
-    color: #3b2314;
-    background-color: #efe8de;
+    color: var(--color-principalhover);
+    background-color: var(--color-secundario2);
 }
 
 /* =========================================================
-   TABLA DE INVENTARIO (ADMIN)
+   TABLA DE INVENTARIO 
 ========================================================= */
 
 .tabla-header-bar {
@@ -201,23 +212,23 @@
 .tabla-header-bar h3 {
     font-family: 'Abril Fatface', serif;
     font-size: 1.5rem;
-    color: #3b2314;
+    color: var(--color-principal);
     margin: 0;
 }
 
 .input-buscar-admin {
     padding: 0.5rem 1rem;
-    border: 1px solid #d8cec4;
+    border: 1px solid var(--color-secundario2);
     border-radius: 20px;
     font-size: 0.9rem;
     width: 250px;
     outline: none;
-    background: #fffdfa;
+    background: var(--color-fondo);
 }
 
 
 .contenedor-tabla-card {
-    background: #fffdfa;
+    background: var(--color-fondo);
     border: 1px solid #d8cec4;
     border-radius: 8px;
     overflow: hidden;
@@ -232,7 +243,7 @@
 
 .tabla-admin thead {
     background-color: #efe8de;
-    color: #3b2314;
+    color:var(--color-principal);
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -245,7 +256,7 @@
 
 .tabla-admin td {
     padding: 1rem;
-    border-top: 1px solid #e8e1d5;
+    border-top: 1px solid var(--color-secundario2);
     vertical-align: middle;
 }
 
@@ -255,8 +266,8 @@
     height: 60px;
     object-fit: cover;
     border-radius: 4px;
-    border: 1px solid #e8e1d5;
-    background: #eee;
+    border: 1px solid var(--color-secundario2);
+    background: var(--color-fondo);
 }
 
 
@@ -268,17 +279,16 @@
 
 .tag-stock {
     background: #f0ebe1;
-    color: #3b2314;
+    color: var(--color-principal);
     font-size: 0.8rem;
     padding: 0.2rem 0.6rem;
     border-radius: 12px;
-    border: 1px solid #ded6c8;
+    border: 1px solid var(--color-secundario2);
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
 }
 
-/* Alerta visual si una variante tiene 0 stock */
 .tag-stock.sin-stock {
     background: #fde8e8;
     color: #9b1c1c;
@@ -294,7 +304,7 @@
 .btn-accion-icon {
     background: transparent;
     border: 1px solid #d8cec4;
-    color: #3b2314;
+    color: var(--color-principal);
     padding: 0.4rem 0.7rem;
     border-radius: 4px;
     cursor: pointer;
@@ -304,7 +314,7 @@
 }
 
 .btn-accion-icon:hover {
-    background: #3b2314;
+    background: var(--color-principalhover);
     color: white;
 }
 
@@ -325,7 +335,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(30, 18, 10, 0.65); /* Marrón oscuro semitransparente */
+    background-color: var(--color-fondooscuro); /* Marrón oscuro semitransparente */
     backdrop-filter: blur(3px);               /* Leve desenfoque de la tabla de atrás */
     display: flex;
     justify-content: center;
@@ -341,7 +351,7 @@
 
 /* Tarjeta central del modal */
 .modal-card {
-    background: #fffdfa;
+    background: var(--color-fondo);
     border: 1px solid #d8cec4;
     border-radius: 8px;
     width: 100%;
@@ -366,7 +376,7 @@
 }
 
 /* =========================================================
-   GESTOR DE IMÁGENES Y ORDEN (MODAL EDICIÓN)
+   MODAL EDICION
 ========================================================= */
 
 .grilla-fotos-edit {
@@ -388,8 +398,8 @@
 }
 
 .tarjeta-foto-edit.es-portada {
-    border-color: #3b2314;
-    box-shadow: 0 0 0 1px #3b2314;
+    border-color: var(--color-principal);
+    box-shadow: 0 0 0 1px var(--color-principalhover);
 }
 
 .tarjeta-foto-edit img {
@@ -399,8 +409,8 @@
 }
 
 .badge-portada {
-    background: #3b2314;
-    color: #ffffff;
+    background: var(--color-principal);
+    color: var(--color-fondo);
     font-size: 0.65rem;
     font-weight: 700;
     width: 100%;
@@ -423,7 +433,7 @@
     padding: 0.3rem 0;
     cursor: pointer;
     transition: background 0.2s;
-    color: #3b2314;
+    color: var(--color-fondo);
 }
 
 .btn-foto-accion:hover {
@@ -431,6 +441,6 @@
 }
 
 .btn-foto-accion.borrar:hover {
-    background: #c53030;
+    background: var(--color-secundario3);
     color: #ffffff;
 }
