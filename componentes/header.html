@@ -1,3 +1,7 @@
+<head>
+
+</head>
+
 <div class="cinta-promos">
     <div class="cinta-track" id="cinta-promos-track"></div>
 </div>
@@ -18,14 +22,15 @@
     </nav>
     <div class="acciones-header">
 
+        <div class="favorito btn-fav-icono" id="boton-fav">
+            <a href="favoritos.html" id="boton-favorito" title="Mis Favoritos">
+                <i class="lni lni-heart"></i>
+            </a>
+
+        </div>
 
         <div class="carrito btn-header-icono" id="boton-carrito" title="Carrito">
-            <svg viewBox="0 0 24 24" class="icono-svg-header" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="9" cy="21" r="1"></circle>
-                <circle cx="20" cy="21" r="1"></circle>
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-            </svg>
+            <i class="fa-solid fa-bag-shopping"></i>
             <span id="contador-carrito" class="badge-contador">0</span>
         </div>
 
@@ -42,9 +47,7 @@
                     style="display: none;">⚙️ Configuración Web</a>
                 <a href="perfil.html" id="btn-perfil" class="item-dropdown user-only" style="display: none;">👤 Mi
                     Perfil</a>
-                <a href="favoritos.html"id="boton-favorito" class="item-dropdown user-only" style="display: none;">
-                    Mis Favoritos
-                </a>
+
                 <a href="#" id="btn-logout-header" class="item-dropdown user-only logout" style="display: none;">🚪
                     Cerrar Sesión</a>
             </div>

@@ -2,23 +2,6 @@
 // ELEMENTOS DEL DOM Y VARIABLES
 // ====================================================================
 const grilla = document.getElementById('grilla-productos');
-const elemContador = document.getElementById('contador-carrito');
-const modalCarrito = document.getElementById('modal-carrito');
-const listaCarrito = document.getElementById('lista-carrito');
-const elemTotal = document.getElementById('total-precio');
-const botonAbrirCarrito = document.querySelector('.carrito');
-const botonCerrarModal = document.getElementById('btn-cerrar-modal');
-const btnFinalizarCompra = document.getElementById('btn-finalizar-compra');
-
-//CONTROL DEL HEADER SEGÚN ROL
-const formLogin = document.getElementById('form-login');
-const modalLogin = document.getElementById('modal-login');
-
-//CONTROL DE LOGIN Y REGISTRO
-const tabLogin = document.getElementById('tab-login');
-const tabRegistro = document.getElementById('tab-registro');
-const formRegistro = document.getElementById('form-registro');
-const btnCerrarModalLogin = document.getElementById('btn-cerrar-modal-login');
 
 //NAVEGACION DE HEADER
 const navInicio = document.getElementById('nav-inicio');
@@ -458,8 +441,10 @@ function agregarAlCarrito(idProducto) {
         actualizarCarrito();
         mostrarProductosEnPantalla(productos);
 
-        if (modalCarrito) {
-            modalCarrito.classList.add('activo');
+        // 🔍 Buscamos el modal del carrito dinámicamente para abrirlo
+        const modalCarritoDinamico = document.getElementById('modal-carrito');
+        if (modalCarritoDinamico) {
+            modalCarritoDinamico.classList.add('activo');
         }
     }
 }
@@ -487,15 +472,20 @@ function actualizarCarrito() {
     localStorage.setItem('carrito_justina', JSON.stringify(carrito));
 
     const totalUnidades = carrito.reduce((acc, item) => acc + (item.cantidad || 1), 0);
+    const elemContador = document.getElementById('contador-carrito');
     if (elemContador) elemContador.textContent = totalUnidades;
 
-    if (!listaCarrito || !elemTotal) return;
+    // 🔍 Buscamos los contenedores de la lista y el total dinámicamente en el DOM actual
+    const listaCarritoDinamica = document.getElementById('lista-carrito');
+    const elemTotalDinamico = document.getElementById('total-precio');
 
-    listaCarrito.innerHTML = '';
+    if (!listaCarritoDinamica || !elemTotalDinamico) return;
+
+    listaCarritoDinamica.innerHTML = '';
 
     if (carrito.length === 0) {
-        listaCarrito.innerHTML = '<p class="carrito-vacio">El carrito está vacío.</p>';
-        elemTotal.textContent = '$0';
+        listaCarritoDinamica.innerHTML = '<p class="carrito-vacio">El carrito está vacío.</p>';
+        elemTotalDinamico.textContent = '$0';
         return;
     }
 
@@ -519,46 +509,11 @@ function actualizarCarrito() {
             </div>
             <button class="btn-eliminar" onclick="eliminarDelCarrito(${index})">X</button>
         `;
-        listaCarrito.appendChild(item);
+        listaCarritoDinamica.appendChild(item);
     });
 
-    elemTotal.textContent = `$${sumaTotal.toLocaleString()}`;
+    elemTotalDinamico.textContent = `$${sumaTotal.toLocaleString()}`;
 }
-
-
-// ====================================================================
-// EVENTOS DEL MODAL CARRITO
-// ====================================================================
-if (botonAbrirCarrito) {
-    botonAbrirCarrito.addEventListener('click', () => {
-        window.location.href = 'carrito.html';
-    });
-}
-
-if (botonCerrarModal && modalCarrito) {
-    botonCerrarModal.addEventListener('click', () => {
-        modalCarrito.classList.remove('activo');
-        const avisoStock = document.getElementById('aviso-stock-recuperado');
-        if (avisoStock) avisoStock.remove();
-    });
-}
-
-if (modalCarrito) {
-    modalCarrito.addEventListener('click', (e) => {
-        if (e.target === modalCarrito) {
-            modalCarrito.classList.remove('activo');
-            const avisoStock = document.getElementById('aviso-stock-recuperado');
-            if (avisoStock) avisoStock.remove();
-        }
-    });
-}
-
-if (btnFinalizarCompra) {
-    btnFinalizarCompra.addEventListener('click', () => {
-        window.location.href = 'carrito.html';
-    });
-}
-
 
 // =========================================================
 // VERIFICAR CARRITO PENDIENTE AL LOGUEARSE
@@ -692,6 +647,7 @@ async function inicializarHeader() {
             if (btnPerfil) btnPerfil.style.display = 'none';
             if (btnLogoutHeader) btnLogoutHeader.style.display = 'none';
         }
+        const modalLogin = document.getElementById('modal-login');
 
         if (btnLoginHeader) {
             btnLoginHeader.addEventListener('click', (e) => {
@@ -749,109 +705,8 @@ document.addEventListener("DOMContentLoaded", () => {
     inicializarHeader();
 });
 
-
 // =========================================================
-// CONTROL DE MODAL DE LOGIN Y REGISTRO
-// =========================================================
-if (btnCerrarModalLogin) {
-    btnCerrarModalLogin.addEventListener('click', () => {
-        if (modalLogin) modalLogin.classList.remove('activo');
-    });
-}
-
-if (tabLogin && tabRegistro) {
-    tabLogin.addEventListener('click', () => {
-        formLogin.style.display = 'flex';
-        formRegistro.style.display = 'none';
-        tabLogin.style.color = '#1a1a1a';
-        tabLogin.style.borderBottom = '2px solid #1a1a1a';
-        tabRegistro.style.color = '#888';
-        tabRegistro.style.borderBottom = 'none';
-    });
-
-    tabRegistro.addEventListener('click', () => {
-        formLogin.style.display = 'none';
-        formRegistro.style.display = 'flex';
-        tabRegistro.style.color = '#1a1a1a';
-        tabRegistro.style.borderBottom = '2px solid #1a1a1a';
-        tabLogin.style.color = '#888';
-        tabLogin.style.borderBottom = 'none';
-    });
-}
-
-if (formLogin) {
-    formLogin.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('email-user').value.trim();
-        const password = document.getElementById('password-user')?.value.trim();
-
-        try {
-            const respuesta = await fetch('http://localhost:3000/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-
-            const datos = await respuesta.json();
-
-            if (respuesta.ok) {
-                localStorage.setItem('usuario_tienda', JSON.stringify(datos.usuario));
-                await verificarCarritoPendiente(datos.usuario.id);
-                if (modalLogin) modalLogin.classList.remove('activo');
-                alert(`¡Bienvenida/o, ${datos.usuario.nombre}!`);
-                window.location.reload();
-            } else {
-                alert(`Error: ${datos.error}`);
-            }
-        } catch (error) {
-            alert("No se pudo conectar con el servidor backend en puerto 3000.");
-        }
-    });
-}
-
-if (formRegistro) {
-    formRegistro.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const nombre = document.getElementById('reg-nombre').value.trim();
-        const email = document.getElementById('reg-email').value.trim();
-        const password = document.getElementById('reg-pass').value.trim();
-
-        try {
-            const respuesta = await fetch('http://localhost:3000/api/usuarios/registro', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nombre, email, password })
-            });
-
-            const datos = await respuesta.json();
-
-            if (respuesta.ok) {
-                const nuevoUsuario = {
-                    id: datos.idUsuario,
-                    nombre: nombre,
-                    email: email,
-                    rol: 'cliente'
-                };
-
-                localStorage.setItem('usuario_tienda', JSON.stringify(nuevoUsuario));
-                cargarFavoritosDesdeBD();
-
-                formRegistro.reset();
-                if (modalLogin) modalLogin.classList.remove('activo');
-                alert(`¡Cuenta creada con éxito! Bienvenida/o, ${nombre}.`);
-                window.location.reload();
-            } else {
-                alert(`No se pudo registrar: ${datos.error}`);
-            }
-        } catch (error) {
-            alert("Error al conectar con el servidor para registrar la cuenta.");
-        }
-    });
-}
-
-
-// =========================================================
-// NAVEGACIÓN DE HEADER Y CATEGORÍAS
+// NAVEGACIÓN 
 // =========================================================
 async function cargarCategoriasEnHeader() {
     const contenedorMenu = document.getElementById('menu-categorias');
@@ -925,12 +780,203 @@ if (btnMenuMobile && navPrincipal) {
     });
 }
 
+async function inicializarFooter() {
+    try {
+        const contenedorFooter = document.getElementById('contenedor-footer');
+        if (!contenedorFooter) return;
+
+        const res = await fetch('componentes/footer.html');
+        if (res.ok) {
+            const htmlFooter = await res.text();
+            contenedorFooter.innerHTML = htmlFooter;
+        }
+    } catch (err) {
+        console.error("Error al cargar el footer:", err);
+    }
+}
+
+async function inicializarModales() {
+    try {
+        const contenedorModales = document.getElementById('contenedor-modales');
+        if (!contenedorModales) return;
+
+        const res = await fetch('componentes/modales.html');
+        if (res.ok) {
+            const htmlModales = await res.text();
+            contenedorModales.innerHTML = htmlModales;
+            
+            // 🚀 Activamos los eventos acá adentro para que detecten los elementos ya inyectados
+            configurarEventosModales();
+        }
+    } catch (err) {
+        console.error("Error al cargar las modales:", err);
+    }
+}
+
+function configurarEventosModales() {
+    // --- MODAL LOGIN Y REGISTRO ---
+    const modalLogin = document.getElementById('modal-login');
+    const btnCerrarModalLogin = document.getElementById('btn-cerrar-modal-login');
+    const tabLogin = document.getElementById('tab-login');
+    const tabRegistro = document.getElementById('tab-registro');
+    const formLogin = document.getElementById('form-login');
+    const formRegistro = document.getElementById('form-registro');
+
+    document.addEventListener('click', (e) => {
+        const btnLoginHeader = e.target.closest('#btn-login-header');
+        if (btnLoginHeader) {
+            const sesion = localStorage.getItem('usuario_tienda');
+            if (!sesion) {
+                if (modalLogin) {
+                    modalLogin.classList.add('activo');
+                }
+            }
+        }
+    });
+
+    if (btnCerrarModalLogin) {
+        btnCerrarModalLogin.addEventListener('click', () => {
+            if (modalLogin) modalLogin.classList.remove('activo');
+        });
+    }
+
+    if (tabLogin && tabRegistro && formLogin && formRegistro) {
+        tabLogin.addEventListener('click', () => {
+            formLogin.style.display = 'flex';
+            formRegistro.style.display = 'none';
+            tabLogin.style.color = '#1a1a1a';
+            tabLogin.style.borderBottom = '2px solid #1a1a1a';
+            tabRegistro.style.color = '#888';
+            tabRegistro.style.borderBottom = 'none';
+        });
+
+        tabRegistro.addEventListener('click', () => {
+            formLogin.style.display = 'none';
+            formRegistro.style.display = 'flex';
+            tabRegistro.style.color = '#1a1a1a';
+            tabRegistro.style.borderBottom = '2px solid #1a1a1a';
+            tabLogin.style.color = '#888';
+            tabLogin.style.borderBottom = 'none';
+        });
+    }
+
+    if (formLogin) {
+        formLogin.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email-user').value.trim();
+            const password = document.getElementById('password-user')?.value.trim();
+
+            try {
+                const respuesta = await fetch('http://localhost:3000/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const datos = await respuesta.json();
+
+                if (respuesta.ok) {
+                    localStorage.setItem('usuario_tienda', JSON.stringify(datos.usuario));
+                    await verificarCarritoPendiente(datos.usuario.id);
+                    if (modalLogin) modalLogin.classList.remove('activo');
+                    alert(`¡Bienvenida/o, ${datos.usuario.nombre}!`);
+                    window.location.reload();
+                } else {
+                    alert(`Error: ${datos.error}`);
+                }
+            } catch (error) {
+                alert("No se pudo conectar con el servidor backend en puerto 3000.");
+            }
+        });
+    }
+
+    if (formRegistro) {
+        formRegistro.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nombre = document.getElementById('reg-nombre').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-pass').value.trim();
+
+            try {
+                const respuesta = await fetch('http://localhost:3000/api/usuarios/registro', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nombre, email, password })
+                });
+
+                const datos = await respuesta.json();
+
+                if (respuesta.ok) {
+                    const nuevoUsuario = {
+                        id: datos.idUsuario,
+                        nombre: nombre,
+                        email: email,
+                        rol: 'cliente'
+                    };
+
+                    localStorage.setItem('usuario_tienda', JSON.stringify(nuevoUsuario));
+                    cargarFavoritosDesdeBD();
+
+                    formRegistro.reset();
+                    if (modalLogin) modalLogin.classList.remove('activo');
+                    alert(`¡Cuenta creada con éxito! Bienvenida/o, ${nombre}.`);
+                    window.location.reload();
+                } else {
+                    alert(`No se pudo registrar: ${datos.error}`);
+                }
+            } catch (error) {
+                alert("Error al conectar con el servidor para registrar la cuenta.");
+            }
+        });
+    }
+
+    // --- MODAL CARRITO ---
+    const modalCarritoLocal = document.getElementById('modal-carrito');
+    const botonCerrarModal = document.getElementById('btn-cerrar-modal');
+    const btnFinalizarCompra = document.getElementById('btn-finalizar-compra');
+
+    // Usamos delegación para el botón de abrir carrito del header (que viene de un fetch)
+    document.addEventListener('click', (e) => {
+        const botonAbrirCarrito = e.target.closest('.carrito');
+        if (botonAbrirCarrito) {
+            window.location.href = 'carrito.html';
+        }
+    });
+
+    if (botonCerrarModal && modalCarritoLocal) {
+        botonCerrarModal.addEventListener('click', () => {
+            modalCarritoLocal.classList.remove('activo');
+            const avisoStock = document.getElementById('aviso-stock-recuperado');
+            if (avisoStock) avisoStock.remove();
+        });
+    }
+
+    if (modalCarritoLocal) {
+        modalCarritoLocal.addEventListener('click', (e) => {
+            if (e.target === modalCarritoLocal) {
+                modalCarritoLocal.classList.remove('activo');
+                const avisoStock = document.getElementById('aviso-stock-recuperado');
+                if (avisoStock) avisoStock.remove();
+            }
+        });
+    }
+
+    if (btnFinalizarCompra) {
+        btnFinalizarCompra.addEventListener('click', () => {
+            window.location.href = 'carrito.html';
+        });
+    }
+}
+
 
 // ====================================================================
 // CONFIGURACIÓN WEB DE ADMIN Y CARGA GLOBAL AL INICIAR
 // ====================================================================
 document.addEventListener('DOMContentLoaded', async () => {
+    await inicializarModales();
     await inicializarHeader();
+    await inicializarFooter();
+    
     await cargarBaseDeDatos();
     actualizarCarrito();
     actualizarContadorHeader();

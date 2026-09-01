@@ -278,8 +278,8 @@
 .acciones-header {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    position: relative;
+    gap: 0.7rem;
+   
     overflow: visible !important;
     flex-shrink: 0; 
 }
@@ -1121,8 +1121,22 @@ main, .contenedor, .contenedor-perfil {
     box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.35);
 }
 
-.icono-wa {
-    width: 32px;
-    height: 32px;
+.lni-whatsapp {
+    font-size: 2.5rem;
     fill: currentColor;
+    height: 2.5rem;
+}
+
+
+
+/*ICONOS */
+.fa-bag-shopping{
+    font-size: x-large;
+}
+
+.lni , .lni-heart{
+    font-size: xx-large;
+    color: white;
+    display: -webkit-inline-box;
+    margin-top: 0.5rem;
 }
