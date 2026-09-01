@@ -114,7 +114,7 @@ if (formAdmin) {
         }
 
         try {
-            const resp = await fetch('http://localhost:3000/api/productos', {
+            const resp = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/productos', {
                 method: 'POST',
                 body: formData
             });
@@ -140,7 +140,7 @@ async function cargarInventarioAdmin() {
     tablaInventario.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem;">Cargando inventario...</td></tr>';
 
     try {
-        const res = await fetch('http://localhost:3000/api/productos');
+        const res = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/productos');
         listaProductosAdmin = await res.json();
         renderizarTablaAdmin(listaProductosAdmin);
     } catch (err) {
@@ -149,10 +149,10 @@ async function cargarInventarioAdmin() {
 }
 
 // ====================================================================
-// CARGAR INVENTARIO CON FOTOS, TAGS DE STOCK Y BOTÓN DE OFERTAS
+// CARGAR INVENTARIO CON FOTOS, TAGS DE STOCK Y MENÚ DESPLEGABLE
 // ====================================================================
 
-// Imagen por defecto en formato SVG (No consume internet ni genera errores en consola)
+// Imagen por defecto en formato SVG
 const FOTO_DEFAULT = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='60' viewBox='0 0 50 60'%3E%3Crect width='50' height='60' fill='%23efe8de'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='10' fill='%23694a32'%3EFoto%3C/text%3E%3C/svg%3E";
 
 function renderizarTablaAdmin(productos) {
@@ -169,7 +169,7 @@ function renderizarTablaAdmin(productos) {
             ? prod.fotos[0]
             : (prod.imagen || (typeof prod.fotos === 'string' ? prod.fotos : null));
 
-        // 2. Apuntamos directo a tu carpeta del frontend "imagenes/"
+        // 2. Ruta de la foto
         const rutaFoto = nombreArchivo
             ? `/${nombreArchivo}`
             : FOTO_DEFAULT;
@@ -184,47 +184,37 @@ function renderizarTablaAdmin(productos) {
             }).join('')
             : '<span class="tag-stock">Sin variantes</span>';
 
-        // 4. LÓGICA DEL BOTÓN DE OFERTA
+        // 4. Variables de estado para el menú desplegable
         const estaEnOferta = prod.en_oferta === true;
-        const colorBoton = estaEnOferta ? '#ffebee' : '#e8f5e9';
-        const colorTexto = estaEnOferta ? '#c62828' : '#2e7d32';
-
-        // Si la prenda ya está en oferta, mostramos de cuánto es el porcentaje en el botón
         const descuentoActual = prod.descuento || 20;
-        const textoBoton = estaEnOferta ? `❌ Quitar Oferta (${descuentoActual}% OFF)` : '✨ Poner en Oferta';
+        const textoOferta = estaEnOferta ? `Quitar Oferta (${descuentoActual}% OFF)` : 'Poner en Oferta';
 
-        // Le pasamos el prod.precio como tercer parámetro a toggleOferta
-        const botonOfertaHTML = `
-            <button onclick="toggleOferta(${prod.id}, ${estaEnOferta}, ${prod.precio})" 
-                    style="background: ${colorBoton}; color: ${colorTexto}; border: 1px solid ${colorTexto}40; padding: 5px 10px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: all 0.2s; margin-right: 0.5rem;">
-                ${textoBoton}
-            </button>
-        `;
-
-        // LÓGICA DEL BOTÓN DE DESTACADO
         const estaDestacado = Boolean(prod.destacado);
-        const colorBgDestacado = estaDestacado ? '#fff8e1' : '#f5f5f5';
-        const colorTextDestacado = estaDestacado ? '#f57f17' : '#616161';
-        const textoBotonDestacado = estaDestacado ? '⭐ Quitar de Inicio' : '☆ Destacar en Inicio';
+        const textoDestacado = estaDestacado ? 'Quitar de Inicio' : 'Destacar en Inicio';
 
-        const botonDestacadoHTML = `
-            <button onclick="toggleDestacado(${prod.id}, ${estaDestacado})" 
-                    style="background: ${colorBgDestacado}; color: ${colorTextDestacado}; border: 1px solid ${colorTextDestacado}40; padding: 5px 10px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: all 0.2s; margin-right: 0.5rem;">
-                ${textoBotonDestacado}
-            </button>
+        // 5. Estructura de la celda de acciones con el menú de 3 puntos (⋮)
+        const tdAccionesHTML = `
+            <div class="contenedor-acciones">
+                <button type="button" class="btn-menu-puntos" onclick="toggleMenuAcciones(event, ${prod.id})">⋮</button>
+                <div id="menu-${prod.id}" class="menu-desplegable">
+                    <button onclick="toggleDestacado(${prod.id}, ${estaDestacado})">⭐ ${textoDestacado}</button>
+                    <button onclick="toggleOferta(${prod.id}, ${estaEnOferta}, ${prod.precio})">🏷️ ${textoOferta}</button>
+                    <hr>
+                    <button onclick="editarProducto(${prod.id})">✏️ Editar Prenda</button>
+                    <button class="borrar-opcion" onclick="borrarProducto(${prod.id})">🗑️ Eliminar Prenda</button>
+                </div>
+            </div>
         `;
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <!-- Columna 1: Foto desde la carpeta local /imagenes -->
+            <!-- Columna 1: Foto -->
             <td>
                 <a href="producto.html?id=${prod.id}">
                     <img src="${rutaFoto}" alt="${prod.nombre}" class="mini-foto-admin" 
                         onerror="this.onerror=null; this.src='${FOTO_DEFAULT}';">
                 </a>
             </td>
-
-
 
             <!-- Columna 2: Nombre e ID -->
             <td>
@@ -235,19 +225,16 @@ function renderizarTablaAdmin(productos) {
             <!-- Columna 3: Precio -->
             <td style="font-weight: 600;">$${Number(prod.precio).toLocaleString()}</td>
 
-            <!-- Columna 4: Badges visuales de stock -->
+            <!-- Columna 4: Badges de stock -->
             <td>
                 <div class="lista-tags-stock">
                     ${badgesStock}
                 </div>
             </td>
 
-            <!-- Columna 5: Botones de acción (Ahora con la oferta incluida) -->
-            <td class="td-acciones">
-                ${botonDestacadoHTML}
-                ${botonOfertaHTML}
-                <button onclick="editarProducto(${prod.id})" class="btn-accion-icon">✏️ Editar</button>
-                <button onclick="borrarProducto(${prod.id})" class="btn-accion-icon borrar">🗑️</button>
+            <!-- Columna 5: Acciones con menú desplegable -->
+            <td class="td-acciones" style="text-align: right; position: relative;">
+                ${tdAccionesHTML}
             </td>
         `;
         tablaInventario.appendChild(tr);
@@ -296,7 +283,7 @@ async function toggleOferta(idProducto, estadoActualOferta, precioOriginal) {
     }
 
     try {
-        const respuesta = await fetch(`http://localhost:3000/api/productos/${idProducto}/oferta`, {
+        const respuesta = await fetch(`[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/productos/${idProducto}/oferta`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -323,7 +310,7 @@ async function toggleDestacado(idProducto, estadoActualDestacado) {
     const nuevoEstado = !estadoActualDestacado;
 
     try {
-        const respuesta = await fetch(`http://localhost:3000/api/productos/${idProducto}/destacado`, {
+        const respuesta = await fetch(`[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/productos/${idProducto}/destacado`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ destacado: nuevoEstado })
@@ -495,7 +482,7 @@ if (formEditar) {
         }
 
         try {
-            const res = await fetch(`http://localhost:3000/api/productos/${id}`, {
+            const res = await fetch(`[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/productos/${id}`, {
                 method: 'PUT',
                 body: formData
             });
@@ -519,7 +506,7 @@ async function cargarCategorias(categoriaSeleccionada = null) {
     if (!selectCategoria) return;
 
     try {
-        const respuesta = await fetch('http://localhost:3000/api/categorias');
+        const respuesta = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/categorias');
         const categorias = await respuesta.json();
 
         selectCategoria.innerHTML = '';
@@ -546,7 +533,7 @@ if (btnNuevaCategoria) {
         if (!nuevoNombre || !nuevoNombre.trim()) return;
 
         try {
-            const respuesta = await fetch('http://localhost:3000/api/categorias', {
+            const respuesta = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/categorias', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ nombre: nuevoNombre.trim() })
@@ -572,3 +559,30 @@ cargarCategorias();
 
 // Cargar inventario al entrar a la página
 cargarInventarioAdmin();
+
+
+// ====================================================================
+// CONTROL DEL MENÚ DESPLEGABLE DE ACCIONES
+// ====================================================================
+window.toggleMenuAcciones = function(event, id) {
+    event.stopPropagation();
+    
+    // Cerramos cualquier otro menú abierto
+    document.querySelectorAll('.menu-desplegable').forEach(menu => {
+        if (menu.id !== `menu-${id}`) {
+            menu.classList.remove('activo');
+        }
+    });
+
+    const menuActual = document.getElementById(`menu-${id}`);
+    if (menuActual) {
+        menuActual.classList.toggle('activo');
+    }
+};
+
+// Cerrar menús al hacer clic fuera
+window.addEventListener('click', () => {
+    document.querySelectorAll('.menu-desplegable').forEach(menu => {
+        menu.classList.remove('activo');
+    });
+});

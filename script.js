@@ -23,7 +23,7 @@ let favoritos = [];
 // ====================================================================
 async function cargarBaseDeDatos() {
     try {
-        const respuesta = await fetch('http://localhost:3000/api/productos');
+        const respuesta = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/productos');
 
         if (!respuesta.ok) {
             throw new Error('No se pudo obtener la respuesta del servidor');
@@ -284,17 +284,47 @@ function actualizarColoresYVerificarStock(idProducto) {
 
 
 // ====================================================================
-// CONTROL DEL HERO BANNER / SLIDER DINÁMICO
+// CONTROL GENERAL DEL HERO BANNER / SLIDER DINÁMICO (INDEX Y PÁGINAS)
 // ====================================================================
 let slideActual = 0;
 let intervaloSlide;
 
+function mostrarSlide(indice) {
+    const slides = document.querySelectorAll('.hero-slide');
+    const puntos = document.querySelectorAll('.punto');
+
+    if (slides.length === 0) return;
+
+    slides.forEach(slide => slide.classList.remove('activo'));
+    puntos.forEach(punto => punto.classList.remove('activo'));
+
+    slideActual = (indice + slides.length) % slides.length;
+
+    slides[slideActual].classList.add('activo');
+    if (puntos[slideActual]) {
+        puntos[slideActual].classList.add('activo');
+    }
+}
+
+function siguienteSlide() {
+    mostrarSlide(slideActual + 1);
+}
+
+function irASlide(indice) {
+    mostrarSlide(indice);
+    clearInterval(intervaloSlide);
+    intervaloSlide = setInterval(siguienteSlide, 5000);
+}
+
+// ====================================================================
+// CARGAR SLIDER EN EL INDEX
+// ====================================================================
 async function cargarHeroSliderDinamico() {
     const contenedorSlider = document.getElementById('hero-slider-dinamico');
     if (!contenedorSlider) return;
 
     try {
-        const res = await fetch('http://localhost:3000/api/banners');
+        const res = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/banners');
         if (!res.ok) return;
         const banners = await res.json();
 
@@ -330,7 +360,6 @@ async function cargarHeroSliderDinamico() {
             <div class="hero-puntos">${puntosHtml}</div>
         `;
 
-        // Activamos el loop automático solo si hay más de 1 banner
         const slidesDinamicos = document.querySelectorAll('.hero-slide');
         if (slidesDinamicos.length > 1) {
             clearInterval(intervaloSlide);
@@ -342,31 +371,67 @@ async function cargarHeroSliderDinamico() {
     }
 }
 
-function mostrarSlide(indice) {
-    const slides = document.querySelectorAll('.hero-slide');
-    const puntos = document.querySelectorAll('.punto');
+// ====================================================================
+// CARGAR BANNER DINÁMICO EN PÁGINAS ESPECÍFICAS (PRODUCTOS / OFERTAS)
+// ====================================================================
+async function cargarBannerPaginaEspecifica() {
+    const contenedor = document.getElementById('banner-dinamico-pagina');
+    if (!contenedor) return;
 
-    if (slides.length === 0) return;
+    try {
+        const res = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/banners');
+        if (!res.ok) return;
+        const banners = await res.json();
 
-    slides.forEach(slide => slide.classList.remove('activo'));
-    puntos.forEach(punto => punto.classList.remove('activo'));
+        const rutaActual = window.location.pathname.split('/').pop() || 'index.html';
 
-    slideActual = (indice + slides.length) % slides.length;
+        const bannersDeEstaPagina = banners.filter(b => {
+            if (!b.link) return false;
+            return b.link.includes(rutaActual);
+        });
 
-    slides[slideActual].classList.add('activo');
-    if (puntos[slideActual]) {
-        puntos[slideActual].classList.add('activo');
+        if (bannersDeEstaPagina.length === 0) {
+            contenedor.style.display = 'none';
+            return;
+        }
+
+        let slidesHtml = '';
+        let puntosHtml = '';
+
+        bannersDeEstaPagina.forEach((b, index) => {
+            const claseActiva = index === 0 ? 'activo' : '';
+            const srcFoto = b.imagen.startsWith('imagenes/') ? `/${b.imagen}` : b.imagen;
+
+            slidesHtml += `
+                <div class="hero-slide ${claseActiva}" style="background-image: url('${srcFoto}');">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-contenido">
+                        ${b.subtitulo ? `<span class="hero-sub">${b.subtitulo}</span>` : ''}
+                        ${b.titulo ? `<h2>${b.titulo}</h2>` : ''}
+                        ${b.descripcion ? `<p>${b.descripcion}</p>` : ''}
+                    </div>
+                </div>
+            `;
+
+            puntosHtml += `<span class="punto ${claseActiva}" onclick="irASlide(${index})"></span>`;
+        });
+
+        contenedor.innerHTML = `
+            ${slidesHtml}
+            <div class="hero-puntos">
+                ${puntosHtml}
+            </div>
+        `;
+
+        const slidesDinamicos = contenedor.querySelectorAll('.hero-slide');
+        if (slidesDinamicos.length > 1) {
+            clearInterval(intervaloSlide);
+            intervaloSlide = setInterval(siguienteSlide, 5000);
+        }
+
+    } catch (err) {
+        console.error("Error al cargar el banner de la página:", err);
     }
-}
-
-function siguienteSlide() {
-    mostrarSlide(slideActual + 1);
-}
-
-function irASlide(indice) {
-    mostrarSlide(indice);
-    clearInterval(intervaloSlide);
-    intervaloSlide = setInterval(siguienteSlide, 5000);
 }
 
 // ====================================================================
@@ -381,7 +446,7 @@ async function cargarFavoritosDesdeBD() {
 
     const usuario = JSON.parse(sesion);
     try {
-        const res = await fetch(`http://localhost:3000/api/favoritos/${usuario.id}`);
+        const res = await fetch(`[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/favoritos/${usuario.id}`);
         if (res.ok) {
             favoritos = await res.json();
             actualizarCorazonesEnPantalla();
@@ -466,7 +531,7 @@ async function toggleFavorito(idProducto, btnElemento) {
 
     try {
         if (!yaEraFavorito) {
-            const res = await fetch('http://localhost:3000/api/favoritos', {
+            const res = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/favoritos', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ usuario_id: usuario.id, producto_id: idProducto })
@@ -478,7 +543,7 @@ async function toggleFavorito(idProducto, btnElemento) {
                 btnElemento.title = "Quitar de favoritos";
             }
         } else {
-            const res = await fetch(`http://localhost:3000/api/favoritos/${usuario.id}/${idProducto}`, {
+            const res = await fetch(`[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/favoritos/${usuario.id}/${idProducto}`, {
                 method: 'DELETE'
             });
 
@@ -676,7 +741,7 @@ async function verificarCarritoPendiente(usuarioId) {
 
     for (const item of itemsAntiguos) {
         try {
-            const res = await fetch(`http://localhost:3000/api/variantes/stock?producto_id=${item.id}&talle=${item.talleElegido}&color=${item.colorElegido}`);
+            const res = await fetch(`[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/variantes/stock?producto_id=${item.id}&talle=${item.talleElegido}&color=${item.colorElegido}`);
             const data = await res.json();
 
             if (data.stock !== undefined && data.stock > 0) {
@@ -857,7 +922,7 @@ async function cargarCategoriasEnHeader() {
     if (!contenedorMenu) return;
 
     try {
-        const res = await fetch('http://localhost:3000/api/categorias');
+        const res = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/categorias');
         const categorias = await res.json();
 
         let html = `<a href="productos.html?categoria=Todos">Ver Todo</a>`;
@@ -1011,7 +1076,7 @@ function configurarEventosModales() {
             const password = document.getElementById('password-user')?.value.trim();
 
             try {
-                const respuesta = await fetch('http://localhost:3000/api/login', {
+                const respuesta = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
@@ -1042,7 +1107,7 @@ function configurarEventosModales() {
             const password = document.getElementById('reg-pass').value.trim();
 
             try {
-                const respuesta = await fetch('http://localhost:3000/api/usuarios/registro', {
+                const respuesta = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/usuarios/registro', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ nombre, email, password })
@@ -1127,6 +1192,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await inicializarModales();
     await inicializarHeader();
     await cargarHeroSliderDinamico();
+    await cargarBannerPaginaEspecifica();
     await inicializarFooter();
 
     await cargarBaseDeDatos();
@@ -1170,7 +1236,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Petición de configuración web global
     try {
-        const res = await fetch('http://localhost:3000/api/configuracion');
+        const res = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/configuracion');
         if (res.ok) {
             const config = await res.json();
 

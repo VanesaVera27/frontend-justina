@@ -19,7 +19,7 @@ async function cargarPedidosAdmin() {
     tablaPedidos.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 2rem;">Cargando pedidos...</td></tr>';
 
     try {
-        const res = await fetch('http://localhost:3000/api/pedidos');
+        const res = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/pedidos');
         const pedidos = await res.json();
 
         tablaPedidos.innerHTML = '';
@@ -100,7 +100,7 @@ async function cargarPedidosAdmin() {
 // ====================================================================
 async function actualizarLogistica(idPedido, nuevoPedidoEstado, estadoPagoActual) {
     try {
-        const respuesta = await fetch(`http://localhost:3000/api/pedidos/${idPedido}/estado`, {
+        const respuesta = await fetch(`[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/pedidos/${idPedido}/estado`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             // Mantenemos el pago intacto y solo mandamos el nuevo estado de envío

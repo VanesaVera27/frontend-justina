@@ -296,34 +296,63 @@
     font-weight: 600;
 }
 
+/* ====================================================================
+   ACCIONES DE TABLA ADMIN OPTIMIZADAS
+==================================================================== */
 .td-acciones {
-    text-align: right;
-    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.4rem;
 }
 
+/* Botones compactos de iconos para estados (Destacado y Oferta) */
+.btn-accion-icono {
+    border: 1px solid #e0e0e0;
+    width: 34px;
+    height: 34px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.btn-accion-icono:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    border-color: #ccc;
+}
+
+/* Botones de texto cortos para Editar y Borrar */
 .btn-accion-icon {
-    background: transparent;
-    border: 1px solid #d8cec4;
-    color: var(--color-principal);
+    background: #f8f9fa;
+    color: #333;
+    border: 1px solid #dcd6d0;
     padding: 0.4rem 0.7rem;
     border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
     cursor: pointer;
-    font-size: 0.85rem;
-    transition: all 0.2s;
-    margin-left: 0.3rem;
+    transition: all 0.2s ease;
 }
 
 .btn-accion-icon:hover {
-    background: var(--color-principalhover);
-    color: white;
+    background: #eae4dc;
+}
+
+.btn-accion-icon.borrar {
+    background: #fff5f5;
+    color: #c53030;
+    border-color: #feb2b2;
 }
 
 .btn-accion-icon.borrar:hover {
-    background: #c53030;
-    border-color: #c53030;
-    color: white;
+    background: #ffe3e3;
 }
-
 /* =========================================================
    VENTANAS MODALES 
 ========================================================= */
@@ -443,4 +472,84 @@
 .btn-foto-accion.borrar:hover {
     background: var(--color-secundario3);
     color: #ffffff;
+}
+
+/* ====================================================================
+   MENÚ DESPLEGABLE DE ACCIONES (3 PUNTITOS)
+==================================================================== */
+.contenedor-acciones {
+    position: relative;
+    display: inline-block;
+}
+
+.btn-menu-puntos {
+    background: #f5f0eb;
+    border: 1px solid #dcd6d0;
+    color: #3b2314;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.btn-menu-puntos:hover {
+    background: #eae4dc;
+}
+
+/* Tarjeta flotante del menú */
+.menu-desplegable {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 42px;
+    background: #ffffff;
+    border: 1px solid #d8cec4;
+    box-shadow: 0 10px 25px rgba(59, 35, 20, 0.15);
+    border-radius: 8px;
+    width: 180px;
+    z-index: 100;
+    padding: 0.4rem 0;
+    text-align: left;
+}
+
+.menu-desplegable.activo {
+    display: block;
+}
+
+.menu-desplegable button {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0.6rem 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+    color: #3b2314;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background 0.15s;
+}
+
+.menu-desplegable button:hover {
+    background: #faf7f2;
+}
+
+.menu-desplegable button.borrar-opcion {
+    color: #c53030;
+}
+.menu-desplegable button.borrar-opcion:hover {
+    background: #fff5f5;
+}
+
+.menu-desplegable hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 0.3rem 0;
 }

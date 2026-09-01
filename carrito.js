@@ -34,7 +34,7 @@ async function renderizarPaginaCarrito() {
     // Obtenemos los productos del servidor para validar el stock real de cada uno al pintar
     let productosServidor = [];
     try {
-        const respuesta = await fetch('http://localhost:3000/api/productos');
+        const respuesta = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/productos');
         if (respuesta.ok) {
             productosServidor = await respuesta.json();
         }
@@ -118,7 +118,7 @@ async function cambiarCantidadPagina(index, delta) {
     } else {
         let stockPermitido = 999;
         try {
-            const respuesta = await fetch('http://localhost:3000/api/productos');
+            const respuesta = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/productos');
             const productosServidor = await respuesta.json();
             const productoOriginal = productosServidor.find(p => p.id === item.id);
 
