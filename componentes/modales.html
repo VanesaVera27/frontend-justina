@@ -1,46 +1,59 @@
+<head>
+    <link rel="stylesheet" href="estilos/modales.css">
+</head>
+
+<!-- MODAL CARRITO LATERAL -->
 <div class="modal-overlay" id="modal-carrito">
     <div class="modal-contenido">
         <div class="modal-header">
-            <h2>Tu Carrito</h2>
+            <h2>Carrito</h2>
             <button class="btn-cerrar" id="btn-cerrar-modal">&times;</button>
         </div>
         <div class="modal-cuerpo" id="lista-carrito">
             <p class="carrito-vacio">El carrito está vacío.</p>
         </div>
-        <div class="modal-footer" style="flex-direction: column; gap: 0.8rem;">
-            <div class="total-contenedor" style="width: 100%; display: flex; justify-content: space-between;">
-                <span>Total:</span>
-                <span id="total-precio">$0</span>
+        <div class="modal-footer" style="display: flex; flex-direction: column; gap: 1rem;">
+            <div class="total-contenedor" style="width: 100%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e8e1d5; padding-bottom: 0.8rem; margin: 0;">
+                <span style="font-size: 1rem; font-weight: 500; color: #3b2314;">Total:</span>
+                <span id="total-precio" style="font-size: 1.15rem; font-weight: bold; color: #1a1a1a;">$0</span>
             </div>
-            <button class="btn-comprar" id="btn-finalizar-compra" style="width: 100%;">Finalizar compra</button>
+            
+            <div style="display: flex; flex-direction: column; gap: 0.6rem; width: 100%;">
+                <button class="btn-comprar" id="btn-finalizar-compra" style="width: 100%; background: #000; color: #fff; border: none; padding: 0.9rem; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; border-radius: 4px;">Ir al carrito</button>
+                <button type="button" class="btn-seguir-comprando" id="btn-cerrar-modal-secundario" style="background: none; border: none; color: #1a1a1a; text-decoration: underline; font-size: 0.85rem; cursor: pointer; text-align: center; padding: 0.2rem;">Seguir comprando</button>
+            </div>
         </div>
     </div>
 </div>
 
+<!-- MODAL LOGIN / REGISTRO LATERAL -->
 <div class="modal-overlay" id="modal-login">
     <div class="modal-contenido modal-login-box">
         <div class="modal-header">
-            <div class="pestanas-login" style="display: flex; gap: 1rem; font-size: 1.2rem; font-weight: bold;">
-                <span id="tab-login" style="cursor: pointer; color: #1a1a1a; border-bottom: 2px solid #1a1a1a;">Ingresar</span>
+            <div class="pestanas-login" style="display: flex; gap: 1.2rem; font-size: 0.95rem; font-weight: 600; text-transform: uppercase;">
+                <span id="tab-login" style="cursor: pointer; color: #1a1a1a; border-bottom: 2px solid #1a1a1a; padding-bottom: 2px;">Ingresar</span>
                 <span id="tab-registro" style="cursor: pointer; color: #888;">Crear Cuenta</span>
             </div>
             <button class="btn-cerrar" id="btn-cerrar-modal-login">&times;</button>
         </div>
-        <form id="form-login" class="modal-cuerpo form-login">
-            <label>Correo Electrónico</label>
-            <input type="email" id="email-user" required placeholder="tuemail@ejemplo.com">
-            <label>Contraseña</label>
-            <input type="password" id="password-user" required placeholder="••••••••">
-            <button type="submit" class="btn-comprar" style="margin-top: 1rem;">Iniciar Sesión</button>
-        </form>
-        <form id="form-registro" class="modal-cuerpo form-login" style="display: none;">
-            <label>Nombre y Apellido *</label>
-            <input type="text" id="reg-nombre" required placeholder="Ej. Camila Pérez">
-            <label>Correo Electrónico *</label>
-            <input type="email" id="reg-email" required placeholder="camila@ejemplo.com">
-            <label>Contraseña *</label>
-            <input type="password" id="reg-pass" required placeholder="Mínimo 6 caracteres" minlength="6">
-            <button type="submit" class="btn-comprar" style="margin-top: 1rem;">Registrarme y Entrar</button>
-        </form>
+        <div class="modal-cuerpo">
+            <form id="form-login" class="form-login" style="display: flex; flex-direction: column; gap: 1rem;">
+                <label style="font-size: 0.85rem; color: #555;">Correo Electrónico</label>
+                <input type="email" id="email-user" required placeholder="tuemail@ejemplo.com" style="padding: 0.7rem; border: 1px solid #ccc; border-radius: 2px;">
+                <label style="font-size: 0.85rem; color: #555;">Contraseña</label>
+                <input type="password" id="password-user" required placeholder="••••••••" style="padding: 0.7rem; border: 1px solid #ccc; border-radius: 2px;">
+                <button type="submit" class="btn-comprar" style="margin-top: 1rem; width: 100%; background: #000; color: #fff; border: none; padding: 0.9rem; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px;">Ingresar</button>
+            </form>
+            
+            <form id="form-registro" class="form-login" style="display: none; flex-direction: column; gap: 1rem;">
+                <label style="font-size: 0.85rem; color: #555;">Nombre y Apellido *</label>
+                <input type="text" id="reg-nombre" required placeholder="Ej. Camila Pérez" style="padding: 0.7rem; border: 1px solid #ccc; border-radius: 2px;">
+                <label style="font-size: 0.85rem; color: #555;">Correo Electrónico *</label>
+                <input type="email" id="reg-email" required placeholder="camila@ejemplo.com" style="padding: 0.7rem; border: 1px solid #ccc; border-radius: 2px;">
+                <label style="font-size: 0.85rem; color: #555;">Contraseña *</label>
+                <input type="password" id="reg-pass" required placeholder="Mínimo 6 caracteres" minlength="6" style="padding: 0.7rem; border: 1px solid #ccc; border-radius: 2px;">
+                <button type="submit" class="btn-comprar" style="margin-top: 1rem; width: 100%; background: #000; color: #fff; border: none; padding: 0.9rem; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px;">Registrarme</button>
+            </form>
+        </div>
     </div>
 </div>

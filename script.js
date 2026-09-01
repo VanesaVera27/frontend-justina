@@ -71,7 +71,6 @@ function cambiarImagenCard(idProducto, direccion) {
     }
 }
 
-
 // ====================================================================
 // FUNCIÓN PARA MOSTRAR LOS PRODUCTOS 
 // ====================================================================
@@ -125,7 +124,7 @@ function mostrarProductosEnPantalla(listaProductos) {
             }
         }
 
-        if (prod.en_oferta || sinStock) {
+        if (prod.en_oferta) {
             return;
         }
 
@@ -133,7 +132,7 @@ function mostrarProductosEnPantalla(listaProductos) {
         card.classList.add('card-producto');
 
         const fotos = (prod.imagenes && prod.imagenes.length > 0) ? prod.imagenes : [prod.imagen];
-        const tieneMasDeUneFoto = fotos.length > 1; // <--- Acá está el error (tiene 'e')
+        const tieneMasDeUneFoto = fotos.length > 1;
         const esFavorito = favoritos.includes(prod.id);
 
         const precioNumerico = Number(prod.precio);
@@ -158,19 +157,39 @@ function mostrarProductosEnPantalla(listaProductos) {
             </button>
         `;
 
-        const botonAccionHtml = esAdmin ? `
-            <div style="background: #f8f9fa; color: #6c757d; text-align: center; padding: 0.6rem; border-radius: 4px; font-size: 0.85rem; border: 1px dashed #ced4da;">
-                🔒 Vista de Administrador
+        // 🛑 Lógica para bloquear el botón o mostrar aviso si no hay stock
+        let botonAccionHtml = '';
+        if (esAdmin) {
+            botonAccionHtml = `
+                <div style="background: #f8f9fa; color: #6c757d; text-align: center; padding: 0.6rem; border-radius: 4px; font-size: 0.85rem; border: 1px dashed #ced4da;">
+                    🔒 Vista de Administrador
+                </div>
+            `;
+        } else if (sinStock) {
+            botonAccionHtml = `
+                <button disabled style="background-color: #cccccc !important; color: #666666 !important; cursor: not-allowed !important; border: none;">
+                    Agotado
+                </button>
+            `;
+        } else {
+            botonAccionHtml = `
+                <button onclick="agregarAlCarrito(${prod.id})">
+                    Agregar al carrito
+                </button>
+            `;
+        }
+
+        // Badge visual de sin stock arriba a la izquierda
+        const badgeSinStockHtml = sinStock ? `
+            <div style="position: absolute; top: 10px; left: 10px; z-index: 5; background: rgba(85, 85, 85, 0.95); color: #ffffff; font-size: 0.7rem; font-weight: bold; padding: 0.2rem 0.5rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;">
+                Sin stock
             </div>
-        ` : `
-            <button onclick="agregarAlCarrito(${prod.id})">
-                Agregar al carrito
-            </button>
-        `;
+        ` : '';
 
         card.innerHTML = `
             <div class="carrusel-card ${tieneMasDeUneFoto ? '' : 'sin-flechas'}" style="position: relative;">
                 ${botonFavoritoHtml}
+                ${badgeSinStockHtml}
                 
                 <div id="alerta-stock-${prod.id}" style="display: none; position: absolute; top: 10px; left: 10px; z-index: 5; background: rgba(255, 243, 205, 0.95); color: #856404; font-size: 0.7rem; font-weight: bold; padding: 0.2rem 0.5rem; border-radius: 4px; border: 1px solid #ffeeba; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                     🔥 ¡Última unidad!
@@ -190,13 +209,13 @@ function mostrarProductosEnPantalla(listaProductos) {
             <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; width: 100%;">
                 <div style="flex: 1;">
                     <label style="font-size: 0.75rem; color: #666; display: block;">Talle:</label>
-                    <select class="select-talle" id="talle-${prod.id}" onchange="actualizarColoresYVerificarStock(${prod.id})" style="width: 100%; padding: 0.4rem;">
+                    <select class="select-talle" id="talle-${prod.id}" onchange="actualizarColoresYVerificarStock(${prod.id})" style="width: 100%; padding: 0.4rem;" ${sinStock ? 'disabled' : ''}>
                         ${opcionesTalles}
                     </select>
                 </div>
                 <div style="flex: 1;">
                     <label style="font-size: 0.75rem; color: #666; display: block;">Color:</label>
-                    <select class="select-color" id="color-${prod.id}" onchange="verificarUltimaUnidad(${prod.id})" style="width: 100%; padding: 0.4rem;">
+                    <select class="select-color" id="color-${prod.id}" onchange="verificarUltimaUnidad(${prod.id})" style="width: 100%; padding: 0.4rem;" ${sinStock ? 'disabled' : ''}>
                         ${opcionesColores}
                     </select>
                 </div>
@@ -206,7 +225,9 @@ function mostrarProductosEnPantalla(listaProductos) {
         `;
 
         grilla.appendChild(card);
-        setTimeout(() => verificarUltimaUnidad(prod.id), 0);
+        if (!sinStock) {
+            setTimeout(() => verificarUltimaUnidad(prod.id), 0);
+        }
     });
 }
 
@@ -324,7 +345,7 @@ async function cargarHeroSliderDinamico() {
 function mostrarSlide(indice) {
     const slides = document.querySelectorAll('.hero-slide');
     const puntos = document.querySelectorAll('.punto');
-    
+
     if (slides.length === 0) return;
 
     slides.forEach(slide => slide.classList.remove('activo'));
@@ -478,6 +499,7 @@ async function toggleFavorito(idProducto, btnElemento) {
 // ====================================================================
 function agregarAlCarrito(idProducto) {
     const productoOriginal = productos.find(p => p.id === idProducto);
+    if (!productoOriginal) return;
 
     if (productoOriginal) {
         const selectTalle = document.getElementById(`talle-${idProducto}`);
@@ -529,9 +551,24 @@ function agregarAlCarrito(idProducto) {
         }
 
         actualizarCarrito();
-        mostrarProductosEnPantalla(productos);
 
-        // 🔍 Buscamos el modal del carrito dinámicamente para abrirlo
+        // 🛑 VALIDACIÓN INTELIGENTE SEGÚN LA PÁGINA EN LA QUE ESTÉS:
+        const paginaActual = window.location.pathname;
+
+        if (paginaActual.includes('productos.html')) {
+            // Si estamos en el catálogo general, actualizamos el catálogo completo
+            if (typeof mostrarProductosEnPantalla === 'function') {
+                mostrarProductosEnPantalla(productos);
+            }
+        } else {
+            // Si estamos en el index, filtramos y mostramos solo los destacados
+            const productosDestacados = productos.filter(p => p.destacado === true);
+            if (typeof mostrarProductosEnPantalla === 'function') {
+                mostrarProductosEnPantalla(productosDestacados);
+            }
+        }
+
+        // Abrimos el modal lateral del carrito
         const modalCarritoDinamico = document.getElementById('modal-carrito');
         if (modalCarritoDinamico) {
             modalCarritoDinamico.classList.add('activo');
@@ -552,8 +589,18 @@ function actualizarContadorHeader() {
 function eliminarDelCarrito(index) {
     carrito.splice(index, 1);
     actualizarCarrito();
-    if (typeof mostrarProductosEnPantalla === 'function' && typeof productos !== 'undefined') {
-        mostrarProductosEnPantalla(productos);
+
+    const paginaActual = window.location.pathname;
+
+    if (paginaActual.includes('productos.html')) {
+        if (typeof mostrarProductosEnPantalla === 'function') {
+            mostrarProductosEnPantalla(productos);
+        }
+    } else {
+        const productosDestacados = productos.filter(p => p.destacado === true);
+        if (typeof mostrarProductosEnPantalla === 'function') {
+            mostrarProductosEnPantalla(productosDestacados);
+        }
     }
 }
 
@@ -565,7 +612,6 @@ function actualizarCarrito() {
     const elemContador = document.getElementById('contador-carrito');
     if (elemContador) elemContador.textContent = totalUnidades;
 
-    // 🔍 Buscamos los contenedores de la lista y el total dinámicamente en el DOM actual
     const listaCarritoDinamica = document.getElementById('lista-carrito');
     const elemTotalDinamico = document.getElementById('total-precio');
 
@@ -586,18 +632,26 @@ function actualizarCarrito() {
         const subtotalItem = Number(prod.precio) * cantidad;
         sumaTotal += subtotalItem;
 
+        // Aseguramos que la ruta de la imagen sea correcta
+        const fotoItem = prod.imagen ? (prod.imagen.startsWith('imagenes/') ? prod.imagen : `imagenes/${prod.imagen}`) : 'imagenes/default.jpg';
+
         const item = document.createElement('div');
         item.classList.add('item-carrito');
 
         item.innerHTML = `
+            <img src="${fotoItem}" alt="${prod.nombre}" onerror="this.src='https://via.placeholder.com/65x75?text=Foto'">
             <div class="item-info">
                 <h4>${prod.nombre}</h4>
-                <small style="color:#666; font-size:0.85rem;">
-                    Talle: <b>${prod.talleElegido}</b> | Color: <b>${prod.colorElegido}</b> | Cant: <b>${cantidad}</b>
+                <small>
+                    Talle: <b>${prod.talleElegido}</b><br>
+                    Color: <b>${prod.colorElegido}</b><br>
+                    Cant: <b>${cantidad}</b>
                 </small>
-                <p style="margin: 0.2rem 0 0; font-weight: bold;">$${subtotalItem.toLocaleString()}</p>
+                <p>$${subtotalItem.toLocaleString()}</p>
             </div>
-            <button class="btn-eliminar" onclick="eliminarDelCarrito(${index})">X</button>
+            <button class="btn-eliminar" onclick="eliminarDelCarrito(${index})" title="Eliminar producto">
+                <i class="fa-solid fa-trash-can"></i>
+            </button>
         `;
         listaCarritoDinamica.appendChild(item);
     });
@@ -1024,6 +1078,7 @@ function configurarEventosModales() {
     const modalCarritoLocal = document.getElementById('modal-carrito');
     const botonCerrarModal = document.getElementById('btn-cerrar-modal');
     const btnFinalizarCompra = document.getElementById('btn-finalizar-compra');
+    const btnSeguirComprando = document.getElementById('btn-cerrar-modal-secundario');
 
     // Usamos delegación para el botón de abrir carrito del header (que viene de un fetch)
     document.addEventListener('click', (e) => {
@@ -1032,6 +1087,12 @@ function configurarEventosModales() {
             window.location.href = 'carrito.html';
         }
     });
+
+    if (btnSeguirComprando && modalCarritoLocal) {
+        btnSeguirComprando.addEventListener('click', () => {
+            modalCarritoLocal.classList.remove('activo');
+        });
+    }
 
     if (botonCerrarModal && modalCarritoLocal) {
         botonCerrarModal.addEventListener('click', () => {

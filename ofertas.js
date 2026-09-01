@@ -167,5 +167,13 @@ async function cargarOfertas() {
     }
 }
 
+function eliminarDelCarrito(index) {
+    carrito.splice(index, 1);
+    actualizarCarrito();
+    mostrarProductosEnPantalla(productos);
+}
+
+
+
 // Arrancamos
 cargarOfertas();

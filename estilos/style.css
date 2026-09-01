@@ -708,249 +708,30 @@
 }
 
 
-/*  ----------------------------------------------------------------------CARTEL DE SIN STOCK
+/*  ----------------------------------------------------------------------CARTEL DE SIN STOCK*/
 
-
-/* El cartel que flota en el medio de la foto */
-.cartel-sin-stock {
+.badge-sin-stock {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(255, 253, 250, 0.95);
-    color: #5a3d28; /* Marrón oscuro de la marca */
-    padding: 0.6rem 1.2rem;
-    font-family: inherit;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    z-index: 15;
-    border: 1px solid #d8cec4;
-    border-radius: 4px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    pointer-events: none; 
-}
-
-.img-agotada {
-    opacity: 0.65;
-    filter: grayscale(40%);
-}
-
-/* -------------------------------------------------------------------------------ventana modal de carrito */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-.modal-overlay.activo {
-    visibility: visible;
-    opacity: 1;
-}
-
-.modal-contenido {
-    background: var(--color-secundario);
-    width: 90%;
-    max-width: 500px;
-    border-radius: 10px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    max-height: 80vh;
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid #eee;
-}
-
-.btn-cerrar {
-    background: none;
-    border: none;
-    font-size: 1.8rem;
-    cursor: pointer;
-    color: #666;
-}
-
-.modal-cuerpo {
-    padding: 1.5rem;
-    overflow-y: auto;
-    flex-grow: 1;
-}
-
-.carrito-vacio {
-    text-align: center;
-    color: #888;
-    margin: 1rem 0;
-}
-
-/* Ítem individual dentro del carrito */
-.item-carrito {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.8rem 0;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.item-info h4 {
-    font-size: 1rem;
-    margin-bottom: 0.3rem;
-}
-
-.item-info p {
-    color: var(--color-texto);
-    font-weight: bold;
-    font-size: 0.9rem;
-    margin: 0;
-}
-
-.btn-eliminar {
-    background: #ff4d4d;
-    color: white;
-    border: none;
+    top: 10px;
+    left: 10px;
+    background-color: #555555;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 600;
     padding: 0.3rem 0.6rem;
     border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.8rem;
-}
-
-.modal-footer {
-    padding: 1rem 1.5rem;
-    background-color: var(--color-secundario);
-    border-top: 1px solid #eee;
-}
-
-.total-contenedor {
-    display: flex;
-    justify-content: space-between;
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-}
-
-.btn-comprar {
-    width: 100%;
-    background-color: var(--color-principal);
-    color: var(--color-textoheader);
-    border: none;
-    padding: 0.8rem;
-    font-size: 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.btn-comprar:hover {
-    background-color: #333;
-}
-
-
-
-/*-----------------------------------------------------------------------------ventana modal login/cuenta*/
-
-
-/* Caja principal del modal */
-.modal-login-box {
-    background: var(--color-secundario) !important; 
-    border: 1px solid #d8cec4;
-    border-radius: 12px;
-    width: 90% !important;
-    max-width: 440px !important;
-    padding: 2.2rem 2rem !important;
-    box-shadow: 0 20px 40px rgba(59, 35, 20, 0.15);
-    position: relative;
-}
-
-/* Cabecera y Pestañas */
-.modal-login-box .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #e8e1d5;
-    padding-bottom: 1.2rem;
-    margin-bottom: 1.5rem;
-}
-
-.pestanas-login {
-    display: flex;
-    gap: 1.5rem;
-    font-family: 'Abril Fatface', serif;
-    font-size: 1.35rem;
-}
-
-.pestanas-login span {
-    transition: color 0.2s, border-color 0.2s;
-    padding-bottom: 0.3rem;
-}
-
-/* Formularios ordenados y con respiración */
-.form-login {
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-}
-
-.form-login label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #5a3d28;
-    margin-top: 0.3rem;
-}
-
-.form-login input[type="email"],
-.form-login input[type="password"],
-.form-login input[type="text"] {
-    width: 100%;
-    padding: 0.85rem 1rem;
-    border: 1px solid #d8cec4;
-    border-radius: 6px;
-    background-color: #ffffff;
-    font-size: 0.95rem;
-    color: #3b2314;
-    outline: none;
-    box-sizing: border-box;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.form-login input:focus {
-    border-color: var(--color-principal);
-    box-shadow: 0 0 0 3px rgba(59, 35, 20, 0.08);
-}
-
-.form-login .btn-comprar {
-    margin-top: 1.2rem !important;
-    padding: 0.95rem;
-    font-size: 1rem;
-    font-weight: 700;
-    border-radius: 6px;
     letter-spacing: 0.5px;
+    z-index: 2;
+    text-transform: uppercase;
 }
 
-@media (max-width: 480px) {
-    .modal-login-box {
-        padding: 1.5rem 1.2rem !important;
-        width: 95% !important;
-    }
-    .pestanas-login {
-        font-size: 1.15rem;
-        gap: 1rem;
-    }
+/* Botón deshabilitado cuando no hay stock */
+.btn-agregar-agotado {
+    background-color: #cccccc !important;
+    color: #666666 !important;
+    cursor: not-allowed !important;
+    pointer-events: none;
 }
-
 
 /*----------------------------------------------------------------------------- footer*/
 

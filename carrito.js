@@ -31,6 +31,17 @@ async function renderizarPaginaCarrito() {
     let htmlProductos = '';
     let subtotalGeneral = 0;
 
+    // Obtenemos los productos del servidor para validar el stock real de cada uno al pintar
+    let productosServidor = [];
+    try {
+        const respuesta = await fetch('http://localhost:3000/api/productos');
+        if (respuesta.ok) {
+            productosServidor = await respuesta.json();
+        }
+    } catch (err) {
+        console.error("Error al obtener productos para validar stock:", err);
+    }
+
     carritoActual.forEach((item, index) => {
         const precioItem = Number(item.precio || 0);
         const cantidadItem = Number(item.cantidad || 1);
@@ -38,6 +49,27 @@ async function renderizarPaginaCarrito() {
         subtotalGeneral += subtotalItem;
 
         const fotoItem = (item.imagenes && item.imagenes.length > 0) ? item.imagenes[0] : (item.imagen || '');
+
+        // 🔍 Buscamos el stock real de esta variante específica
+        let stockMaximo = 999;
+        const productoOriginal = productosServidor.find(p => p.id === item.id);
+        if (productoOriginal) {
+            if (Array.isArray(productoOriginal.variantes) && productoOriginal.variantes.length > 0) {
+                const varianteElegida = productoOriginal.variantes.find(v =>
+                    v.talle === item.talleElegido && v.color === item.colorElegido
+                );
+                if (varianteElegida) stockMaximo = Number(varianteElegida.stock);
+            } else if (productoOriginal.stock !== undefined) {
+                stockMaximo = Number(productoOriginal.stock);
+            }
+        }
+
+        // Si la cantidad actual llegó al stock máximo, desactivamos o estilizamos el botón "+"
+        const alcanzoMaximo = cantidadItem >= stockMaximo;
+        const estiloBtnMas = alcanzoMaximo 
+            ? 'background: #f5f5f5; color: #ccc; cursor: not-allowed;' 
+            : 'background: none; color: #000; cursor: pointer;';
+        const atributoMas = alcanzoMaximo ? 'disabled' : '';
 
         htmlProductos += `
             <div style="display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid #e0e0e0; padding: 1.2rem; border-radius: 4px; margin-bottom: 1rem;">
@@ -47,12 +79,13 @@ async function renderizarPaginaCarrito() {
                         <h4 style="font-size: 1rem; margin-bottom: 0.3rem; font-weight: bold;">${item.nombre}</h4>
                         <p style="font-size: 0.8rem; color: #666; margin-bottom: 0.2rem;">TALLE: ${item.talleElegido || 'Único'}</p>
                         <p style="font-size: 0.8rem; color: #666; margin-bottom: 0.5rem;">COLOR: ${item.colorElegido || 'Único'}</p>
+                        ${alcanzoMaximo ? `<p style="font-size: 0.7rem; color: #d9534f; margin-bottom: 0.3rem; font-weight: bold;">Máximo stock disponible alcanzado</p>` : ''}
                         
                         <!-- Control de cantidad -->
                         <div style="display: flex; align-items: center; border: 1px solid #ccc; width: fit-content; border-radius: 3px;">
                             <button onclick="cambiarCantidadPagina(${index}, -1)" style="background: none; border: none; padding: 0.2rem 0.6rem; cursor: pointer; font-weight: bold;">-</button>
                             <span style="padding: 0.2rem 0.6rem; font-size: 0.9rem; border-left: 1px solid #ccc; border-right: 1px solid #ccc;">${cantidadItem}</span>
-                            <button onclick="cambiarCantidadPagina(${index}, 1)" style="background: none; border: none; padding: 0.2rem 0.6rem; cursor: pointer; font-weight: bold;">+</button>
+                            <button onclick="cambiarCantidadPagina(${index}, 1)" style="${estiloBtnMas} border: none; padding: 0.2rem 0.6rem; font-weight: bold;" ${atributoMas}>+</button>
                         </div>
                     </div>
                 </div>
@@ -83,7 +116,6 @@ async function cambiarCantidadPagina(index, delta) {
     if (nuevaCantidad <= 0) {
         carritoActual.splice(index, 1);
     } else {
-        // Consultamos el stock real al servidor antes de sumar
         let stockPermitido = 999;
         try {
             const respuesta = await fetch('http://localhost:3000/api/productos');
@@ -145,11 +177,9 @@ if (btnIniciarCompra) {
             return;
         }
 
-        // Si está logueada y tiene productos, la mandamos directo a la pantalla de Checkout profesional
         window.location.href = 'checkout.html';
     });
 }
-
 
 document.addEventListener('DOMContentLoaded', () => {
     renderizarPaginaCarrito();

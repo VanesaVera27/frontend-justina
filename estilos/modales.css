@@ -1,0 +1,265 @@
+/*-----------------------------------------------------------------------------ventana modal login/cuenta*/
+
+
+/* Caja principal del modal */
+.modal-login-box {
+    background: var(--color-secundario) !important; 
+    border: 1px solid #d8cec4;
+    border-radius: 12px;
+    width: 90% !important;
+    max-width: 440px !important;
+    padding: 2.2rem 2rem !important;
+    box-shadow: 0 20px 40px rgba(59, 35, 20, 0.15);
+    position: relative;
+}
+
+/* Cabecera y Pestañas */
+.modal-login-box .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e8e1d5;
+    padding-bottom: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.pestanas-login {
+    display: flex;
+    gap: 1.5rem;
+    font-family: 'Abril Fatface', serif;
+    font-size: 1.35rem;
+}
+
+.pestanas-login span {
+    transition: color 0.2s, border-color 0.2s;
+    padding-bottom: 0.3rem;
+}
+
+/* Formularios ordenados y con respiración */
+.form-login {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.form-login label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #5a3d28;
+    margin-top: 0.3rem;
+}
+
+.form-login input[type="email"],
+.form-login input[type="password"],
+.form-login input[type="text"] {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1px solid #d8cec4;
+    border-radius: 6px;
+    background-color: #ffffff;
+    font-size: 0.95rem;
+    color: #3b2314;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-login input:focus {
+    border-color: var(--color-principal);
+    box-shadow: 0 0 0 3px rgba(59, 35, 20, 0.08);
+}
+
+.form-login .btn-comprar {
+    margin-top: 1.2rem !important;
+    padding: 0.95rem;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+}
+
+@media (max-width: 480px) {
+    .modal-login-box {
+        padding: 1.5rem 1.2rem !important;
+        width: 95% !important;
+    }
+    .pestanas-login {
+        font-size: 1.15rem;
+        gap: 1rem;
+    }
+}
+
+/* -------------------------------------------------------------------------------ventana modal de carrito */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: flex-end; /* Empuja el contenido hacia la derecha */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 1000;
+}
+
+.modal-overlay.activo {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-contenido {
+    width: 450px;
+    max-width: 100%;
+    height: 100%;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -5px 0 25px rgba(0,0,0,0.15);
+    transform: translateX(100%); 
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+}
+
+.modal-overlay.activo .modal-contenido {
+    transform: translateX(0); /* Se desliza suavemente hacia la pantalla */
+}
+
+/* Cabecera limpia con la "X" a la derecha */
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.modal-header h2 {
+    font-size: 1.1rem;
+    font-family: inherit;
+    font-weight: 500;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-cerrar {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: #1a1a1a;
+    line-height: 1;
+    padding: 0;
+}
+
+/* Cuerpo interno con scroll propio si es largo */
+.modal-cuerpo {
+    padding: 1.5rem;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+/* Footer fijo abajo */
+.modal-footer {
+    padding: 1.5rem;
+    border-top: 1px solid #eaeaea;
+    background: #fff;
+}
+
+.carrito-vacio {
+    text-align: center;
+    color: #888;
+    margin: 1rem 0;
+}
+
+/* CADA ITEM DEL CARRITO*/
+
+.item-carrito {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.item-carrito img {
+    width: 65px;
+    height: 75px;
+    object-fit: cover;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    flex-shrink: 0;
+}
+
+.item-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.item-info h4 {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+.item-info small {
+    color: #777;
+    font-size: 0.78rem;
+    line-height: 1.2;
+}
+
+.item-info p {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0.2rem 0 0 0;
+}
+
+.btn-eliminar {
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0.5rem;
+    transition: color 0.2s ease;
+}
+
+.btn-eliminar:hover {
+    color: #d9534f;
+}
+
+.modal-footer {
+    padding: 1rem 1.5rem;
+    background-color: var(--color-secundario);
+    border-top: 1px solid #eee;
+}
+
+.total-contenedor {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.btn-comprar {
+    width: 100%;
+    background-color: var(--color-principal);
+    color: var(--color-textoheader);
+    border: none;
+    padding: 0.8rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-comprar:hover {
+    background-color: #333;
+}
