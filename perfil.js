@@ -44,7 +44,7 @@ document.getElementById('form-perfil').addEventListener('submit', async (e) => {
     const nuevoTelefono = document.getElementById('perfil-telefono').value.trim();
 
     try {
-        const resp = await fetch(`[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/usuarios/${usuario.id}`, {
+        const resp = await fetch(`https://justina-store-backend.onrender.com/api/usuarios/${usuario.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
@@ -68,7 +68,7 @@ document.getElementById('form-perfil').addEventListener('submit', async (e) => {
 // Eliminar Cuenta
 document.getElementById('btn-eliminar-cuenta').addEventListener('click', async () => {
     if (confirm("⚠️ ¿Estás totalmente segura de eliminar tu cuenta? Esta acción no se puede deshacer.")) {
-        await fetch(`[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/usuarios/${usuario.id}`, { method: 'DELETE' });
+        await fetch(`https://justina-store-backend.onrender.com/api/usuarios/${usuario.id}`, { method: 'DELETE' });
         localStorage.removeItem('usuario_tienda');
         alert("Tu cuenta ha sido eliminada.");
         window.location.href = 'index.html';
@@ -85,7 +85,7 @@ async function verificarPasswordSeguridad() {
     if (!passwordIngresada) return false; // Si tocó cancelar o dejó vacío
 
     try {
-        const resp = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/usuarios/verificar-password', {
+        const resp = await fetch('https://justina-store-backend.onrender.com/api/usuarios/verificar-password', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ usuario_id: usuario.id, password: passwordIngresada })
@@ -108,7 +108,7 @@ async function cargarDirecciones() {
     const cont = document.getElementById('lista-direcciones');
     cont.innerHTML = '<p>Cargando direcciones...</p>';
     try {
-        const res = await fetch(`[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/direcciones/${usuario.id}`);
+        const res = await fetch(`https://justina-store-backend.onrender.com/api/direcciones/${usuario.id}`);
         const direcciones = await res.json();
         cont.innerHTML = '';
 
@@ -159,7 +159,7 @@ async function eliminarDireccion(idDireccion) {
 
     // 2. Si la clave es correcta, borramos la dirección
     try {
-        const resp = await fetch(`[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/direcciones/${idDireccion}`, {
+        const resp = await fetch(`https://justina-store-backend.onrender.com/api/direcciones/${idDireccion}`, {
             method: 'DELETE'
         });
         if (resp.ok) {
@@ -226,14 +226,14 @@ document.getElementById('form-nueva-direccion').addEventListener('submit', async
         let resp;
         if (idEdicion === "") {
             // CREAR NUEVA (POST)
-            resp = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/direcciones', {
+            resp = await fetch('https://justina-store-backend.onrender.com/api/direcciones', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(datosDir)
             });
         } else {
             // ACTUALIZAR EXISTENTE (PUT)
-            resp = await fetch(`[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/direcciones/${idEdicion}`, {
+            resp = await fetch(`https://justina-store-backend.onrender.com/api/direcciones/${idEdicion}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(datosDir)
@@ -259,7 +259,7 @@ async function cargarMisPedidos() {
     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Cargando tus pedidos...</td></tr>';
 
     try {
-        const res = await fetch(`[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/mis-pedidos/${usuario.id}`);
+        const res = await fetch(`https://justina-store-backend.onrender.com/api/mis-pedidos/${usuario.id}`);
         const pedidos = await res.json();
         tbody.innerHTML = '';
 
@@ -322,7 +322,7 @@ async function cargarMisPedidos() {
 async function cancelarPedido(idPedido) {
     if (confirm("⚠️ ¿Estás segura de que querés cancelar esta compra? Esta acción no se puede deshacer.")) {
         try {
-            const res = await fetch(`[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/pedidos/${idPedido}/cancelar`, {
+            const res = await fetch(`https://justina-store-backend.onrender.com/api/pedidos/${idPedido}/cancelar`, {
                 method: 'PUT' // Usamos PUT porque estamos actualizando un dato existente
             });
 

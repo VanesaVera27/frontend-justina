@@ -23,7 +23,7 @@ let favoritos = [];
 // ====================================================================
 async function cargarBaseDeDatos() {
     try {
-        const respuesta = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/productos');
+        const respuesta = await fetch('https://justina-store-backend.onrender.com/api/productos');
 
         if (!respuesta.ok) {
             throw new Error('No se pudo obtener la respuesta del servidor');
@@ -324,7 +324,7 @@ async function cargarHeroSliderDinamico() {
     if (!contenedorSlider) return;
 
     try {
-        const res = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/banners');
+        const res = await fetch('https://justina-store-backend.onrender.com/api/banners');
         if (!res.ok) return;
         const banners = await res.json();
 
@@ -379,7 +379,7 @@ async function cargarBannerPaginaEspecifica() {
     if (!contenedor) return;
 
     try {
-        const res = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/banners');
+        const res = await fetch('https://justina-store-backend.onrender.com/api/banners');
         if (!res.ok) return;
         const banners = await res.json();
 
@@ -446,7 +446,7 @@ async function cargarFavoritosDesdeBD() {
 
     const usuario = JSON.parse(sesion);
     try {
-        const res = await fetch(`[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/favoritos/${usuario.id}`);
+        const res = await fetch(`https://justina-store-backend.onrender.com/api/favoritos/${usuario.id}`);
         if (res.ok) {
             favoritos = await res.json();
             actualizarCorazonesEnPantalla();
@@ -531,7 +531,7 @@ async function toggleFavorito(idProducto, btnElemento) {
 
     try {
         if (!yaEraFavorito) {
-            const res = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/favoritos', {
+            const res = await fetch('https://justina-store-backend.onrender.com/api/favoritos', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ usuario_id: usuario.id, producto_id: idProducto })
@@ -543,7 +543,7 @@ async function toggleFavorito(idProducto, btnElemento) {
                 btnElemento.title = "Quitar de favoritos";
             }
         } else {
-            const res = await fetch(`[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/favoritos/${usuario.id}/${idProducto}`, {
+            const res = await fetch(`https://justina-store-backend.onrender.com/api/favoritos/${usuario.id}/${idProducto}`, {
                 method: 'DELETE'
             });
 
@@ -741,7 +741,7 @@ async function verificarCarritoPendiente(usuarioId) {
 
     for (const item of itemsAntiguos) {
         try {
-            const res = await fetch(`[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/variantes/stock?producto_id=${item.id}&talle=${item.talleElegido}&color=${item.colorElegido}`);
+            const res = await fetch(`https://justina-store-backend.onrender.com/api/variantes/stock?producto_id=${item.id}&talle=${item.talleElegido}&color=${item.colorElegido}`);
             const data = await res.json();
 
             if (data.stock !== undefined && data.stock > 0) {
@@ -922,7 +922,7 @@ async function cargarCategoriasEnHeader() {
     if (!contenedorMenu) return;
 
     try {
-        const res = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/categorias');
+        const res = await fetch('https://justina-store-backend.onrender.com/api/categorias');
         const categorias = await res.json();
 
         let html = `<a href="productos.html?categoria=Todos">Ver Todo</a>`;
@@ -1076,7 +1076,7 @@ function configurarEventosModales() {
             const password = document.getElementById('password-user')?.value.trim();
 
             try {
-                const respuesta = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/login', {
+                const respuesta = await fetch('https://justina-store-backend.onrender.com/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
@@ -1107,7 +1107,7 @@ function configurarEventosModales() {
             const password = document.getElementById('reg-pass').value.trim();
 
             try {
-                const respuesta = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/usuarios/registro', {
+                const respuesta = await fetch('https://justina-store-backend.onrender.com/api/usuarios/registro', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ nombre, email, password })
@@ -1236,7 +1236,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Petición de configuración web global
     try {
-        const res = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/configuracion');
+        const res = await fetch('https://justina-store-backend.onrender.com/api/configuracion');
         if (res.ok) {
             const config = await res.json();
 

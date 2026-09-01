@@ -8,7 +8,7 @@ async function cargarOfertas() {
 
     try {
         // 1. Usamos la ruta principal que ya trae el stock y las variantes completas
-        const respuesta = await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/productos');
+        const respuesta = await fetch('https://justina-store-backend.onrender.com/api/productos');
         const todosLosProductos = await respuesta.json();
 
         // 2. Filtramos mágicamente solo los que tienen la etiqueta en_oferta

@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 2. Cargamos las direcciones guardadas del usuario usando tu ruta correcta con el ID en la URL
     let direccionesUsuario = [];
     try {
-        const res = await fetch(`[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/direcciones/${usuario.id}`);
+        const res = await fetch(`https://justina-store-backend.onrender.com/api/direcciones/${usuario.id}`);
         if (res.ok) {
             direccionesUsuario = await res.json();
         }
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Si el usuario no tenía DNI guardado y lo acaba de tipear, lo actualizamos en la BD
         if (!usuario.dni || usuario.dni !== dniIngresado) {
             try {
-                await fetch(`[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/usuarios/${usuario.id}`, {
+                await fetch(`https://justina-store-backend.onrender.com/api/usuarios/${usuario.id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // ⚡ GUARDAMOS LA NUEVA DIRECCIÓN USANDO LOS CAMPOS QUE ESPERA TU ENDPOINT
             try {
-                await fetch('[https://justina-store-backend.onrender.com](https://justina-store-backend.onrender.com)api/direcciones', {
+                await fetch('https://justina-store-backend.onrender.com/api/direcciones', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
