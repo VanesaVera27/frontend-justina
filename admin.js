@@ -201,6 +201,19 @@ function renderizarTablaAdmin(productos) {
             </button>
         `;
 
+        // LÓGICA DEL BOTÓN DE DESTACADO
+        const estaDestacado = Boolean(prod.destacado);
+        const colorBgDestacado = estaDestacado ? '#fff8e1' : '#f5f5f5';
+        const colorTextDestacado = estaDestacado ? '#f57f17' : '#616161';
+        const textoBotonDestacado = estaDestacado ? '⭐ Quitar de Inicio' : '☆ Destacar en Inicio';
+
+        const botonDestacadoHTML = `
+            <button onclick="toggleDestacado(${prod.id}, ${estaDestacado})" 
+                    style="background: ${colorBgDestacado}; color: ${colorTextDestacado}; border: 1px solid ${colorTextDestacado}40; padding: 5px 10px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: all 0.2s; margin-right: 0.5rem;">
+                ${textoBotonDestacado}
+            </button>
+        `;
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <!-- Columna 1: Foto desde la carpeta local /imagenes -->
@@ -231,6 +244,7 @@ function renderizarTablaAdmin(productos) {
 
             <!-- Columna 5: Botones de acción (Ahora con la oferta incluida) -->
             <td class="td-acciones">
+                ${botonDestacadoHTML}
                 ${botonOfertaHTML}
                 <button onclick="editarProducto(${prod.id})" class="btn-accion-icon">✏️ Editar</button>
                 <button onclick="borrarProducto(${prod.id})" class="btn-accion-icon borrar">🗑️</button>
@@ -297,6 +311,34 @@ async function toggleOferta(idProducto, estadoActualOferta, precioOriginal) {
             alert("Error al actualizar la oferta en la base de datos.");
         }
     } catch (error) {
+        alert("Error de conexión con el servidor.");
+    }
+}
+
+
+// ====================================================================
+// PRENDER / APAGAR DESTACADO 
+// ====================================================================
+async function toggleDestacado(idProducto, estadoActualDestacado) {
+    const nuevoEstado = !estadoActualDestacado;
+
+    try {
+        const respuesta = await fetch(`http://localhost:3000/api/productos/${idProducto}/destacado`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ destacado: nuevoEstado })
+        });
+
+        const datos = await respuesta.json();
+
+        if (respuesta.ok) {
+            await cargarInventarioAdmin();
+        } else {
+            // Mostramos el mensaje exacto que mandó el backend (ej: "No se puede destacar sin stock")
+            alert(`⚠️ ${datos.error || "No se pudo actualizar el destacado."}`);
+        }
+    } catch (error) {
+        console.error("Error de conexión:", error);
         alert("Error de conexión con el servidor.");
     }
 }

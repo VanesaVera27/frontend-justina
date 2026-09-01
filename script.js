@@ -28,9 +28,13 @@ async function cargarBaseDeDatos() {
         if (!respuesta.ok) {
             throw new Error('No se pudo obtener la respuesta del servidor');
         }
-
         productos = await respuesta.json();
-        mostrarProductosEnPantalla(productos);
+
+        // 🔍 Agregá esto para ver en la consola del navegador qué productos llegan filtrados
+        const productosDestacados = productos.filter(p => p.destacado === true);
+        console.log("Productos destacados encontrados:", productosDestacados);
+
+        mostrarProductosEnPantalla(productosDestacados);
     } catch (error) {
         console.error("Error al conectar con el backend:", error);
         if (grilla) {
@@ -257,6 +261,92 @@ function actualizarColoresYVerificarStock(idProducto) {
     verificarUltimaUnidad(idProducto);
 }
 
+
+// ====================================================================
+// CONTROL DEL HERO BANNER / SLIDER DINÁMICO
+// ====================================================================
+let slideActual = 0;
+let intervaloSlide;
+
+async function cargarHeroSliderDinamico() {
+    const contenedorSlider = document.getElementById('hero-slider-dinamico');
+    if (!contenedorSlider) return;
+
+    try {
+        const res = await fetch('http://localhost:3000/api/banners');
+        if (!res.ok) return;
+        const banners = await res.json();
+
+        if (banners.length === 0) {
+            contenedorSlider.style.display = 'none';
+            return;
+        }
+
+        let slidesHtml = '';
+        let puntosHtml = '';
+
+        banners.forEach((b, index) => {
+            const claseActiva = index === 0 ? 'activo' : '';
+            const srcFoto = b.imagen.startsWith('imagenes/') ? b.imagen : `/${b.imagen}`;
+
+            slidesHtml += `
+                <div class="hero-slide ${claseActiva}" style="background-image: url('${srcFoto}');">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-contenido">
+                        ${b.subtitulo ? `<span class="hero-sub">${b.subtitulo}</span>` : ''}
+                        ${b.titulo ? `<h2>${b.titulo}</h2>` : ''}
+                        ${b.descripcion ? `<p>${b.descripcion}</p>` : ''}
+                        ${b.link ? `<a href="${b.link}" class="btn-hero">Ver Más</a>` : ''}
+                    </div>
+                </div>
+            `;
+
+            puntosHtml += `<span class="punto ${claseActiva}" onclick="irASlide(${index})"></span>`;
+        });
+
+        contenedorSlider.innerHTML = `
+            ${slidesHtml}
+            <div class="hero-puntos">${puntosHtml}</div>
+        `;
+
+        // Activamos el loop automático solo si hay más de 1 banner
+        const slidesDinamicos = document.querySelectorAll('.hero-slide');
+        if (slidesDinamicos.length > 1) {
+            clearInterval(intervaloSlide);
+            intervaloSlide = setInterval(siguienteSlide, 5000);
+        }
+
+    } catch (err) {
+        console.error("Error al cargar el slider dinámico:", err);
+    }
+}
+
+function mostrarSlide(indice) {
+    const slides = document.querySelectorAll('.hero-slide');
+    const puntos = document.querySelectorAll('.punto');
+    
+    if (slides.length === 0) return;
+
+    slides.forEach(slide => slide.classList.remove('activo'));
+    puntos.forEach(punto => punto.classList.remove('activo'));
+
+    slideActual = (indice + slides.length) % slides.length;
+
+    slides[slideActual].classList.add('activo');
+    if (puntos[slideActual]) {
+        puntos[slideActual].classList.add('activo');
+    }
+}
+
+function siguienteSlide() {
+    mostrarSlide(slideActual + 1);
+}
+
+function irASlide(indice) {
+    mostrarSlide(indice);
+    clearInterval(intervaloSlide);
+    intervaloSlide = setInterval(siguienteSlide, 5000);
+}
 
 // ====================================================================
 // CARGAR FAVORITOS DEL USUARIO DESDE POSTGRESQL
@@ -716,13 +806,13 @@ async function cargarCategoriasEnHeader() {
         const res = await fetch('http://localhost:3000/api/categorias');
         const categorias = await res.json();
 
-        let html = `<a href="index.html?categoria=Todos">Ver Todo</a>`;
+        let html = `<a href="productos.html?categoria=Todos">Ver Todo</a>`;
 
         categorias.forEach(cat => {
             const nombreCat = (typeof cat === 'object' && cat !== null) ? (cat.categoria || cat.nombre || Object.values(cat)[0]) : cat;
 
             if (nombreCat) {
-                html += `<a href="index.html?categoria=${encodeURIComponent(nombreCat)}">${nombreCat}</a>`;
+                html += `<a href="productos.html?categoria=${encodeURIComponent(nombreCat)}">${nombreCat}</a>`;
             }
         });
 
@@ -804,7 +894,7 @@ async function inicializarModales() {
         if (res.ok) {
             const htmlModales = await res.text();
             contenedorModales.innerHTML = htmlModales;
-            
+
             // 🚀 Activamos los eventos acá adentro para que detecten los elementos ya inyectados
             configurarEventosModales();
         }
@@ -975,8 +1065,9 @@ function configurarEventosModales() {
 document.addEventListener('DOMContentLoaded', async () => {
     await inicializarModales();
     await inicializarHeader();
+    await cargarHeroSliderDinamico();
     await inicializarFooter();
-    
+
     await cargarBaseDeDatos();
     actualizarCarrito();
     actualizarContadorHeader();

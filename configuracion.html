@@ -3,7 +3,9 @@
 
 <head>
     <title>Configuración Web - Admin Justina Store</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="estilos/style.css">
+    <link rel="icon" type="image/png" href="imagenes/favicon.png">
+    <link rel="icon" type="image/png" href="imagenes/favicon.png">
 </head>
 
 <body style="background: #f4f4f4; margin: 0; font-family: sans-serif;">
@@ -59,7 +61,8 @@
                     </div>
 
                     <div>
-                        <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">Ubicación / Ciudad</label>
+                        <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;">Ubicación /
+                            Ciudad</label>
                         <input type="text" id="cfg-ubicacion" placeholder="Ej: Los Polvorines, Buenos Aires"
                             style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
                     </div>
@@ -136,6 +139,60 @@
                     </div>
                 </fieldset>
 
+                <!-- SECCIÓN 4: BANNERS DEL SLIDER PRINCIPAL (HOME) -->
+                <fieldset
+                    style="border: 1px solid #e0e0e0; padding: 1.5rem; border-radius: 4px; display: grid; gap: 1rem;">
+                    <legend style="font-weight: bold; padding: 0 0.5rem; color: #3b2314;">4. Banners de la Página de
+                        Inicio (Slider)</legend>
+                    <p style="font-size: 0.75rem; color: #666; margin-bottom: 0.5rem;">Agregá, corregí textos o eliminá
+                        las imágenes grandes del carrusel.</p>
+
+                    <!-- Formulario interno para subir o editar un banner -->
+                    <div
+                        style="background: #faf7f2; padding: 1rem; border-radius: 4px; border: 1px dashed #dcd0c0; display: grid; gap: 0.8rem;">
+                        <span id="banner-form-titulo" style="font-size: 0.85rem; font-weight: bold; color: #3b2314;">➕
+                            Subir Nuevo Banner</span>
+
+                        <!-- Campo oculto para saber si estamos editando -->
+                        <input type="hidden" id="edit-banner-id">
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <input type="text" id="nuevo-banner-titulo" placeholder="Título (Ej: Winter Sale)"
+                                style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                            <input type="text" id="nuevo-banner-sub" placeholder="Subtítulo (Ej: Nuevos Ingresos)"
+                                style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <input type="text" id="nuevo-banner-link"
+                                placeholder="Link (Ej: productos.html)" value="productos.html"
+                                style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                            <input type="file" id="nuevo-banner-file" accept="image/*" style="padding: 0.3rem;">
+                        </div>
+
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button type="button" id="btn-guardar-banner"
+                                style="background: #3b2314; color: #fff; border: none; padding: 0.6rem 1.2rem; border-radius: 4px; font-weight: bold; cursor: pointer;">
+                                Guardar Banner
+                            </button>
+                            <button type="button" id="btn-cancelar-edicion-banner"
+                                style="background: #ccc; color: #333; border: none; padding: 0.6rem 1rem; border-radius: 4px; font-weight: bold; cursor: pointer; display: none;">
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Lista visual de banners cargados -->
+                    <div style="margin-top: 1rem;">
+                        <span
+                            style="font-size: 0.85rem; font-weight: bold; color: #3b2314; display: block; margin-bottom: 0.5rem;">Banners
+                            Activos Actualmente</span>
+                        <div id="lista-banners-admin" style="display: grid; gap: 0.5rem;">
+                            <!-- Se llena dinámicamente con JS -->
+                        </div>
+                    </div>
+                </fieldset>
+
                 <div style="text-align: right; margin-top: 1rem;">
                     <button type="submit" id="btn-guardar-config"
                         style="background: #000; color: #fff; border: none; padding: 0.9rem 2rem; font-weight: bold; cursor: pointer; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px;">
@@ -145,7 +202,7 @@
             </form>
         </main>
 
-    <div id="contenedor-footer"></div>
+        <div id="contenedor-footer"></div>
 
 
         <script src="configuracion.js"></script>
