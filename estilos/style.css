@@ -388,12 +388,12 @@
     }
 
     .dropdown-coleccion .dropdown-contenido {
+        display: none; 
         position: static; 
         width: 100%;
         box-shadow: none;
         background-color: #2a180e;
     }
-    
     .dropdown-coleccion .dropdown-contenido a {
         padding-left: 3rem; 
     }
