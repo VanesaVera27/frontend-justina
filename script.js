@@ -984,25 +984,44 @@ if (navInicio) navInicio.addEventListener('click', irAlInicio);
 if (logoLink) logoLink.addEventListener('click', irAlInicio);
 
 // =========================================================
-// LÓGICA DEL MENÚ HAMBURGUESA MÓVIL
+// LÓGICA DEL MENÚ HAMBURGUESA Y DESPLEGABLE MÓVIL
 // =========================================================
 document.addEventListener("click", (e) => {
     const btnMenu = e.target.closest("#btn-menu-mobile");
     const navPrincipal = document.getElementById("nav-principal");
+    const btnColeccion = e.target.closest(".dropdown-btn");
+    const dropdownColeccion = e.target.closest(".dropdown-coleccion");
 
     if (!navPrincipal) return;
 
-    // Si hace clic en el botón de hamburguesa, alterna la clase 'activo'
+    // 1. Abrir/Cerrar menú hamburguesa principal
     if (btnMenu) {
         navPrincipal.classList.toggle("activo");
         return;
     }
 
-    // Si hace clic en cualquier parte fuera del menú o en un enlace interno, lo cierra
+    // 2. En celulares, hacer toggle al desplegable de Colección al tocarlo
+    if (window.innerWidth <= 768 && btnColeccion) {
+        e.preventDefault(); // Evita que recargue o navegue a '#'
+        const contenido = dropdownColeccion.querySelector(".dropdown-contenido");
+        if (contenido) {
+            contenido.style.display = (contenido.style.display === "block") ? "none" : "block";
+        }
+        return;
+    }
+
+    // 3. Si hace clic fuera del menú móvil, lo cierra por completo
     if (!navPrincipal.contains(e.target)) {
         navPrincipal.classList.remove("activo");
+        // Opcional: resetea el desplegable de colección al cerrar
+        const contenidoColeccion = document.querySelector(".dropdown-contenido");
+        if (contenidoColeccion && window.innerWidth <= 768) {
+            contenidoColeccion.style.display = "none";
+        }
     }
 });
+
+
 
 async function inicializarFooter() {
     try {
