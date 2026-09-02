@@ -924,7 +924,6 @@ async function cargarCategoriasEnHeader() {
     try {
         const res = await fetch('https://justina-store-backend.onrender.com/api/categorias');
         const categorias = await res.json();
-
         let html = `<a href="productos.html?categoria=Todos">Ver Todo</a>`;
 
         categorias.forEach(cat => {
