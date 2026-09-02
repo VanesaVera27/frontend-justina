@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 2. TRAER LOS DATOS DE LA BD Y LLENAR LOS CAMPOS DEL FORMULARIO
     // Al cargar la configuración en el panel:
     try {
-        const res = await fetch('https://justina-store-backend.onrender.com/api/configuracion');
+        const res = await fetch(`${API_URL}/api/configuracion`);
         if (res.ok) {
             const config = await res.json();
 
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
 
         try {
-            const respuesta = await fetch('https://justina-store-backend.onrender.com/api/configuracion', {
+            const respuesta = await fetch(`${API_URL}/api/configuracion`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(datosActualizados)
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function cargarBannersConfig() {
         if (!contenedorListaBanners) return;
         try {
-            const res = await fetch('https://justina-store-backend.onrender.com/api/banners');
+            const res = await fetch(`${API_URL}/api/banners`);
             if (!res.ok) return;
             listaBannersCache = await res.json();
 
@@ -194,11 +194,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             try {
-                let url = 'https://justina-store-backend.onrender.com/api/banners';
+                let url = `${API_URL}/api/banners`;
                 let method = 'POST';
 
                 if (idEdicion) {
-                    url = `https://justina-store-backend.onrender.com/api/banners/${idEdicion}`;
+                    url = `${API_URL}/api/banners/${idEdicion}`;
                     method = 'PUT';
                 } else if (!inputArchivo.files[0]) {
                     alert("Por favor seleccioná una imagen para el nuevo banner.");
@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.eliminarBannerConfig = async function(id) {
         if (!confirm("¿Estás segura de eliminar este banner?")) return;
         try {
-            const res = await fetch(`https://justina-store-backend.onrender.com/api/banners/${id}`, { method: 'DELETE' });
+            const res = await fetch(`${API_URL}/api/banners/${id}`, { method: 'DELETE' });
             if (res.ok) {
                 cargarBannersConfig();
                 limpiarFormularioBanner();

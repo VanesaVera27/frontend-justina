@@ -3,7 +3,7 @@
 // ====================================================================
 async function cargarBaseDeDatos() {
     try {
-        const respuesta = await fetch('https://justina-store-backend.onrender.com/api/productos');
+        const respuesta = await fetch(`${API_URL}/api/productos`);
 
         if (!respuesta.ok) {
             throw new Error('No se pudo obtener la respuesta del servidor');

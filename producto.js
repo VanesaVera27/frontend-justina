@@ -11,7 +11,7 @@ async function cargarDetalleProducto() {
     }
 
     try {
-        const respuesta = await fetch('https://justina-store-backend.onrender.com/api/productos');
+        const respuesta = await fetch(`${API_URL}/api/productos`);
         const productos = await respuesta.json();
 
         productoActual = productos.find(p => p.id === parseInt(idProducto));

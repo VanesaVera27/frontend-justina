@@ -26,11 +26,11 @@ let catalogoCompleto = [];
 async function inicializarFavoritos() {
     try {
         // A. Traemos todos los productos de la tienda
-        const resProductos = await fetch('https://justina-store-backend.onrender.com/api/productos');
+        const resProductos = await fetch(`${API_URL}/api/productos`);
         catalogoCompleto = await resProductos.json();
 
         // B. Traemos solo los IDs que esta clienta guardó como favoritos
-        const resFavs = await fetch(`https://justina-store-backend.onrender.com/api/favoritos/${usuarioFav.id}`);
+        const resFavs = await fetch(`${API_URL}/api/favoritos/${usuarioFav.id}`);
         listaFavoritosIds = await resFavs.json();
 
         renderizarFavoritos();
@@ -131,7 +131,7 @@ function renderizarFavoritos() {
 // ====================================================================
 async function quitarDeFavoritos(idProducto) {
     try {
-        const res = await fetch(`https://justina-store-backend.onrender.com/api/favoritos/${usuarioFav.id}/${idProducto}`, {
+        const res = await fetch(`${API_URL}/api/favoritos/${usuarioFav.id}/${idProducto}`, {
             method: 'DELETE'
         });
 

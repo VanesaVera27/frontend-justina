@@ -114,7 +114,7 @@ if (formAdmin) {
         }
 
         try {
-            const resp = await fetch('https://justina-store-backend.onrender.com/api/productos', {
+            const resp = await fetch(`${API_URL}/api/productos`, {
                 method: 'POST',
                 body: formData
             });
@@ -140,7 +140,7 @@ async function cargarInventarioAdmin() {
     tablaInventario.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem;">Cargando inventario...</td></tr>';
 
     try {
-        const res = await fetch('https://justina-store-backend.onrender.com/api/productos');
+        const res = await fetch(`${API_URL}/api/productos`);
         listaProductosAdmin = await res.json();
         renderizarTablaAdmin(listaProductosAdmin);
     } catch (err) {
@@ -283,7 +283,7 @@ async function toggleOferta(idProducto, estadoActualOferta, precioOriginal) {
     }
 
     try {
-        const respuesta = await fetch(`https://justina-store-backend.onrender.com/api/productos/${idProducto}/oferta`, {
+        const respuesta = await fetch(`${API_URL}/api/productos/${idProducto}/oferta`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -310,7 +310,7 @@ async function toggleDestacado(idProducto, estadoActualDestacado) {
     const nuevoEstado = !estadoActualDestacado;
 
     try {
-        const respuesta = await fetch(`https://justina-store-backend.onrender.com/api/productos/${idProducto}/destacado`, {
+        const respuesta = await fetch(`${API_URL}/api/productos/${idProducto}/destacado`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ destacado: nuevoEstado })
@@ -482,7 +482,7 @@ if (formEditar) {
         }
 
         try {
-            const res = await fetch(`https://justina-store-backend.onrender.com/api/productos/${id}`, {
+            const res = await fetch(`${API_URL}/api/productos/${id}`, {
                 method: 'PUT',
                 body: formData
             });
@@ -506,7 +506,7 @@ async function cargarCategorias(categoriaSeleccionada = null) {
     if (!selectCategoria) return;
 
     try {
-        const respuesta = await fetch('https://justina-store-backend.onrender.com/api/categorias');
+        const respuesta = await fetch(`${API_URL}/api/categorias`);
         const categorias = await respuesta.json();
 
         selectCategoria.innerHTML = '';
@@ -533,7 +533,7 @@ if (btnNuevaCategoria) {
         if (!nuevoNombre || !nuevoNombre.trim()) return;
 
         try {
-            const respuesta = await fetch('https://justina-store-backend.onrender.com/api/categorias', {
+            const respuesta = await fetch(`${API_URL}/api/categorias`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ nombre: nuevoNombre.trim() })

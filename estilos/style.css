@@ -378,12 +378,13 @@
         display: flex;
     }
 
-    #nav-principal a, 
+   #nav-principal a, 
     #nav-principal .dropdown-btn {
-        padding: 1rem 2rem;
+        display: block;
+        width: 100%; /* Forzamos a que ocupe todo el ancho */
+        padding: 1rem 1.5rem;
         text-align: left;
-        border-bottom: 1px solid rgba(255, 253, 250, 0.05);
-        width: 100%;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08); /* Línea prolija de lado a lado */
         box-sizing: border-box;
     }
 
@@ -391,16 +392,18 @@
         display: none; 
         position: static; 
         width: 100%;
-        background-color: #1c0e07; 
+        background-color: #1c0e07;
         box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
         border: none;
     }
     
     .dropdown-coleccion .dropdown-contenido a {
+        width: 100%;
         padding: 0.8rem 1.5rem 0.8rem 2.5rem; 
         font-size: 0.95rem;
         color: #e6dfdb !important; 
         border-bottom: 1px solid rgba(255, 255, 255, 0.04); 
+        box-sizing: border-box;
     }
 
     .header {
