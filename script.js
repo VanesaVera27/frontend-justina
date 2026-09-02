@@ -8,7 +8,7 @@ const navInicio = document.getElementById('nav-inicio');
 const logoLink = document.getElementById('logo-link');
 
 //NAVEGACION MOBILE
-const btnMenuMobile = document.getElementById('btn-menu-mobile');
+const btnMenu = document.getElementById('#btn-menu-mobile');
 const navPrincipal = document.getElementById('nav-principal');
 
 //VARIABLES
@@ -979,14 +979,30 @@ function irAlInicio(e) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 }
+
 if (navInicio) navInicio.addEventListener('click', irAlInicio);
 if (logoLink) logoLink.addEventListener('click', irAlInicio);
 
-if (btnMenuMobile && navPrincipal) {
-    btnMenuMobile.addEventListener('click', () => {
-        navPrincipal.classList.toggle('activo');
-    });
-}
+// =========================================================
+// LÓGICA DEL MENÚ HAMBURGUESA MÓVIL
+// =========================================================
+document.addEventListener("click", (e) => {
+    const btnMenu = e.target.closest("#btn-menu-mobile");
+    const navPrincipal = document.getElementById("nav-principal");
+
+    if (!navPrincipal) return;
+
+    // Si hace clic en el botón de hamburguesa, alterna la clase 'activo'
+    if (btnMenu) {
+        navPrincipal.classList.toggle("activo");
+        return;
+    }
+
+    // Si hace clic en cualquier parte fuera del menú o en un enlace interno, lo cierra
+    if (!navPrincipal.contains(e.target)) {
+        navPrincipal.classList.remove("activo");
+    }
+});
 
 async function inicializarFooter() {
     try {
