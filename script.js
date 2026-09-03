@@ -805,12 +805,6 @@ async function inicializarHeader() {
         const btnFavorito = document.getElementById('boton-favorito');
 
         const sesionGuardada = localStorage.getItem('usuario_tienda');
-        const iconoUserSVG = `
-            <svg viewBox="0 0 24 24" class="icono-svg-user" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-        `;
 
         if (sesionGuardada) {
             const usuario = JSON.parse(sesionGuardada);
@@ -821,7 +815,7 @@ async function inicializarHeader() {
                 if (spanTexto) {
                     spanTexto.textContent = `Hola, ${primerNombre} ▾`;
                 } else {
-                    btnLoginHeader.innerHTML = `<span class="icono-user">${iconoUserSVG}</span> <span class="texto-user">Hola, ${primerNombre} ▾</span>`;
+                    btnLoginHeader.innerHTML = `<span class="texto-user">Hola, ${primerNombre} ▾</span>`;
                 }
             }
 
@@ -859,7 +853,8 @@ async function inicializarHeader() {
         const modalLogin = document.getElementById('modal-login');
 
         if (btnLoginHeader) {
-            btnLoginHeader.addEventListener('click', (e) => {
+
+            btnLoginHeader.onclick = (e) => {
                 const sesion = localStorage.getItem('usuario_tienda');
                 if (!sesion) {
                     if (modalLogin) modalLogin.classList.add('activo');
@@ -869,12 +864,12 @@ async function inicializarHeader() {
                         contenedorDropdown.classList.toggle('activo-click');
                     }
                 }
-            });
+            };
         }
 
-        document.addEventListener('click', () => {
+        document.addEventListener('click', (e) => {
             const dropdownUser = document.getElementById('contenedor-dropdown-user');
-            if (dropdownUser) {
+            if (dropdownUser && !dropdownUser.contains(e.target)) {
                 dropdownUser.classList.remove('activo-click');
             }
         });
@@ -901,14 +896,6 @@ async function inicializarHeader() {
         console.error("Hubo un error al cargar el header:", error);
     }
 }
-
-// Cerrar el menú si se hace clic afuera
-document.addEventListener('click', () => {
-    const menuOpciones = document.getElementById('menu-opciones');
-    if (menuOpciones) {
-        menuOpciones.style.display = 'none';
-    }
-});
 
 document.addEventListener("DOMContentLoaded", () => {
     inicializarHeader();
@@ -983,43 +970,54 @@ function irAlInicio(e) {
 if (navInicio) navInicio.addEventListener('click', irAlInicio);
 if (logoLink) logoLink.addEventListener('click', irAlInicio);
 
+
 // =========================================================
-// LÓGICA DEL MENÚ HAMBURGUESA Y DESPLEGABLE MÓVIL
+// LÓGICA DEL MENÚ HAMBURGUESA, COLECCIÓN Y USUARIO MÓVIL
 // =========================================================
 document.addEventListener("click", (e) => {
     const btnMenu = e.target.closest("#btn-menu-mobile");
     const navPrincipal = document.getElementById("nav-principal");
     const btnColeccion = e.target.closest(".dropdown-btn");
     const dropdownColeccion = e.target.closest(".dropdown-coleccion");
+    
+    const contenedorDropdownUser = document.getElementById("contenedor-dropdown-user");
+    const menuOpciones = document.getElementById("menu-opciones");
 
-    if (!navPrincipal) return;
-
-    // 1. Abrir/Cerrar menú hamburguesa principal
-    if (btnMenu) {
-        navPrincipal.classList.toggle("activo");
-        return;
-    }
-
-    // 2. En celulares, hacer toggle al desplegable de Colección al tocarlo
-    if (window.innerWidth <= 768 && btnColeccion) {
-        e.preventDefault(); // Evita que recargue o navegue a '#'
-        const contenido = dropdownColeccion.querySelector(".dropdown-contenido");
-        if (contenido) {
-            contenido.style.display = (contenido.style.display === "block") ? "none" : "block";
+    // 1. Menú hamburguesa principal (solo móvil)
+    if (navPrincipal) {
+        if (btnMenu) {
+            navPrincipal.classList.toggle("activo");
+            return;
         }
-        return;
+
+        // 2. Desplegable de Colección (Permitir clic en mobile o si prefieren click manual)
+        if (window.innerWidth <= 768 && btnColeccion && dropdownColeccion) {
+            e.preventDefault();
+            const contenido = dropdownColeccion.querySelector(".dropdown-contenido");
+            if (contenido) {
+                const actual = window.getComputedStyle(contenido).display;
+                contenido.style.display = (actual === "block") ? "none" : "block";
+            }
+            return;
+        }
+
+        // 3. Cierre automático del menú principal al hacer clic fuera
+        if (!navPrincipal.contains(e.target) && !btnMenu) {
+            navPrincipal.classList.remove("activo");
+        }
     }
 
-    // 3. Si hace clic fuera del menú móvil, lo cierra por completo
-    if (!navPrincipal.contains(e.target)) {
-        navPrincipal.classList.remove("activo");
-        // Opcional: resetea el desplegable de colección al cerrar
-        const contenidoColeccion = document.querySelector(".dropdown-contenido");
-        if (contenidoColeccion && window.innerWidth <= 768) {
-            contenidoColeccion.style.display = "none";
+    // 4. Control seguro del menú de usuario
+    if (contenedorDropdownUser) {
+        if (!contenedorDropdownUser.contains(e.target)) {
+            contenedorDropdownUser.classList.remove('activo-click');
+            if (menuOpciones) {
+                menuOpciones.style.display = "none";
+            }
         }
     }
 });
+
 
 
 

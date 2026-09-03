@@ -5,7 +5,7 @@
     font-family: Arial, sans-serif;
 }
 
-:root{
+:root {
     --color-principal: #3b2314;
     --color-secundario: #f5f0e8;
     --color-logobanner: #3b2314;
@@ -20,9 +20,9 @@
 
 .cinta-promos {
     width: 100%;
-    background-color: var(--color-secundario); 
-    color: var(--color-principal);            
-    overflow: hidden;          
+    background-color: var(--color-secundario);
+    color: var(--color-principal);
+    overflow: hidden;
     padding: 0.5rem 0;
     border-bottom: 1px solid #e8e1d5;
     user-select: none;
@@ -35,7 +35,7 @@
 .cinta-track {
     display: flex;
     width: max-content;
-    animation: moverCinta 25s linear infinite; 
+    animation: moverCinta 25s linear infinite;
 }
 
 /* AL PASAR EL MOUSE POR LA CINTA, LA ANIMACIÓN SE PAUSA SUTILMENTE */
@@ -45,21 +45,22 @@
 
 .cinta-texto {
     display: flex;
-    gap: 3rem;                 
-    padding-right: 3rem;       
+    gap: 3rem;
+    padding-right: 3rem;
 }
 
 .cinta-texto span {
     font-size: 0.8rem;
     font-weight: 600;
     letter-spacing: 1px;
-    white-space: nowrap;       
+    white-space: nowrap;
 }
 
 @keyframes moverCinta {
     0% {
         transform: translateX(0%);
     }
+
     100% {
         transform: translateX(-50%);
     }
@@ -99,15 +100,15 @@
 
 .logo a {
     color: var(--color-logo);
-    text-decoration: none !important; 
+    text-decoration: none !important;
     font-family: 'Abril Fatface', serif;
-    font-size: 1.8rem;               
+    font-size: 1.8rem;
     cursor: pointer;
     transition: opacity 0.2s ease;
 }
 
 .logo:hover {
-    opacity: 0.85;                   
+    opacity: 0.85;
 }
 
 .header nav a {
@@ -127,8 +128,8 @@
 #btn-login-header {
     background: transparent !important;
     border: none !important;
-    color: #ffffff !important;         
-    font-family: inherit;              
+    color: #ffffff !important;
+    font-family: inherit;
     font-size: 1rem;
     font-weight: 400;
     letter-spacing: 0.5px;
@@ -138,7 +139,7 @@
     align-items: center;
     gap: 0.3rem;
     transition: opacity 0.2s ease, color 0.2s ease;
-    box-shadow: none !important;       
+    box-shadow: none !important;
     outline: none;
 }
 
@@ -194,10 +195,10 @@
 .btn-user {
     display: flex;
     align-items: center;
-    gap: 6px; 
+    gap: 6px;
     background: transparent;
     border: none;
-    color: #fffdfa; 
+    color: #fffdfa;
     font-family: inherit;
     cursor: pointer;
 }
@@ -211,17 +212,18 @@
 .icono-svg-user {
     width: 20px;
     height: 20px;
-    stroke: #fffdfa; 
+    stroke: #fffdfa;
     transition: transform 0.2s ease;
 }
 
 .btn-user:hover .icono-svg-user {
-    transform: scale(1.1); 
+    transform: scale(1.1);
 }
+
 /* =========================================================
-   MENÚ DESPLEGABLE DE USUARIO (FUNCIONAMIENTO PERFECTO)
+   MENÚ DESPLEGABLE DE USUARIO 
 ========================================================= */
-/* Forzar que el menú desplegable flote por encima de todo */
+
 .dropdown-menu {
     position: relative;
     display: inline-block;
@@ -237,20 +239,19 @@
     min-width: 220px;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
     border-radius: 6px;
-    z-index: 9999 !important; /* Super alto para que nada lo tape */
+    z-index: 9999 !important;
     padding: 0.4rem 0;
     border: 1px solid #ddd;
 }
 
-/* Mostrar el menú al hacer hover o si tiene la clase activa */
-.dropdown-menu.sesion-activa:hover .dropdown-opciones,
-.dropdown-menu.sesion-activa .dropdown-opciones:hover {
+/* Solo se muestra si el contenedor tiene la clase activo-click (manejada por JS) */
+.dropdown-menu.activo-click .dropdown-opciones {
     display: block !important;
 }
 
 .item-dropdown {
     color: #3b2314 !important;
-    padding: 12px 18px; /* Un poquito más de espacio cómodo para hacer clic */
+    padding: 12px 18px;
     text-decoration: none;
     display: block;
     font-size: 0.9rem;
@@ -271,6 +272,7 @@
 .item-dropdown.logout:hover {
     background-color: #fff5f5;
 }
+
 /* =========================================================
    ZONA DE ACCIONES DEL HEADER (FAVORITOS, USUARIO, CARRITO)
 ========================================================= */
@@ -279,9 +281,9 @@
     display: flex;
     align-items: center;
     gap: 0.7rem;
-   
+
     overflow: visible !important;
-    flex-shrink: 0; 
+    flex-shrink: 0;
 }
 
 /* Estilo unificado para los 3 botones */
@@ -308,7 +310,8 @@
 }
 
 .btn-header-icono:hover .icono-svg-header {
-    transform: scale(1.1); /* Crecen sutilmente al pasar el mouse */
+    transform: scale(1.1);
+    /* Crecen sutilmente al pasar el mouse */
 }
 
 /* Burbuja roja de notificación para el contador del carrito */
@@ -319,8 +322,9 @@
     font-weight: bold;
     padding: 2px 7px;
     border-radius: 12px;
-    margin-left: -5px; /* Lo acerca al carrito */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    margin-left: -5px;
+    /* Lo acerca al carrito */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 
@@ -334,7 +338,7 @@
 /* Ajuste responsive: achicar el espacio en celulares */
 @media (max-width: 768px) {
     .acciones-header {
-        gap: 1rem; 
+        gap: 1rem;
     }
 }
 
@@ -348,7 +352,7 @@
     display: none;
     background: none;
     border: none;
-    color: var(--color-secundario); 
+    color: var(--color-secundario);
     font-size: 1.8rem;
     cursor: pointer;
     padding: 0;
@@ -365,11 +369,11 @@
         display: none;
         flex-direction: column;
         position: absolute;
-        top: 100%; 
+        top: 100%;
         left: 0;
         width: 100%;
         background-color: var(--color-principal);
-        box-shadow: 0 10px 15px rgba(0,0,0,0.2);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
         z-index: 100;
         padding-bottom: 1rem;
     }
@@ -378,31 +382,33 @@
         display: flex;
     }
 
-   #nav-principal a, 
+    #nav-principal a,
     #nav-principal .dropdown-btn {
         display: block;
-        width: 100%; /* Forzamos a que ocupe todo el ancho */
+        width: 100%;
+        /* Forzamos a que ocupe todo el ancho */
         padding: 1rem 1.5rem;
         text-align: left;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08); /* Línea prolija de lado a lado */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        /* Línea prolija de lado a lado */
         box-sizing: border-box;
     }
 
     .dropdown-coleccion .dropdown-contenido {
-        display: none; 
-        position: static; 
+        display: none;
+        position: static;
         width: 100%;
         background-color: #1c0e07;
         box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
         border: none;
     }
-    
+
     .dropdown-coleccion .dropdown-contenido a {
         width: 100%;
-        padding: 0.8rem 1.5rem 0.8rem 2.5rem; 
+        padding: 0.8rem 1.5rem 0.8rem 2.5rem;
         font-size: 0.95rem;
-        color: #e6dfdb !important; 
-        border-bottom: 1px solid rgba(255, 255, 255, 0.04); 
+        color: #e6dfdb !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
         box-sizing: border-box;
     }
 
@@ -419,6 +425,7 @@
         flex-grow: 1;
         text-align: center;
     }
+
     .acciones-header {
         display: flex;
         flex-direction: row !important;
@@ -427,39 +434,23 @@
         gap: 1rem;
     }
 
-
     .btn-user {
-        white-space: nowrap !important; 
-        font-size: 0.85rem;             
-        padding: 0;                     
-        margin: 0;
-    }
-
-    .carrito {
-        display: flex;
+        display: flex !important;
         align-items: center;
-        margin: 0 !important;
-        font-size: 1.1rem;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        padding: 0.5rem;
+        font-size: 1.2rem;
+        color: var(--color-secundario);
+        min-width: 40px;
+        /* Asegura que el botón tenga espacio para hacerse click y verse */
+        min-height: 40px;
     }
 
     .texto-user {
         display: none !important;
-    }
-
-    .icono-user {
-        font-size: 1.3rem;
-    }
-
-    .btn-user {
-        background: transparent;
-        border: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .icono-svg-user {
-        width: 26px;
-        height: 26px;
+        /* Oculta el texto y deja visible el ícono del HTML */
     }
 
 }
@@ -472,7 +463,7 @@
     text-align: center;
     padding: 3rem 1rem;
     background: linear-gradient(var(--color-secundario), var(--color-fondo));
- 
+
 }
 
 .banner-logo {
@@ -700,18 +691,18 @@
 .card-producto .icono-corazon {
     width: 25px;
     height: 25px;
-    fill: none;               
-    stroke: white;          
+    fill: none;
+    stroke: white;
     stroke-width: 1;
     transition: fill 0.25s ease, stroke 0.25s ease;
 }
 
 .card-producto .btn-favorito.liked {
-    background:  rgba(0, 0, 0, 0.164);    
+    background: rgba(0, 0, 0, 0.164);
 }
 
 .card-producto .btn-favorito.liked .icono-corazon {
-    fill: rgb(194, 0, 0);            
+    fill: rgb(194, 0, 0);
     stroke: rgb(194, 0, 0);
 }
 
@@ -749,12 +740,14 @@ body {
 }
 
 /* El main toma todo el espacio sobrante y empuja el footer al final */
-main, .contenedor, .contenedor-perfil {
+main,
+.contenedor,
+.contenedor-perfil {
     flex: 1;
 }
 
 .footer-tienda {
-    background-color:var(--color-principal);
+    background-color: var(--color-principal);
     color: var(--color-secundario);
     padding: 3rem 2rem 1rem;
     margin-top: 4rem;
@@ -812,7 +805,7 @@ main, .contenedor, .contenedor-perfil {
     line-height: 0.8;
 }
 
-.logo-footer .logo-principal  {
+.logo-footer .logo-principal {
     font-family: 'Abril Fatface', serif;
     font-size: 2.8rem;
     color: var(--color-logo);
@@ -854,7 +847,7 @@ main, .contenedor, .contenedor-perfil {
     display: inline-flex;
     align-items: center;
     gap: 0.65rem;
-    color: var(--color-textoheader);            
+    color: var(--color-textoheader);
     text-decoration: none;
     font-size: 0.9rem;
     font-weight: 400;
@@ -864,22 +857,22 @@ main, .contenedor, .contenedor-perfil {
 
 
 .link-app-footer:hover {
-    color: #ffffff;            
+    color: #ffffff;
     text-decoration: underline;
     text-underline-offset: 4px;
-    transform: translateX(3px); 
+    transform: translateX(3px);
 }
 
 .icono-footer {
     width: 18px;
     height: 18px;
-    color: inherit;           
+    color: inherit;
     flex-shrink: 0;
     transition: transform 0.2s ease;
 }
 
 .link-app-footer:hover .icono-footer {
-    transform: scale(1.15);   
+    transform: scale(1.15);
 }
 
 /* =========================================================
@@ -920,11 +913,12 @@ main, .contenedor, .contenedor-perfil {
 
 
 /*ICONOS */
-.fa-bag-shopping{
+.fa-bag-shopping {
     font-size: x-large;
 }
 
-.lni , .lni-heart{
+.lni,
+.lni-heart {
     font-size: xx-large;
     color: white;
     display: -webkit-inline-box;
@@ -970,7 +964,8 @@ main, .contenedor, .contenedor-perfil {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.35); /* Oscurece un poco la foto para que resalte el texto */
+    background: rgba(0, 0, 0, 0.35);
+    /* Oscurece un poco la foto para que resalte el texto */
     z-index: 1;
 }
 
@@ -1052,6 +1047,7 @@ main, .contenedor, .contenedor-perfil {
     .hero-slider-container {
         height: 380px;
     }
+
     .hero-contenido h2 {
         font-size: 2.1rem;
     }

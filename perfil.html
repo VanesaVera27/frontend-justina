@@ -15,6 +15,22 @@
     <main class="perfil-container">
         <h1>Mi Cuenta</h1>
 
+<!-- Menú estilo app para dispositivos móviles -->
+        <div class="menu-tarjetas-cuenta">
+            <a href="#tab-datos" onclick="cambiarTab('datos'); return false;" class="tarjeta-opcion-cuenta">
+                <span>👤 Mis Datos Personales</span>
+                <span>➔</span>
+            </a>
+            <a href="#tab-direcciones" onclick="cambiarTab('direcciones'); return false;" class="tarjeta-opcion-cuenta">
+                <span>📍 Mis Direcciones de Envío</span>
+                <span>➔</span>
+            </a>
+            <a href="#tab-pedidos" onclick="cambiarTab('pedidos'); return false;" class="tarjeta-opcion-cuenta">
+                <span>📦 Mis Pedidos Realizados</span>
+                <span>➔</span>
+            </a>
+        </div>
+
         <!-- PESTAÑAS DEL PERFIL -->
         <div class="pestanas-perfil">
             <button class="tab-btn activo" onclick="cambiarTab('datos')">👤 Mis Datos</button>

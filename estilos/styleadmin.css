@@ -1,5 +1,4 @@
-
-:root{
+:root {
     --color-principal: #3b2314;
     --color-secundario: #f5f0e8;
     --color-logobanner: #3b2314;
@@ -13,6 +12,7 @@
     --color-secundario3: #f7f4ee;
     --color-fondooscuro: rgba(30, 18, 10, 0.65);
 }
+
 .admin-container {
     max-width: 1200px;
     margin: 2rem auto;
@@ -113,7 +113,7 @@
 
 .btn-secundario {
     background-color: var(--color-secundario2) !important;
-    color: var(--color-principal)!important;
+    color: var(--color-principal) !important;
     border: 1px solid var(--color-secundario3) !important;
     padding: 0.6rem 1rem;
     border-radius: 4px;
@@ -243,7 +243,7 @@
 
 .tabla-admin thead {
     background-color: #efe8de;
-    color:var(--color-principal);
+    color: var(--color-principal);
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -297,7 +297,7 @@
 }
 
 /* ====================================================================
-   ACCIONES DE TABLA ADMIN OPTIMIZADAS
+   ACCIONES DE TABLA ADMIN
 ==================================================================== */
 .td-acciones {
     display: flex;
@@ -323,7 +323,7 @@
 
 .btn-accion-icono:hover {
     transform: translateY(-1px);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
     border-color: #ccc;
 }
 
@@ -353,6 +353,7 @@
 .btn-accion-icon.borrar:hover {
     background: #ffe3e3;
 }
+
 /* =========================================================
    VENTANAS MODALES 
 ========================================================= */
@@ -364,8 +365,8 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--color-fondooscuro); /* Marrón oscuro semitransparente */
-    backdrop-filter: blur(3px);               /* Leve desenfoque de la tabla de atrás */
+    background-color: var(--color-fondooscuro);
+    backdrop-filter: blur(3px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -385,8 +386,10 @@
     border-radius: 8px;
     width: 100%;
     max-width: 680px;
-    max-height: 90vh;                         /* Altura máxima para no salir de la pantalla */
-    overflow-y: auto;                         /* Scroll interno si la pantalla es chica */
+    max-height: 90vh;
+    /* Altura máxima para no salir de la pantalla */
+    overflow-y: auto;
+    /* Scroll interno si la pantalla es chica */
     padding: 2rem;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
     animation: modalAparecer 0.25s ease-out;
@@ -398,6 +401,7 @@
         opacity: 0;
         transform: scale(0.95) translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: scale(1) translateY(0);
@@ -544,6 +548,7 @@
 .menu-desplegable button.borrar-opcion {
     color: #c53030;
 }
+
 .menu-desplegable button.borrar-opcion:hover {
     background: #fff5f5;
 }
@@ -552,4 +557,113 @@
     border: none;
     border-top: 1px solid #eee;
     margin: 0.3rem 0;
+}
+
+/* =========================================================
+   ADAPTACIÓN RESPONSIVE DE LA TABLA DE ADMIN (MÓVIL)
+========================================================= */
+@media (max-width: 768px) {
+    .contenedor-tabla-card {
+        overflow-x: visible;
+        /* Evitamos que corte menús flotantes */
+    }
+
+    .tabla-admin,
+    .tabla-admin tbody,
+    .tabla-admin tr,
+    .tabla-admin td {
+        display: block;
+        width: 100%;
+    }
+
+    .tabla-admin thead {
+        display: none;
+    }
+
+    .tabla-admin tr {
+        background: var(--color-fondo);
+        border: 1px solid #d8cec4;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        padding: 1.2rem;
+        box-shadow: 0 2px 8px rgba(59, 35, 20, 0.04);
+        position: relative;
+        overflow: visible !important;
+        /* IMPORTANTE: deja que el menú flote fuera de la tarjeta */
+    }
+
+    .tabla-admin td {
+        border: none;
+        padding: 0;
+        text-align: left !important;
+    }
+
+    /* Foto de la prenda */
+    .tabla-admin td:nth-child(1) {
+        float: left;
+        width: 60px;
+        margin-right: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .mini-foto-admin {
+        width: 60px;
+        height: 75px;
+    }
+
+    /* Nombre y categoría (dejamos margen a la derecha para que no lo tape el botón de los 3 puntos) */
+    .tabla-admin td:nth-child(2) {
+        display: block;
+        width: auto;
+        padding-right: 40px;
+        padding-top: 0.1rem;
+        margin-bottom: 0.8rem;
+    }
+
+    /* Precio */
+    .tabla-admin td:nth-child(3) {
+        clear: left;
+        font-size: 1.1rem;
+        color: var(--color-principal);
+        padding: 0.3rem 0;
+        font-weight: 700;
+    }
+
+    /* Badges de stock */
+    .tabla-admin td:nth-child(4) {
+        padding: 0.5rem 0 0.2rem 0;
+        border-top: 1px solid #f0ebe1;
+        margin-top: 0.5rem;
+    }
+
+    /* Posicionamiento absoluto exacto para el botón de acciones arriba a la derecha */
+    .tabla-admin td.td-acciones {
+        position: static;
+        /* Sale del absoluto para acomodarse al flujo natural */
+        display: block;
+        width: 100%;
+        text-align: left;
+        margin-top: 0.8rem;
+        padding-top: 0.8rem;
+        border-top: 1px dashed #d8cec4;
+    }
+
+    .btn-menu-puntos {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+    }
+
+    /* Aseguramos que el menú desplegable flote bien y no quede oculto */
+    .menu-desplegable {
+        left: 0 !important;
+        right: auto !important;
+        top: 40px !important;
+        width: 200px;
+    }
+
+    .contenedor-acciones {
+        display: inline-block;
+        position: relative;
+    }
 }

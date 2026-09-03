@@ -184,25 +184,93 @@
     background-color: #fcf9f5;
 }
 
-/* =========================================================
-   ADAPTACIÓN CELULAR (RESPONSIVE)
-========================================================= */
+/* Menú de navegación móvil para Mi Cuenta */
+.menu-tarjetas-cuenta {
+    display: none; /* Por defecto en escritorio usa las solapas normales */
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.tarjeta-opcion-cuenta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fdfbf7;
+    border: 1px solid #d8cec4;
+    padding: 1.2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #3b2314;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.tarjeta-opcion-cuenta:hover {
+    background: #efe8de;
+    transform: translateY(-2px);
+}
+
+/* En pantallas chicas (móvil), ocultamos las solapas feas y mostramos los botones grandes */
 @media (max-width: 768px) {
+    .tabs-navegacion-escritorio { /* Clase de tus solapas actuales */
+        display: none !important;
+    }
+    
+    .menu-tarjetas-cuenta {
+        display: flex !important;
+    }
+    .pestanas-perfil {
+        display: none !important;
+    }
+
+    /* Permitimos que el contenedor de la tabla se adapte */
     .perfil-container {
-        padding: 1.5rem;
-        margin: 1.5rem 1rem;
+        padding: 1rem !important;
     }
-    
-    .grilla-direcciones {
-        grid-template-columns: 1fr;
-    }
-    
-    .grilla-full {
-        grid-column: span 1;
-    }
-    
-    .tabla-mis-pedidos {
+
+    .tabla-mis-pedidos, 
+    .tabla-mis-pedidos tbody, 
+    .tabla-mis-pedidos tr, 
+    .tabla-mis-pedidos td {
         display: block;
-        overflow-x: auto;
+        width: 100%;
+    }
+
+    .tabla-mis-pedidos thead {
+        display: none;
+    }
+
+    .tabla-mis-pedidos tr {
+        background: #fdfbf7;
+        border: 1px solid #d8cec4;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        box-shadow: 0 2px 6px rgba(59, 35, 20, 0.04);
+    }
+
+    .tabla-mis-pedidos td {
+        border: none;
+        padding: 0.4rem 0;
+        text-align: left !important;
+    }
+
+    /* Etiquetas automáticas para que cada dato se entienda claramente en el celular */
+    .tabla-mis-pedidos td:nth-child(1):before { content: "📦 Pedido: "; font-weight: bold; color: #694a32; }
+    .tabla-mis-pedidos td:nth-child(2):before { content: "📅 Fecha: "; font-weight: bold; color: #694a32; }
+    .tabla-mis-pedidos td:nth-child(3):before { content: "🛍️ Prendas: "; font-weight: bold; color: #694a32; display: block; margin-top: 0.2rem; }
+    .tabla-mis-pedidos td:nth-child(4):before { content: "💵 Total: "; font-weight: bold; color: #694a32; }
+    .tabla-mis-pedidos td:nth-child(5):before { content: "🚚 Estado Pedido: "; font-weight: bold; color: #694a32; display: block; margin-top: 0.3rem; }
+    .tabla-mis-pedidos td:nth-child(6):before { content: "💳 Estado Pago: "; font-weight: bold; color: #694a32; display: block; margin-top: 0.3rem; }
+
+    .tabla-mis-pedidos td {
+        border-bottom: 1px solid #f0ebe1;
+    }
+
+    .tabla-mis-pedidos td:last-child {
+        border-bottom: none;
+        text-align: center !important;
+        margin-top: 0.5rem;
     }
 }

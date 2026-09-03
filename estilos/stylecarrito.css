@@ -3,3 +3,29 @@
     margin-bottom: 1.5rem; 
     font-family: 'Playfair Display', serif;
 }
+
+@media (max-width: 768px) {
+    /* Ajustamos el contenedor general para que no sobrepase la pantalla */
+    .contenedor-carrito-pagina {
+        padding: 0 0.8rem !important;
+        margin: 1rem auto !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    /* Rompemos la grilla de dos columnas y pasamos a una sola columna vertical */
+    .carrito-layout-principal {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1.5rem !important;
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    /* Aseguramos que tanto la lista como el resumen ocupen todo el ancho sin desbordar */
+    .carrito-items-container,
+    .carrito-resumen-card {
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+}

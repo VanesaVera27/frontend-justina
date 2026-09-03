@@ -1,0 +1,53 @@
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+
+    /* Achicamos los márgenes y paddings generales de la tarjeta principal en celular */
+    main {
+        max-width: 100% !important;
+        margin: 1rem 0.5rem !important;
+        padding: 1rem !important;
+    }
+
+    /* Forzamos a que todos los fieldsets no se pasen del ancho */
+    fieldset {
+        width: 100% !important;
+        padding: 1rem 0.8rem !important;
+        margin: 0 0 1.2rem 0 !important;
+    }
+
+    /* Rompemos cualquier grilla interna de 2 columnas para que sea de 1 sola */
+    form#form-config-web div[style*="grid-template-columns"],
+    fieldset div[style*="grid-template-columns"] {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.8rem !important;
+        width: 100% !important;
+    }
+
+    /* Hacemos que todos los inputs, selects y textareas respeten estrictamente el ancho */
+    input[type="text"],
+    input[type="email"],
+    textarea,
+    input[type="color"] {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Adaptamos la grilla de los banners para dispositivos móviles */
+    #lista-banners-admin>div {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.8rem !important;
+    }
+
+    #lista-banners-admin>div>div:last-child {
+        width: 100% !important;
+        display: flex;
+        justify-content: flex-end;
+    }
+}

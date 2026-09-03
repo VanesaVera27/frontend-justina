@@ -1,0 +1,49 @@
+@media (max-width: 768px) {
+    .admin-box {
+        padding: 1rem;
+        margin: 1rem;
+    }
+
+    .tabla-pedidos, 
+    .tabla-pedidos tbody, 
+    .tabla-pedidos tr, 
+    .tabla-pedidos td {
+        display: block;
+        width: 100%;
+    }
+
+    .tabla-pedidos thead {
+        display: none;
+    }
+
+    .tabla-pedidos tr {
+        background: white;
+        border: 1px solid #d8cec4;
+        border-radius: 8px;
+        margin-bottom: 1.2rem;
+        padding: 1rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .tabla-pedidos td {
+        border: none;
+        padding: 0.5rem 0;
+        text-align: left !important;
+    }
+
+    /* Distribuimos los datos con etiquetas visuales claras para cada campo */
+    .tabla-pedidos td:nth-child(1):before { content: "📅 Fecha: "; font-weight: bold; color: #666; }
+    .tabla-pedidos td:nth-child(2):before { content: "👤 Comprador: "; font-weight: bold; color: #666; display: block; margin-bottom: 0.2rem; }
+    .tabla-pedidos td:nth-child(3):before { content: "🛍️ Prendas: "; font-weight: bold; color: #666; display: block; margin-bottom: 0.2rem; }
+    .tabla-pedidos td:nth-child(4):before { content: "💵 Total: "; font-weight: bold; color: #666; }
+    .tabla-pedidos td:nth-child(5):before { content: "💳 Pago: "; font-weight: bold; color: #666; display: block; margin-top: 0.5rem; margin-bottom: 0.2rem; }
+    .tabla-pedidos td:nth-child(6):before { content: "📦 Envío: "; font-weight: bold; color: #666; display: block; margin-top: 0.5rem; margin-bottom: 0.2rem; }
+
+    .tabla-pedidos td {
+        border-bottom: 1px solid #f0ebe1;
+    }
+    
+    .tabla-pedidos td:last-child {
+        border-bottom: none;
+    }
+}
