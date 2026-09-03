@@ -815,7 +815,7 @@ async function inicializarHeader() {
                 if (spanTexto) {
                     spanTexto.textContent = `Hola, ${primerNombre} ▾`;
                 } else {
-                    btnLoginHeader.innerHTML = `<span class="texto-user">Hola, ${primerNombre} ▾</span>`;
+                    btnLoginHeader.innerHTML = `<i class="fa-regular fa-user"></i> <span class="texto-user">Hola, ${primerNombre} ▾</span>`;
                 }
             }
 
@@ -839,7 +839,7 @@ async function inicializarHeader() {
             }
         } else {
             if (btnLoginHeader) {
-                btnLoginHeader.innerHTML = `<span class="icono-user">${iconoUserSVG}</span> <span class="texto-user">Iniciar Sesión</span>`;
+                btnLoginHeader.innerHTML = `<i class="fa-regular fa-user"></i> <span class="texto-user">Iniciar Sesión</span>`;
             }
             if (btnCarrito) btnCarrito.style.display = "block";
             if (btnFavorito) btnFavorito.style.display = "block";
